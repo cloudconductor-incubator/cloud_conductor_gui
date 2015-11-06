@@ -1,0 +1,25 @@
+{% extends "gui_app/base2.html" %}
+{% block title %}login{% endblock %}
+{% block headerscript %}
+{% endblock %}
+
+{% block nav %}
+
+{% endblock %}
+
+{% block content %}
+	<div class="login-body">
+		<div class="cc-login">
+			<form class="form-signin" role="form">
+				<input class="form-control" type="id" autofocus="" required="" placeholder="Login ID">
+				<input class="form-control" type="password" required="" placeholder="Password">
+			<div class="checkbox">
+				<label><input type="checkbox" value="remember-me">Remember me</label>
+			</div>
+				<button class="btn btn-wizard btn-block" type="submit">Sign in</button>
+			</form>
+		</div>
+	</div>
+{% endblock %}
+
+{% block bodyscript %}{% endblock %}

@@ -1,0 +1,44 @@
+{% extends "gui_app/base.html" %}
+{% block title %}プロジェクト削除{% endblock %}
+{% block headerscript %}
+{% endblock %}
+
+{% block nav %}
+    {% include "gui_app/includes/nav_menu.html" %}
+{% endblock %}
+
+{% block content %}
+
+<div class="cc-title">プロジェクト削除</div>
+<br>
+
+<table class="table table-hover">
+		<tr>
+			<th>ID</th><td>{{ project.id }}</td>
+		</tr>
+
+		<tr>
+			<th>動作</th><td>{{ states }}</td>
+		</tr>
+		<tr>
+			<th>プロジェクト名</th><td>{{ project.name }}</td>
+		</tr>
+		<tr>
+			<th>詳細</th><td>{{ project.description }}</td>
+		</tr>
+		<tr>
+			<th>作成日</th><td>{{ createDate }}</td>
+		</tr>
+</table>
+
+	<div class="button_center">
+	  <button type="button" class="btn btn-success" onclick="location.href='{% url 'ccgui:projectEdit' project.id %}'">Edit</button>
+	  <button type="button" class="btn btn-danger" onclick="location.href='{% url 'ccgui:projectDelete' project.id %}'">Delete</button>
+　　　<button type="button" class="btn btn-default" onclick="location.href='{% url 'ccgui:projectList' %}'">Back</button>
+	</div>
+
+
+
+{% endblock %}
+
+{% block bodyscript %}{% endblock %}

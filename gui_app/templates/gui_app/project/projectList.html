@@ -1,0 +1,57 @@
+{% extends "gui_app/base.html" %}
+{% block title %}プロジェクト管理{% endblock %}
+{% block headerscript %}
+{% endblock %}
+
+{% block nav %}
+    {% include "gui_app/includes/nav_menu.html" %}
+{% endblock %}
+
+{% block content %}
+
+<div class="cc-title">Project management</div>
+<br>
+<div>
+	<button class="btn btn-primary" style="float:right" onclick="location.href='{% url 'ccgui:projectCreate' %}'" type="button">
+		<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+	</button>
+</div>
+    {% if projects %}
+    	<table class="table table-hover">
+			<thead>
+				<tr>
+					<th>No</th>
+					<th>states</th>
+					<th>Project Name</th>
+					<th>Description</th>
+					<th>Creation Date</th>
+					<th></th>
+				</tr>
+			</thead>
+        {% for p in projects %}
+            	<tr>
+					<td>{{ p.id }}</td>
+					<td>
+						<!-- {{ states }} -->
+					</td>
+					<td>
+						<a href="/ccgui/project/{{ p.id }}/detail/">{{ p.name }}</a>
+					</td>
+					<td>{{ p.description }}</td>
+					<td>{{ p.created_at | date:"Y/m/d H:i:s" }}</td>
+					<td>
+					<button class="btn btn-default btn-xs" type="button" onclick="location.href='#'" style="float:right">
+							<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+							<span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+					</button>
+					</td>
+				</tr>
+        {% endfor %}
+        		</table>
+    {% else %}
+        There is no project.。
+    {% endif %}
+
+{% endblock %}
+
+{% block bodyscript %}{% endblock %}
