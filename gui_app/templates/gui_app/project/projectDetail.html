@@ -1,5 +1,5 @@
 {% extends "gui_app/base.html" %}
-{% block title %}{% endblock %}
+{% block title %}Project Detail{% endblock %}
 {% block headerscript %}
 {% endblock %}
 
@@ -30,6 +30,7 @@
 			<th>Create date</th><td>{{ createDate }}</td>
 		</tr>
 </table>
+{{ pp.description }}
 
 	<div class="button_center">
 		<button type="button" class="btn btn-success" onclick="location.href='{% url 'ccgui:projectEdit' id %}'">

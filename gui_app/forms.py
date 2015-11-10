@@ -8,3 +8,10 @@ class t_projectForm(forms.Form):
     created_at = forms.CharField()
     created_at = forms.CharField()
     widget=forms.TextInput()
+
+class loginForm(forms.Form):
+    id = forms.IntegerField()
+    email = forms.EmailField()
+    account = forms.CharField(max_length=64)
+    password = forms.CharField(max_length=64)
+    rePassword = forms.CharField(max_length=64)

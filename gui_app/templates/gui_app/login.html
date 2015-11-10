@@ -10,12 +10,11 @@
 {% block content %}
 	<div class="login-body">
 		<div class="cc-login">
-			<form class="form-signin" role="form">
-				<input class="form-control" type="id" autofocus="" required="" placeholder="Login ID">
-				<input class="form-control" type="password" required="" placeholder="Password">
-			<div class="checkbox">
-				<label><input type="checkbox" value="remember-me">Remember me</label>
-			</div>
+			<form class="form-signin" role="form" method="post" action="{% url 'ccgui:login' %}">
+				 {% csrf_token %}
+				<input class="form-control" type="email" id="loginid" name="lodinid" placeholder="Login ID">
+				<input class="form-control" type="password" id ="password" name="password" placeholder="Password">
+
 				<button class="btn btn-wizard btn-block" type="submit">Sign in</button>
 			</form>
 		</div>

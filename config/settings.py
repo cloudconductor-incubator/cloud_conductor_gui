@@ -122,7 +122,7 @@ USE_TZ = True
 
 # STATIC_URL = '/static/'
 
-LOGIN_URL = '/ccgui/registration/login'
+LOGIN_URL = '/ccgui/login/'
 
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()

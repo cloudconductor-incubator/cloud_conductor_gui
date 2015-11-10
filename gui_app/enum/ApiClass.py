@@ -3,6 +3,9 @@ from enum import Enum
 class u():
     url = 'http://127.0.0.1:8000/api/v1/'
 
+class Token(Enum):
+    token = u.url + 'tokens'
+
 class Project(Enum):
 #     url = 'http://127.0.0.1:8000/api/v1/'
 #     projectList = u.url + 'project/list/'
