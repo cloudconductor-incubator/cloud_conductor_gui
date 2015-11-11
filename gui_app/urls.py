@@ -1,5 +1,7 @@
 from django.conf.urls import include, url
 from . import views
+from .views2 import cloudViews
+from .views2 import baseImageViews
 
 urlpatterns = [
 #    url(r"^$", views.index, name="index"),
@@ -15,9 +17,18 @@ urlpatterns = [
     url('^project/create', views.projectCreate, name="projectCreate"),
     url('^project/(?P<id>\d+)/detail/', views.projectDetail, name="projectDetail"),
     url('^project/(?P<id>\d+)/delete/', views.projectDelete, name="projectDelete"),
-
     url('^project/add/$', views.projectEdit, name="projectAdd"),
     url('^project/(?P<id>\d+)/edit/$', views.projectEdit, name="projectEdit"),
 
+    url('^cloud/list', cloudViews.cloudList, name="cloudList"),
+    url('^cloud/(?P<id>\d+)/cloud/', cloudViews.cloudDetail, name="cloudDetail"),
+    url('^cloud/create', cloudViews.cloudCreate, name="cloudCreate"),
+    url('^cloud/(?P<id>\d+)/edit/$', cloudViews.cloudEdit, name="cloudEdit"),
+    url('^cloud/(?P<id>\d+)/delete/', cloudViews.cloudDelete, name="cloudDelete"),
+
+    url('^baseimage/(?P<id>\d+)/baseimage/', baseImageViews.baseImageDetail, name="baseImageDetail"),
+    url('^baseimage/create', baseImageViews.baseImageCreate, name="baseImageCreate"),
+    url('^baseimage/(?P<id>\d+)/edit/$', baseImageViews.baseImageEdit, name="baseImageEdit"),
+    url('^baseimage/(?P<id>\d+)/delete/', baseImageViews.baseImageDelete, name="baseImageDelete"),
 
 ]

@@ -8,8 +8,9 @@
 {% endblock %}
 
 {% block content %}
-
-	{% include "gui_app/project/includes/formProject.html" %}
+	<form method="post" action="{% url 'ccgui:projectCreate'%}">
+		{% include "gui_app/project/includes/formProject.html" %}
+	</form>
 
 {% endblock %}
 

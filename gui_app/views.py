@@ -6,11 +6,13 @@ import requests
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.http import HttpResponse
+from django.contrib import messages
 from api.views.projectViews import project_list
 from .forms import t_projectForm
 from .enum import ApiClass
 from .enum import ResponseType
-
+from logging import getLogger
+logger = getLogger(__name__)
 
 class Path():
     top = "/ccgui/top/"
@@ -78,46 +80,69 @@ def projectList(request):
     url = ApiClass.Project.list.value
     r = requests.get(url)
 
+    # role
+    roleUrl = 'http://127.0.0.1:8000/api/v1/role/3/menu/'
+    role = requests.get(roleUrl)
+    role_munu = json.loads(role.text)
+
     if r.reason == ResponseType.Response.OK.name:
         # json
-        res = json.loads(r.text)
-        projects = res['projects']
+        p = json.loads(r.text)
+        projects = p['projects']
     else:
         projects = None
 
-    return render(request, "gui_app/project/projectList.html", {"projects": projects})
+    return render(request, "gui_app/project/projectList.html", {"projects": projects, 'role_munu':role_munu })
 
 def projectCreate(request):
     if request.method == "GET":
+
+        form = t_projectForm()
         return render(request, "gui_app/project/projectCreate.html")
     else:
-
-        return redirect(Path.list)
-
-def projectEdit(request, id=None):
-    if request.method == "GET":
-        url = 'http://127.0.0.1:8000/api/v1/projects/'+id+'/detail/'
-        r = requests.get(url)
-        p = json.loads(r.text)
-
-        return render(request, "gui_app/project/projectEdit.html", {"project": {'id':p['id'], 'name':p['name'], 'description':p['description']}, 'project2':t_projectForm })
-    else:
-
-        #-- formから値を取得
+        #-- Get a value from a form
         p = request.POST
 
         #-- Validate check
 
         #-- URL set
-        if p['id'] == None:
-            url = ApiClass.Project.create.value
+
+
+        return redirect(Path.list)
+
+def projectEdit(request, id=None):
+    if request.method == "GET":
+#         ArticleFormSet = formset_factory(t_projectForm)
+        if id != None:
+            url = 'http://127.0.0.1:8000/api/v1/projects/'+id+'/detail/'
+            r = requests.get(url)
+            p = json.loads(r.text)
+            form = t_projectForm(p)
+#             p2 = ArticleFormSet()
+        messages.error(request, "Error!")
+        return render(request, "gui_app/project/projectEdit.html", {'project': p, 'project2':form, 'message':'' })
+    else:
+
+        #-- Get a value from a form
+        p = request.POST
+
+        #-- Validate check
+        form = t_projectForm(request.POST)
+        if form.is_valid():
+            print('エラーなし')
+            logger.debug('debug:OK')
         else:
-            url = ApiClass.Project.edit.value
+            print('エラーデス')
+            logger.debug('debug:error')
+
+
+        #-- URL set
+        url = ApiClass.Project.update.value
 
         #-- ProjectEditAPIにformの値をセットする
-        data = {'auth_token' : 'auth_token', 'name' : p['name'], 'description' : p['description'] }
+        data = {'auth_token':'auth_token', 'name':p['name'], 'description':p['description']}
+        #-- API call, get a response
         r = requests.get(url, data)
-        #-- 呼出、responseを取得する
         #-- if response is "OK"
         if r.status_code == ResponseType.Response.OK.value:
 
@@ -140,4 +165,20 @@ def projectDetail(request, id):
 
 def projectDelete(request, id):
 
-    return redirect(Path.list)
+    #-- Get a value from a form
+    p = request.POST
+    #-- Validate check
+
+    #-- URL and data set
+#     url = ApiClass.Project.delete.value
+    url = 'http://127.0.0.1:8000/api/v1/projects/'+id+'/delete/'
+    data = {'auth_token' : 'auth_token'}
+    r = requests.get(url, data) # requests.delete(url, data)
+
+    if r.reason == ResponseType.Response.OK.value:
+        return redirect(Path.list)
+    else:
+        #-- Validate Error message
+
+
+        return redirect(Path.list)

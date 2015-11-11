@@ -2,8 +2,13 @@ from django.conf.urls import include, url
 from django.conf.urls import patterns, url
 from api import views
 from api.views import tokenViews
+from api.views import cloudViews
+from api.views import baseImageViews
+from api.views import roleViews
 
 urlpatterns = patterns('',
+    # role
+    url(r'^v1/role/(?P<id>\d+)/menu/$', views.roleViews.role_menu, name='role_menu'),
     # project_list
     url(r'^v1/projects/$', views.projectViews.project_list, name='project_list'),     # list
     url(r'^v1/projects/(?P<id>\d+)/detail/$', views.projectViews.project_detail, name='project_detail'),     # detail
@@ -25,17 +30,16 @@ urlpatterns = patterns('',
 #     url(r'^v1/account/create/$', views.accountViews.account_create, name='account_create'),
 #     url(r'^v1/account/(?P<id>\d+)/update/$', views.accountViews.account_update, name='account_update'),
 #     url(r'^v1/account/(?P<id>\d+)/delete/$', views.accountViews.account_delete, name='account_delete'),
-#     url(r'^v1/cloud/list/$', views.cloudViews.cloud_list, name='cloud_list'),
-#     url(r'^v1/cloud/(?P<id>\d+)/detail/$', views.cloudViews.cloud_detail, name='cloud_detail'),
-#     url(r'^v1/cloud/create/$', views.cloudViews.cloud_create, name='cloud_create'),
-#     url(r'^v1/cloud/(?P<id>\d+)/update/$', views.cloudViews.cloud_update, name='cloud_update'),
-#     url(r'^v1/cloud/(?P<id>\d+)/delete/$', views.cloudViews.cloud_delete, name='cloud_delete'),
+    url(r'^v1/cloud/list/$', views.cloudViews.cloud_list, name='cloud_list'),
+    url(r'^v1/cloud/(?P<id>\d+)/detail/$', views.cloudViews.cloud_detail, name='cloud_detail'),
+    url(r'^v1/cloud/create/$', views.cloudViews.cloud_create, name='cloud_create'),
+    url(r'^v1/cloud/(?P<id>\d+)/update/$', views.cloudViews.cloud_update, name='cloud_update'),
+    url(r'^v1/cloud/(?P<id>\d+)/delete/$', views.cloudViews.cloud_delete, name='cloud_delete'),
 #
-#     url(r'^v1/baseImage/list/$', views.baseImageViews.baseImage_list, name='baseImage_list'),
-#     url(r'^v1/baseImage/(?P<id>\d+)/detail/$', views.baseImageViews.baseImage_detail, name='baseImage_detail'),
-#     url(r'^v1/baseImage/create/$', views.baseImageViews.baseImage_create, name='baseImage_create'),
-#     url(r'^v1/baseImage/(?P<id>\d+)/update/$', views.baseImageViews.baseImage_update, name='baseImage_update'),
-#     url(r'^v1/baseImage/(?P<id>\d+)/delete/$', views.baseImageViews.baseImage_delete, name='baseImage_delete'),
+    url(r'^v1/baseImage/(?P<id>\d+)/detail/$', views.baseImageViews.baseImage_detail, name='baseImage_detail'),
+    url(r'^v1/baseImage/create/$', views.baseImageViews.baseImage_create, name='baseImage_create'),
+    url(r'^v1/baseImage/(?P<id>\d+)/update/$', views.baseImageViews.baseImage_update, name='baseImage_update'),
+    url(r'^v1/baseImage/(?P<id>\d+)/delete/$', views.baseImageViews.baseImage_delete, name='baseImage_delete'),
 #     url(r'^v1/bluePrint/list/$', views.bluePrintViews.bluePrint_list, name='bluePrint_list'),
 #     url(r'^v1/bluePrint/(?P<id>\d+)/detail/$', views.bluePrintViews.bluePrint_detail, name='bluePrint_detail'),
 #     url(r'^v1/bluePrint/create/$', views.bluePrintViews.bluePrint_create, name='bluePrint_create'),

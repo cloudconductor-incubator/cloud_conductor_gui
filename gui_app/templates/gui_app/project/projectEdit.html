@@ -9,9 +9,9 @@
 {% endblock %}
 
 {% block content %}
-
-	{% include "gui_app/project/includes/formProject.html" %}
-
+	<form method="post" action="{% url 'ccgui:projectEdit' project.id %}">
+		{% include "gui_app/project/includes/formProject.html" %}
+	</form>
 {% endblock %}
 
 {% block bodyscript %}{% endblock %}
