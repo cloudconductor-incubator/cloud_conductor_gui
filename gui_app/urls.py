@@ -3,6 +3,7 @@ from .views import projectViews
 from .views import cloudViews
 from .views import baseImageViews
 from .views import roleViews
+from .views import loginViews
 
 urlpatterns = [
 #    url(r"^$", views.index, name="index"),
@@ -12,14 +13,15 @@ urlpatterns = [
     #CloudConductor
 #     url('^projectList/', views.projectList, name="projectList"),
 #     url('^projectCreate/', views.projectCreate, name="projectCreate"),
-    url('^login/', projectViews.login, name="login"),
-    url('^top/', projectViews.top, name="top"),
+    url('^login/', loginViews.login, name="login"),
+    url('^top/', loginViews.top, name="top"),
     url('^project/list', projectViews.projectList, name="projectList"),
     url('^project/create', projectViews.projectCreate, name="projectCreate"),
     url('^project/(?P<id>\d+)/detail/', projectViews.projectDetail, name="projectDetail"),
     url('^project/(?P<id>\d+)/delete/', projectViews.projectDelete, name="projectDelete"),
     url('^project/add/$', projectViews.projectEdit, name="projectAdd"),
     url('^project/(?P<id>\d+)/edit/$', projectViews.projectEdit, name="projectEdit"),
+    url('^project/(?P<id>\d+)/projectAddUser/$', projectViews.projectAddUser, name="projectAddUser"),
 
     url('^cloud/list', cloudViews.cloudList, name="cloudList"),
     url('^cloud/(?P<id>\d+)/cloud/', cloudViews.cloudDetail, name="cloudDetail"),

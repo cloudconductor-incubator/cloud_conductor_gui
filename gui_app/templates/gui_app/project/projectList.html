@@ -35,12 +35,12 @@
 						<!-- {{ states }} -->
 					</td>
 					<td>
-						<a href="/ccgui/project/{{ p.id }}/detail/">{{ p.name }}</a>
+						<a href="{% url 'ccgui:projectDetail' p.id %}">{{ p.name }}</a>
 					</td>
 					<td>{{ p.description }}</td>
 					<td>{{ p.created_at | date:"Y/m/d H:i:s" }}</td>
 					<td>
-					<button class="btn btn-default btn-xs" type="button" onclick="location.href='#'" style="float:right">
+					<button class="btn btn-default btn-xs" type="button" onclick="location.href='{% url 'ccgui:projectAddUser' p.id %}'" style="float:right">
 							<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
 							<span class="glyphicon glyphicon-user" aria-hidden="true"></span>
 					</button>
