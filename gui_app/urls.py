@@ -1,7 +1,8 @@
 from django.conf.urls import include, url
-from . import views
-from .views2 import cloudViews
-from .views2 import baseImageViews
+from .views import projectViews
+from .views import cloudViews
+from .views import baseImageViews
+from .views import roleViews
 
 urlpatterns = [
 #    url(r"^$", views.index, name="index"),
@@ -11,14 +12,14 @@ urlpatterns = [
     #CloudConductor
 #     url('^projectList/', views.projectList, name="projectList"),
 #     url('^projectCreate/', views.projectCreate, name="projectCreate"),
-    url('^login/', views.login, name="login"),
-    url('^top/', views.top, name="top"),
-    url('^project/list', views.projectList, name="projectList"),
-    url('^project/create', views.projectCreate, name="projectCreate"),
-    url('^project/(?P<id>\d+)/detail/', views.projectDetail, name="projectDetail"),
-    url('^project/(?P<id>\d+)/delete/', views.projectDelete, name="projectDelete"),
-    url('^project/add/$', views.projectEdit, name="projectAdd"),
-    url('^project/(?P<id>\d+)/edit/$', views.projectEdit, name="projectEdit"),
+    url('^login/', projectViews.login, name="login"),
+    url('^top/', projectViews.top, name="top"),
+    url('^project/list', projectViews.projectList, name="projectList"),
+    url('^project/create', projectViews.projectCreate, name="projectCreate"),
+    url('^project/(?P<id>\d+)/detail/', projectViews.projectDetail, name="projectDetail"),
+    url('^project/(?P<id>\d+)/delete/', projectViews.projectDelete, name="projectDelete"),
+    url('^project/add/$', projectViews.projectEdit, name="projectAdd"),
+    url('^project/(?P<id>\d+)/edit/$', projectViews.projectEdit, name="projectEdit"),
 
     url('^cloud/list', cloudViews.cloudList, name="cloudList"),
     url('^cloud/(?P<id>\d+)/cloud/', cloudViews.cloudDetail, name="cloudDetail"),
@@ -30,5 +31,7 @@ urlpatterns = [
     url('^baseimage/create', baseImageViews.baseImageCreate, name="baseImageCreate"),
     url('^baseimage/(?P<id>\d+)/edit/$', baseImageViews.baseImageEdit, name="baseImageEdit"),
     url('^baseimage/(?P<id>\d+)/delete/', baseImageViews.baseImageDelete, name="baseImageDelete"),
+
+    url('^role/(?P<id>\d+)/menu/', roleViews.roleChange, name="roleChange"),
 
 ]

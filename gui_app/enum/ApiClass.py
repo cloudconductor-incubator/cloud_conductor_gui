@@ -10,10 +10,10 @@ class Project(Enum):
 #     url = 'http://127.0.0.1:8000/api/v1/'
 #     projectList = u.url + 'project/list/'
     list = u.url + 'projects/'
-    detail = u.url + 'project/detail/'
-    create = u.url + 'project/create/'
-    update = u.url + 'project/update/'
-    delete = u.url + 'project/delete/'
+    detail = u.url + 'projects/detail/'
+    create = u.url + 'projects/create/'
+    update = u.url + 'projects/update/'
+    delete = u.url + 'projects/delete/'
 
 class Account(Enum):
     list = u.url + 'account/list/'

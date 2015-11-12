@@ -9,6 +9,7 @@ from django.http import HttpResponse
 from django.contrib import messages
 from api.views.projectViews import project_list
 from .forms import t_projectForm
+from .util import roleUtil
 from .enum import ApiClass
 from .enum import ResponseType
 from logging import getLogger
@@ -51,6 +52,23 @@ def login(request):
         #-- responseを取得
 
         #-- cookieにtoke,role,roleMenuを保存
+#         roleUtil.RoleMenu('2')
+
+#         roleUrl = 'http://127.0.0.1:8000/api/v1/role/3/menu/'
+#         role = requests.get(roleUrl)
+#         role_munu = json.loads(role.text)
+#
+#         request.session['id'] = role_munu['id']
+#         request.session['role_id'] = role_munu['role_id']
+#         request.session['pj_pulldown'] = role_munu['pj_pulldown']
+#         request.session['m_project'] = role_munu['m_project']
+#         request.session['m_cloud'] = role_munu['m_cloud']
+#         request.session['m_provisionning'] = role_munu['m_provisionning']
+#         request.session['m_support'] = role_munu['m_support']
+#         request.session['w_cloud_registrarion'] = role_munu['w_cloud_registrarion']
+#         request.session['w_make_new_app'] = role_munu['w_make_new_app']
+#         request.session['w_app_env'] = role_munu['w_app_env']
+#         request.session['w_deploying_app'] = role_munu['w_deploying_app']
 
         #-- 画面遷移
 
@@ -70,6 +88,9 @@ def login(request):
 
 
 def top(request):
+    # role
+
+
     return render(request, "gui_app/top.html")
 
 def index(request):
@@ -81,7 +102,7 @@ def projectList(request):
     r = requests.get(url)
 
     # role
-    roleUrl = 'http://127.0.0.1:8000/api/v1/role/3/menu/'
+    roleUrl = 'http://127.0.0.1:8000/api/v1/role/2/menu/'
     role = requests.get(roleUrl)
     role_munu = json.loads(role.text)
 

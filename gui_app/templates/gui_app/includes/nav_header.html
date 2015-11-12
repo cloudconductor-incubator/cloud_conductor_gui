@@ -4,15 +4,30 @@
 
 	<div class="text-right">
 		<div class="btn-group" role="group" aria-label="...">
-		  <div class="btn-group" role="group">
+		<!-- delete later -->
+			<div class="btn-group" role="group">
 		    <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-		      <span class="glyphicon glyphicon-user" aria-hidden="true"></span> &nbsp;admin
+		       &nbsp; [TEST] ROLE CHANGE
 		      <span class="caret"></span>
 		    </button>
 		    <ul class="dropdown-menu" role="menu">
-		      <li><a href="{% url 'ccgui:login' %}">logout</a></li>
+				<li><a href="{% url 'ccgui:roleChange' '1' %}">SUPER USER</a></li>
+				<li><a href="{% url 'ccgui:roleChange' '2' %}">PJ ADMIN</a></li>
+				<li><a href="{% url 'ccgui:roleChange' '3' %}">USER</a></li>
 		    </ul>
 		  </div>
+		<!-- --------- -->
+
+		  <div class="btn-group" role="group">
+		    <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+		      <span class="glyphicon glyphicon-user" aria-hidden="true"></span> &nbsp;{{ request.session.ac_name }}
+		      <span class="caret"></span>
+		    </button>
+		    <ul class="dropdown-menu" role="menu">
+				<li><a href="{% url 'ccgui:login' %}">logout</a></li>
+		    </ul>
+		  </div>
+
 		</div>
 		</div>
 	</div>

@@ -36,6 +36,7 @@ urlpatterns = patterns('',
     url(r'^v1/cloud/(?P<id>\d+)/update/$', views.cloudViews.cloud_update, name='cloud_update'),
     url(r'^v1/cloud/(?P<id>\d+)/delete/$', views.cloudViews.cloud_delete, name='cloud_delete'),
 #
+    url(r'^v1/baseImage/list/$', views.baseImageViews.baseImage_list, name='baseImage_list'),
     url(r'^v1/baseImage/(?P<id>\d+)/detail/$', views.baseImageViews.baseImage_detail, name='baseImage_detail'),
     url(r'^v1/baseImage/create/$', views.baseImageViews.baseImage_create, name='baseImage_create'),
     url(r'^v1/baseImage/(?P<id>\d+)/update/$', views.baseImageViews.baseImage_update, name='baseImage_update'),
