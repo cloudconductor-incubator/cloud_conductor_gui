@@ -1,0 +1,60 @@
+{% extends "gui_app/base.html" %}
+{% block title %}Add User{% endblock %}
+{% block headerscript %}
+{% endblock %}
+
+{% block nav %}
+    {% include "gui_app/includes/nav_menu.html" %}
+{% endblock %}
+
+{% block content %}
+
+	<div class="cc-title">Add User</div>
+	<br>
+   	<table class="table table-hover">
+		<thead>
+			<tr>
+				<th></th>
+				<th>No</th>
+				<th>User Name</th>
+				<th>PJ</th>
+			</tr>
+		</thead>
+           	<tr>
+				<td><input value="" type="checkbox"></td>
+				<td>1</td>
+				<td>PJ ADMIN</td>
+				<td>A-Project、B-Project、C-Project</td>
+			</tr>
+           	<tr>
+				<td><input value="" type="checkbox"></td>
+				<td>2</td>
+				<td>User</td>
+				<td>A-Project</td>
+			</tr>
+			<tr>
+				<td><input value="" type="checkbox"></td>
+				<td>3</td>
+				<td>A-User</td>
+				<td>A-Project</td>
+			</tr>
+			<tr>
+				<td><input value="" type="checkbox"></td>
+				<td>4</td>
+				<td>B-User</td>
+				<td>B-Project</td>
+			</tr>
+						<tr>
+				<td><input value="" type="checkbox"></td>
+				<td>5</td>
+				<td>C-User</td>
+				<td>C-Project</td>
+			</tr>
+       </table>
+       <div class="button_center">
+		<button class="btn btn-success" onclick="location.href='{% url 'ccgui:projectList' %}'" >save</button>
+	</div>
+
+{% endblock %}
+
+{% block bodyscript %}{% endblock %}

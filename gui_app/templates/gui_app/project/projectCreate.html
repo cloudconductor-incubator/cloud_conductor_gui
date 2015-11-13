@@ -1,0 +1,18 @@
+{% extends "gui_app/base.html" %}
+{% block title %}Project create{% endblock %}
+{% block headerscript %}
+{% endblock %}
+
+{% block nav %}
+    {% include "gui_app/includes/nav_menu.html" %}
+{% endblock %}
+
+{% block content %}
+	<form method="post" action="{% url 'ccgui:projectCreate'%}">
+
+		{% include "gui_app/project/includes/formProject.html" %}
+	</form>
+
+{% endblock %}
+
+{% block bodyscript %}{% endblock %}

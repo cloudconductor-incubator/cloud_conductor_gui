@@ -1,0 +1,16 @@
+{% load bootstrap %}
+{% csrf_token %}
+{% include "gui_app/includes/message.html" %}
+	<div class="cc-select">
+	    <div class="form-group">
+	    	<label><span id="req">*</span>Project name</label>
+	        <input id="name" name="name" type="text" class="form-control" value="{{ project.name }}">
+	    </div>
+	    <div class="form-group">
+	    	<label>Description</label>
+	        <textarea id="description" name="description" class="form-control">{{ project.description }}</textarea>
+	    </div>
+		<div class="button_center">
+			<button class="btn btn-success" type="submit">save</button>
+		</div>
+    </div>
