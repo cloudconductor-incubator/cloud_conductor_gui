@@ -35,7 +35,7 @@ def baseImageCreate(request):
         form.full_clean()
         if not form.is_valid():
             msg = ValiUtil.valiCheck(form)
-            return render(request, "gui_app/cloud/baseImageCreate.html", {'baseImage' : p, 'message':msg})
+            return render(request, "gui_app/baseImage/baseImageCreate.html", {'baseImage' : p, 'message':msg})
 
         #-- API call, get a response
         url = ApiClass.BaseImage.create.value
@@ -75,6 +75,8 @@ def baseImageEdit(request, id):
         #-- if response is "OK"
         if r.reason == ResponseType.Response.OK.name:
             return redirect(Path.list)
+        else:
+            return render(request, "gui_app/cloud/baseImageEdit.html", {'baseImage' : p, 'message':msg})
 
     else:
         url = None

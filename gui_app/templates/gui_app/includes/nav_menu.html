@@ -13,18 +13,18 @@
 			<div class="menu-menu"></div>
 			<ul class="nav">
 				<li class="active">
-					<a href="#">
+					<a href="{% url 'ccgui:top' %}">
 						<span class="glyphicon glyphicon-home cc-icon" aria-hidden="true"></span>　Home
 					</a>
 				</li>
 			</ul>
 			<div class="var-heading">Management</div>
 			<ul class="nav">
+					</li>
 				{% ifequal request.session.m_project "1"  %}
 					<li>
 						<a href="{% url 'ccgui:projectList' %}">
 						<span class="glyphicon glyphicon-folder-close cc-icon" aria-hidden="true"></span>　Project</a>
-					</li>
 				{% endifequal %}
 				{% ifequal request.session.m_cloud "1"  %}
 					<li>

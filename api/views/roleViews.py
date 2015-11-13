@@ -84,7 +84,7 @@ def role_project(request, id):
             ('project_delete', "1"),
             ('add_user', "1"),
                     ])
-    elif id == '2': # PJ
+    elif id == '2': # PJ1
         dict = OrderedDict([
             ('id', "1"),
             ('role_id', "1"),
@@ -95,7 +95,7 @@ def role_project(request, id):
             ('project_delete', "1"),
             ('add_user', "1"),
         ])
-    elif id == '3': #PJ
+    elif id == '3': #PJ2
         dict = OrderedDict([
             ('id', "1"),
             ('role_id', "1"),
