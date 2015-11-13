@@ -9,6 +9,7 @@ from api.views import roleViews
 urlpatterns = patterns('',
     # role
     url(r'^v1/role/(?P<id>\d+)/menu/$', views.roleViews.role_menu, name='role_menu'),
+    url(r'^v1/role/(?P<id>\d+)/project/$', views.roleViews.role_project, name='role_project'),
     # project_list
     url(r'^v1/projects/$', views.projectViews.project_list, name='project_list'),     # list
     url(r'^v1/projects/(?P<id>\d+)/detail/$', views.projectViews.project_detail, name='project_detail'),     # detail

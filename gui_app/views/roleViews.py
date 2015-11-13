@@ -24,6 +24,17 @@ def roleChange(request, id):
     request.session['w_app_env'] = role_munu['w_app_env']
     request.session['w_deploying_app'] = role_munu['w_deploying_app']
 
+    roleUrl = 'http://127.0.0.1:8000/api/v1/role/' +id+ '/project/'
+    role = requests.get(roleUrl)
+    role_munu = json.loads(role.text)
+
+    request.session['project_list'] = role_munu['project_list']
+    request.session['project_detail'] = role_munu['project_detail']
+    request.session['project_create'] = role_munu['project_create']
+    request.session['project_edit'] = role_munu['project_edit']
+    request.session['project_delete'] = role_munu['project_delete']
+    request.session['add_user'] = role_munu['add_user']
+
     return redirect('/ccgui/top/')
 
 def index(request):
