@@ -1,6 +1,5 @@
 {% extends "gui_app/base.html" %}
-{% load bootstrap %}
-{% block title %}Project edit{% endblock %}
+{% block title %}Project Edit{% endblock %}
 {% block headerscript %}
 {% endblock %}
 
@@ -9,6 +8,8 @@
 {% endblock %}
 
 {% block content %}
+<div class="cc-title">Project Edit</div>
+<br>
 	<form method="post" action="{% url 'ccgui:projectEdit' project.id %}">
 		<input id="id" type="hidden" name="id" value="{{ project.id }}">
 		{% include "gui_app/project/includes/formProject.html" %}

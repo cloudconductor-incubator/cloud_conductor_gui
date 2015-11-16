@@ -35,5 +35,6 @@ urlpatterns = [
     url('^baseimage/(?P<id>\d+)/delete/', baseImageViews.baseImageDelete, name="baseImageDelete"),
 
     url('^role/(?P<id>\d+)/menu/', roleViews.roleChange, name="roleChange"),
+    url('^role/index/', roleViews.index, name="role"),
 
 ]

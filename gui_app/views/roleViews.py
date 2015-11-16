@@ -38,5 +38,5 @@ def roleChange(request, id):
     return redirect('/ccgui/top/')
 
 def index(request):
-    return render(request, "/ccgui/top/")
+    return render(request, "gui_app/role/role.html")
 

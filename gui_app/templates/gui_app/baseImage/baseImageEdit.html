@@ -1,5 +1,5 @@
 {% extends "gui_app/base.html" %}
-{% block title %}{% endblock %}
+{% block title %}BaseImage Edit{% endblock %}
 {% block headerscript %}
 {% endblock %}
 
@@ -8,6 +8,8 @@
 {% endblock %}
 
 {% block content %}
+<div class="cc-title">BaseImage Detail</div>
+<br>
 	<form method="post" action="{% url 'ccgui:baseImageEdit' baseImage.id %}">
 		{% include "gui_app/baseImage/includes/formbaseImage.html" %}
 	</form>

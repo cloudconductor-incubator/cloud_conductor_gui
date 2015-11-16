@@ -16,16 +16,16 @@ class t_projectForm(forms.Form):
         return name
 
 class loginForm(forms.Form):
-    email = forms.EmailField()
-    password = forms.CharField(max_length=64)
-    rePassword = forms.CharField(max_length=64)
+    email = forms.EmailField(required=False)
+    password = forms.CharField(max_length=64, required=False)
+    rePassword = forms.CharField(max_length=64, required=False)
 
     def clean_email(self):
         email = self.cleaned_data['email']
 
-        if len(name) < 6:
+        if len(email) < 6:
             raise forms.ValidationError(u'Please enter at least 6 characters.')
-        return name
+        return email
 
 class cloudForm(forms.Form):
     id = forms.IntegerField(required=False)

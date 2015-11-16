@@ -1,5 +1,5 @@
 {% extends "gui_app/base.html" %}
-{% block title %}{% endblock %}
+{% block title %}Cloud Edit{% endblock %}
 {% block headerscript %}
 {% endblock %}
 
@@ -8,6 +8,8 @@
 {% endblock %}
 
 {% block content %}
+<div class="cc-title">Cloud Detail</div>
+<br>
 	<form method="post" action="{% url 'ccgui:cloudEdit' cloud.id %}">
 		<input id="id" type="hidden" name="id" value="{{ cloud.id }}">
 		{% include "gui_app/cloud/includes/formCloud.html" %}

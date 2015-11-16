@@ -1,5 +1,5 @@
 <html lang="ja">
-    <head>
+	<head>
         {% load staticfiles %}
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -25,21 +25,23 @@
         <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
         <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
         {% block headerscript %}{% endblock %}
-</head>
-<body>
-    <div class="wrapper">
-    		{% include "gui_app/includes/nav_header.html" %}
-    		{% block nav %}{% endblock %}
+	</head>
+	<body>
+	    <div class="wrapper">
+	   		{% include "gui_app/includes/nav_header.html" %}
+			<ol class="breadcrumb">
+			  <li><a href="{% url 'ccgui:top' %}">Home</a></li>
+			  {% block nav %}{% endblock %}
+			</ol>
+			<section>
+		    	<div class="cc-main">
+			        {% block content %}{% endblock %}
+			    </div>
+		    </section>
 
-		<section>
-	    	<div class="cc-main">
-		        {% block content %}{% endblock %}
-		    </div>
-	    </section>
-
-    </div>
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <script src="{% static 'gui_app/js/index.js' %}"></script>
-    {% block bodyscript %}{% endblock %}
-</body>
+	    </div>
+	    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+	    <script src="{% static 'gui_app/js/index.js' %}"></script>
+	    {% block bodyscript %}{% endblock %}
+	</body>
 </html>
