@@ -1,0 +1,63 @@
+{% csrf_token %}
+{% include "gui_app/includes/message.html" %}
+	<div class="cc-select">
+	    <div class="form-group">
+	    	<label><span id="req">*</span>Account name</label>
+	        <input id="name" name="name" type="text" class="form-control" value="{{ ac.name }}">
+	    </div>
+	    <div class="form-group">
+	    	<label><span id="req">*</span>Email</label>
+	        <input id="email" name="email" type="text" class="form-control" value="{{ ac.email }}">
+	    </div>
+	    <div class="form-group">
+	    	<label><span id="req">*</span>password</label>
+	        <input id="email" name="email" type="text" class="form-control" value="{{ ac.email }}">
+	    </div>
+	    <div class="form-group">
+	    	<label><span id="req">*</span>password confirmation</label>
+	        <input id="email" name="email" type="text" class="form-control" value="{{ ac.email }}">
+	    </div>
+	    <div class="form-group">
+	    	<label><span id="req">*</span>Admin</label>
+	        <input id="email" name="email" type="text" class="form-control" value="{{ ac.email }}">
+	    </div>
+	    <div class="form-group">
+	    	<label><span id="req">*</span>Role</label>
+	        <input id="admin" name="admin" type="text" class="form-control" value="{{ ac.admin }}">
+	    </div>
+
+		{% ifequal request.session.add_user "1" %}
+		<br>
+		<h4>■ PJ Select</h4>
+	   	<table class="table table-hover">
+		<thead>
+			<tr>
+				<th></th>
+				<th>No</th>
+				<th>PJ Name</th>
+			</tr>
+		</thead>
+           	<tr>
+				<td><input value="" type="checkbox"></td>
+				<td>1</td>
+				<td>A-Project</td>
+			</tr>
+           	<tr>
+				<td><input value="" type="checkbox"></td>
+				<td>2</td>
+				<td>B-Project</td>
+			</tr>
+			<tr>
+				<td><input value="" type="checkbox"></td>
+				<td>3</td>
+				<td>C-Project</td>
+			</tr>
+       	</table>
+		{% endifequal %}
+
+   		<div class="button_center">
+			<button class="btn btn-success" type="submit">
+				<span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>&nbsp;save</button>
+		</div>
+    </div>
+

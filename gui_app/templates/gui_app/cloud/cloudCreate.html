@@ -6,11 +6,14 @@
 {% block nav %}
     {% include "gui_app/includes/nav_menu.html" %}
 {% endblock %}
-
+{% block breadcrumb %}
+	<li><a href="{% url 'app:cloudList' %}">Cloud Management</a></li>
+	<li>Cloud Create</li>
+{% endblock %}
 {% block content %}
 <div class="cc-title">Cloud Create</div>
 <br>
-	<form method="post" action="{% url 'ccgui:cloudCreate' %}">
+	<form method="post" action="{% url 'app:cloudCreate' %}">
 		{% include "gui_app/cloud/includes/formCloud.html" %}
 	</form>
 {% endblock %}

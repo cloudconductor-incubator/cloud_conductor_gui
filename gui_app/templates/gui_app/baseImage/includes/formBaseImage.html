@@ -1,5 +1,5 @@
-{% load bootstrap %}
-    {% csrf_token %}
+{% csrf_token %}
+{% include "gui_app/includes/message.html" %}
 	<div class="cc-select">
 	    <div class="form-group">
 	    	<label><span id="req">*</span>Cloud</label>
@@ -18,14 +18,6 @@
 	        <input id="ssh_username" name="ssh_username" type="text" class="form-control" value="{{ baseImage.ssh_username }}">
 	    </div>
    		<div class="button_center">
-			<button class="btn btn-success" type="submit">save</button>
+			<button class="btn btn-success" type="submit"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>&nbsp;save</button>
 		</div>
-
-	    <div class="row">
-	        <div class="col-md-10">
-	            {% if message %}
-	                <span>{{ message }}</span>
-	            {% endif %}
-	        </div>
-	    </div>
     </div>

@@ -6,11 +6,14 @@
 {% block nav %}
     {% include "gui_app/includes/nav_menu.html" %}
 {% endblock %}
-
+{% block breadcrumb %}
+	<li><a href="{% url 'app:projectList' %}">Project Management</a></li>
+	<li><a href="{% url 'app:projectDetail' project.id %}">Project Detail</a></li>
+	<li>Project Edit</li>
+{% endblock %}
 {% block content %}
 <div class="cc-title">Project Edit</div>
-<br>
-	<form method="post" action="{% url 'ccgui:projectEdit' project.id %}">
+	<form method="post" action="{% url 'app:projectEdit' project.id %}">
 		<input id="id" type="hidden" name="id" value="{{ project.id }}">
 		{% include "gui_app/project/includes/formProject.html" %}
 	</form>

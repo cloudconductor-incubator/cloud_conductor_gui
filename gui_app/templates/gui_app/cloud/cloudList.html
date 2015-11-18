@@ -6,13 +6,13 @@
 {% block nav %}
     {% include "gui_app/includes/nav_menu.html" %}
 {% endblock %}
-
+{% block breadcrumb %}
+	<li>Cloud Management</li>
+{% endblock %}
 {% block content %}
   <div class="cc-title">Cloud management</div>
 	<br>
-
-    <div class="cc-sub-title" style="display:inline-block;">Cloud List</div>
-    <button type="button" class="btn btn-primary" onclick="location.href='{% url 'ccgui:cloudCreate' %}'" style="float:right">
+    <button type="button" class="btn btn-primary" onclick="location.href='{% url 'app:cloudCreate' %}'" style="float:right">
     	<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
     </button>
 	{% if cloud %}
@@ -32,7 +32,7 @@
 			      <tr>
 			        <td>{{ c.id }}</td>
 			        <td ></td>
-			        <td><a href="{% url 'ccgui:cloudDetail' c.id %}">{{ c.name }}</a></td>
+			        <td><a href="{% url 'app:cloudDetail' c.id %}">{{ c.name }}</a></td>
 			        <td>{{ c.description }}</td>
 			        <td>{{ c.type }}</td>
 			        <td>{{ c.created_at }}</td>
@@ -44,8 +44,9 @@
 		There is no cloud.。
 	{% endif %}
 
+<!--
     <div class="cc-sub-title" style="display:inline-block;">BaseImage List</div>
-    <button type="button" class="btn btn-primary" onclick="location.href='{% url 'ccgui:baseImageCreate' %}'" style="float:right">
+    <button type="button" class="btn btn-primary" onclick="location.href='{% url 'app:baseImageCreate' %}'" style="float:right">
     	<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
     </button>
     {% if baseImage %}
@@ -62,7 +63,7 @@
 		{% for b in baseImage %}
 	      <tr>
 	        <td>{{ b.id }}</td>
-	        <td><a href="{% url 'ccgui:baseImageDetail' b.id %}">{{ b.cloud_id }}</a></td>
+	        <td><a href="{% url 'app:baseImageDetail' b.id %}">{{ b.cloud_id }}</a></td>
 	        <td>{{ b.os }}</td>
 	        <td>{{ b.created_at }}</td>
 	      </tr>
@@ -72,6 +73,8 @@
 	  {% else %}
 	  	There is no cloud.。
 	  {% endif %}
+ -->
+
 {% endblock %}
 
 {% block bodyscript %}{% endblock %}

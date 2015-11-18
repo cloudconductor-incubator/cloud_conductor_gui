@@ -1,9 +1,12 @@
+body {
+	color: #6a6c6f;
+    font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 13px;
+}
+
 h3 {
-    border-left: 5px solid #31708f;
-    color: #31708f;
-    font-size: 1em;
-    font-weight: lighter;
-    padding: 5px 10px 0;
+	color: inherit;
+    font-family: inherit;
 }
 
 h2 {
@@ -11,12 +14,6 @@ h2 {
     font-family: inherit;
 }
 
-body {
-	color: #6a6c6f;
-    font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
-    font-size: 13px;
-    line-height: 1.42857;
-}
 .cc-main{
     border-top: 1px solid rgba(0, 0, 0, 0.15);
     margin-top: -1px;
@@ -25,8 +22,9 @@ body {
     }
 
 .cc-title{
-    font-size: 20pt;
-    font-weight: bold;
+    font-size: 14pt;
+    color: inherit;
+    font-family: inherit;
     }
 
 .cc-sub-title{
@@ -120,7 +118,11 @@ body {
 
 .button_center{
 	text-align:center;
-	margin-top: 10px;
+	margin-top: 40px;
+}
+
+.delete_btn{
+	float:left;
 }
 
 .cc-login_user{
@@ -218,9 +220,11 @@ body {
     width: 220px;
     z-index: 116;
 }
+
 .aside-inner {
     padding-top: 10px;
     height: 100%;
+    font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
 }
 
 .aside-inner a{
@@ -263,7 +267,7 @@ section {
 
 .var-heading{
 	color: #919da8;
-	font-size:13px;
+	font-size:15px;
 	padding: 10px 15px 10px 10px;
 }
 

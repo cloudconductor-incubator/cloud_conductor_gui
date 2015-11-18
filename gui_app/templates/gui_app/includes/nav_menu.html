@@ -13,7 +13,7 @@
 			<div class="menu-menu"></div>
 			<ul class="nav">
 				<li class="active">
-					<a href="{% url 'ccgui:top' %}" id="var-menu">
+					<a href="{% url 'app:top' %}" id="var-menu">
 						<span class="glyphicon glyphicon-home cc-icon" aria-hidden="true"></span>　Home
 					</a>
 				</li>
@@ -23,17 +23,15 @@
 					</li>
 				{% ifequal request.session.m_project "1"  %}
 					<li>
-						<a href="{% url 'ccgui:projectList' %}" id="var-menu" >
+						<a href="{% url 'app:projectList' %}" id="var-menu" >
 						<span class="glyphicon glyphicon-folder-close cc-icon" aria-hidden="true"></span>　Project</a>
+					</li>
 				{% endifequal %}
 				{% ifequal request.session.m_cloud "1"  %}
-					<li class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" href="#cloudThree" href="#" id="var-menu"><span class="glyphicon glyphicon-cloud cc-icon" aria-hidden="true"></span>　Cloud management</a></li>
-					<div id="cloudThree" class="collapse menu-menu">
-						<ul class="nav spacer navbar-static-top">
-							<li><a href="{% url 'ccgui:cloudList' %}" id="var-menu">Cloud</a></li>
-							<li><a href="#" id="var-menu">BaseImage</a></li>
-						</ul>
-					</div>
+					<li>
+						<a href="{% url 'app:cloudList' %}" id="var-menu" >
+						<span class="glyphicon glyphicon-cloud cc-icon" aria-hidden="true"></span>　Cloud</a>
+					</li>
 				{% endifequal %}
 				{% ifequal request.session.m_provisionning "1"  %}
 					<li class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" href="#proviThree" href="#" id="var-menu"><span class="glyphicon glyphicon-th-large cc-icon" aria-hidden="true"></span>　Provisionning</a></li>
@@ -51,7 +49,7 @@
 					<li class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" href="#supportThree" href="#" id="var-menu"><span class="glyphicon glyphicon-cog cc-icon" aria-hidden="true"></span>　Support</a></li>
 					<div id="supportThree" class="collapse menu-menu">
 						<ul class="nav spacer navbar-static-top">
-							<li><a href="#" id="var-menu">Account</a></li>
+							<li><a href="{% url 'app:accountList' %}" id="var-menu">Account</a></li>
 							<li><a href="#" id="var-menu">Role</a></li>
 							<li><a href="#" id="var-menu">Log</a></li>
 							<li><a href="#" id="var-menu">Config</a></li>

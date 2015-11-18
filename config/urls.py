@@ -18,7 +18,7 @@ from django.contrib import admin
 
 
 urlpatterns = [
-    url(r'^ccgui/', include("gui_app.urls", namespace='ccgui')),
+    url(r'^ccgui/', include("gui_app.urls", namespace='app')),
     url(r'^api/', include('api.urls', namespace='api')),
     url(r'^admin/', include(admin.site.urls)),
 ]

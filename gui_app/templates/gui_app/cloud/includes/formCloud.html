@@ -1,5 +1,4 @@
-{% load bootstrap %}
-    {% csrf_token %}
+{% csrf_token %}
 {% include "gui_app/includes/message.html" %}
 	<div class="cc-select">
 	    <div class="form-group">
@@ -26,7 +25,11 @@
 	    	<label>Description</label>
 	        <textarea id="description" name="description" class="form-control">{{ cloud.description }}</textarea>
 	    </div>
+	    <div class="form-group">
+	    	<label>tenant_name</label>
+	        <textarea id="tenant_name" name="tenant_name" class="form-control">{{ cloud.tenant_name }}</textarea>
+	    </div>
    		<div class="button_center">
-			<button class="btn btn-success" type="submit">save</button>
+			<button class="btn btn-success" type="submit"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>&nbsp;save</button>
 		</div>
     </div>

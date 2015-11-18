@@ -29,9 +29,10 @@
 	<body>
 	    <div class="wrapper">
 	   		{% include "gui_app/includes/nav_header.html" %}
+	   		{% block nav %}{% endblock %}
 			<ol class="breadcrumb">
-			  <li><a href="{% url 'ccgui:top' %}">Home</a></li>
-			  {% block nav %}{% endblock %}
+			  <li><a href="{% url 'app:top' %}">Home</a></li>
+				{% block breadcrumb %}{% endblock %}
 			</ol>
 			<section>
 		    	<div class="cc-main">

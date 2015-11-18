@@ -4,6 +4,7 @@ from .views import cloudViews
 from .views import baseImageViews
 from .views import roleViews
 from .views import loginViews
+from .views import accountViews
 
 urlpatterns = [
 #    url(r"^$", views.index, name="index"),
@@ -34,7 +35,12 @@ urlpatterns = [
     url('^baseimage/(?P<id>\d+)/edit/$', baseImageViews.baseImageEdit, name="baseImageEdit"),
     url('^baseimage/(?P<id>\d+)/delete/', baseImageViews.baseImageDelete, name="baseImageDelete"),
 
-    url('^role/(?P<id>\d+)/menu/', roleViews.roleChange, name="roleChange"),
     url('^role/index/', roleViews.index, name="role"),
+    url('^role/(?P<id>\d+)/menu/', roleViews.roleChange, name="roleChange"),
 
+    url('^account/list', accountViews.index, name="accountList"),
+    url('^account/(?P<id>\d+)/detail/', accountViews.accountDetail, name="accountDetail"),
+    url('^account/create/', accountViews.accountCreate, name="accountCreate"),
+    url('^account/(?P<id>\d+)/edit/', accountViews.accountEdit, name="accountEdit"),
+    url('^account/(?P<id>\d+)/delete/', accountViews.accountDelete, name="accountDelete"),
 ]

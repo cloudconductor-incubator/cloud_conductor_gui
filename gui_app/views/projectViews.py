@@ -15,7 +15,8 @@ from ..enum import ApiClass
 from ..enum import ResponseType
 from logging import getLogger
 from django.core.exceptions import ValidationError
-logger = getLogger(__name__)
+# logger = getLogger(__name__)
+logger = getLogger('app')
 
 class Path():
     top = "/ccgui/top/"
@@ -27,7 +28,8 @@ class Path():
 def projectList(request):
     url = ApiClass.Project.list.value
     r = requests.get(url)
-
+    logger.info( "LogTEST：OK！" )
+    logger.warning("warning")
     # role
     roleUrl = 'http://127.0.0.1:8000/api/v1/role/2/menu/'
     role = requests.get(roleUrl)
@@ -37,6 +39,9 @@ def projectList(request):
         # json
         p = json.loads(r.text)
         projects = p['projects']
+
+        logger.info( "LogTEST：OK！" )
+
     else:
         projects = None
 
@@ -64,8 +69,6 @@ def projectCreate(request):
         data = {'auth_token':'auth_token', 'name':p['name'], 'description':p['description']}
         #-- API call, get a response
         r = requests.get(url, data)
-        print(r.url)
-        print(r.status_code)
         #-- if response is "OK"
         if r.reason == ResponseType.Response.OK.name:
             return redirect(Path.list)
@@ -111,7 +114,15 @@ def projectDetail(request, id):
     r = requests.get(url)
     p = json.loads(r.text)
 
-    return render(request, "gui_app/project/projectDetail.html",{'id':p['id'], 'name':p['name'], 'description':p['description']} )
+    #-- AccountAPI call, get a response
+    url2 = ApiClass.Account.list.value
+    data = {'token' : 'tokenken'}
+    ac = requests.get(url2, data)
+    #-- get response
+    if r.status_code == ResponseType.Response.OK.value:
+        a = json.loads(ac.text)
+
+    return render(request, "gui_app/project/projectDetail.html",{'project':p, 'accounts':a['lists']} )
 
 def projectDelete(request, id):
 

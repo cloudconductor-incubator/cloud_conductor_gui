@@ -1,5 +1,6 @@
 eclipse.preferences.version=1
 encoding//gui_app/forms.py=utf-8
+encoding//gui_app/views/accountViews.py=utf-8
 encoding//gui_app/views/baseImageViews.py=utf-8
 encoding//gui_app/views/cloudViews.py=utf-8
 encoding//gui_app/views/loginViews.py=utf-8

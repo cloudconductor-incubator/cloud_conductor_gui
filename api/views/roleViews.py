@@ -26,7 +26,7 @@ def role_menu(request, id):
         dict = OrderedDict([
             ('id', "2"),
             ('role_id', "2"),
-            ('ac_name', "PJ admin1"),
+            ('ac_name', "PJ admin"),
             ('pj_pulldown', "1"),
             ('m_project', "1"),
             ('m_cloud', "1"),
@@ -101,9 +101,9 @@ def role_project(request, id):
             ('role_id', "1"),
             ('project_list', "1"),
             ('project_detail', "1"),
-            ('project_create', "0"),
-            ('project_edit', "0"),
-            ('project_delete', "0"),
+            ('project_create', "1"),
+            ('project_edit', "1"),
+            ('project_delete', "1"),
             ('add_user', "0"),
         ])
     elif id == '4': #User

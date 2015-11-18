@@ -5,6 +5,7 @@ from api.views import tokenViews
 from api.views import cloudViews
 from api.views import baseImageViews
 from api.views import roleViews
+from api.views import accountViews
 
 urlpatterns = patterns('',
     # role
@@ -26,11 +27,11 @@ urlpatterns = patterns('',
 #     url(r'^v1/project/(?P<id>\d+)/delete/$', views.projectViews.project_delete, name='project_delete'),
 #
 
-#     url(r'^v1/account/list/$', views.accountViews.account_list, name='account_list'),
-#     url(r'^v1/account/(?P<id>\d+)/detail/$', views.accountViews.account_detail, name='account_detail'),
-#     url(r'^v1/account/create/$', views.accountViews.account_create, name='account_create'),
-#     url(r'^v1/account/(?P<id>\d+)/update/$', views.accountViews.account_update, name='account_update'),
-#     url(r'^v1/account/(?P<id>\d+)/delete/$', views.accountViews.account_delete, name='account_delete'),
+    url(r'^v1/account/list/$', views.accountViews.account_list, name='account_list'),
+    url(r'^v1/account/(?P<id>\d+)/detail/$', views.accountViews.account_detail, name='account_detail'),
+    url(r'^v1/account/create/$', views.accountViews.account_create, name='account_create'),
+    url(r'^v1/account/(?P<id>\d+)/update/$', views.accountViews.account_update, name='account_update'),
+    url(r'^v1/account/(?P<id>\d+)/delete/$', views.accountViews.account_delete, name='account_delete'),
     url(r'^v1/cloud/list/$', views.cloudViews.cloud_list, name='cloud_list'),
     url(r'^v1/cloud/(?P<id>\d+)/detail/$', views.cloudViews.cloud_detail, name='cloud_detail'),
     url(r'^v1/cloud/create/$', views.cloudViews.cloud_create, name='cloud_create'),

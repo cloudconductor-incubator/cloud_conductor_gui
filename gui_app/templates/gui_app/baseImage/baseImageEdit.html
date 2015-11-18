@@ -10,7 +10,7 @@
 {% block content %}
 <div class="cc-title">BaseImage Detail</div>
 <br>
-	<form method="post" action="{% url 'ccgui:baseImageEdit' baseImage.id %}">
+	<form method="post" action="{% url 'app:baseImageEdit' baseImage.id %}">
 		{% include "gui_app/baseImage/includes/formbaseImage.html" %}
 	</form>
 {% endblock %}

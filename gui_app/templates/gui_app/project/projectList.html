@@ -6,14 +6,16 @@
 {% block nav %}
     {% include "gui_app/includes/nav_menu.html" %}
 {% endblock %}
-
+{% block breadcrumb %}
+	<li>Project management</li>
+{% endblock %}
 {% block content %}
 
 <div class="cc-title">Project management</div>
 <br>
 {% ifequal request.session.project_create "1"  %}
 <div>
-	<button class="btn btn-primary" style="float:right" onclick="location.href='{% url 'ccgui:projectCreate' %}'" type="button">
+	<button class="btn btn-primary" style="float:right" onclick="location.href='{% url 'app:projectCreate' %}'" type="button">
 		<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
 	</button>
 </div>
@@ -23,7 +25,6 @@
 			<thead>
 				<tr>
 					<th>No</th>
-					<th>states</th>
 					<th>Project Name</th>
 					<th>Description</th>
 					<th>Creation Date</th>
@@ -36,16 +37,13 @@
             	<tr>
 					<td>{{ p.id }}</td>
 					<td>
-						<!-- {{ states }} -->
-					</td>
-					<td>
-						<a href="{% url 'ccgui:projectDetail' p.id %}">{{ p.name }}</a>
+						<a href="{% url 'app:projectDetail' p.id %}">{{ p.name }}</a>
 					</td>
 					<td>{{ p.description }}</td>
 					<td>{{ p.created_at | date:"Y/m/d H:i:s" }}</td>
 					{% ifequal request.session.add_user "1" %}
 					<td>
-					<button class="btn btn-default btn-xs" type="button" onclick="location.href='{% url 'ccgui:projectAddUser' p.id %}'" style="float:right">
+					<button class="btn btn-default btn-xs" type="button" onclick="location.href='{% url 'app:projectAddUser' p.id %}'" style="float:right">
 							<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
 							<span class="glyphicon glyphicon-user" aria-hidden="true"></span>
 					</button>
