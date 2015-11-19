@@ -33,7 +33,6 @@ def cloudList(request):
         clouds = json.loads(c.text)
         clist = clouds['lists']
 
-    log.info('GM1011','cloudList' , c.reason)
     return render(request, "gui_app/cloud/cloudList.html", {'cloud':clist })
 
 def cloudDetail(request, id):
