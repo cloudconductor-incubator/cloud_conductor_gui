@@ -13,7 +13,8 @@
 {% block content %}
 <div class="cc-title">Cloud Detail</div>
 <br>
-
+{% include "gui_app/includes/message.html" %}
+{% if cloud %}
 <table class="table table-hover">
 		<tr>
 			<th>ID</th><td>{{ cloud.id }}</td>
@@ -64,7 +65,7 @@
 	    </tbody>
 	  </table>
 	  {% else %}
-	  	There is no cloud.。
+	  	There is no cloud.
 	  {% endif %}
 
 	<div class="button_center">
@@ -106,7 +107,9 @@
     </div>
   </div>
 </div>
-
+{% else %}
+	There is no cloud.
+{% endif %}
 {% endblock %}
 
 {% block bodyscript %}{% endblock %}

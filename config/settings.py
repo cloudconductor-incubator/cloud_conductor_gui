@@ -151,7 +151,8 @@ LOGGING = {
     },
     'formatters': {
         'verbose': {
-            'format': "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s process:%(process)d thread:%(thread)d",
+        'format': "[%(asctime)s], %(levelname)s, %(message)s",
+#             'format': "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s process:%(process)d thread:%(thread)d",
         },
         'simple': {
             'format': '[%(levelname)-7s] %(asctime)s - %(message)s'

@@ -13,6 +13,7 @@
 
 <div class="cc-title">Project management</div>
 <br>
+{% include "gui_app/includes/message.html" %}
 {% ifequal request.session.project_create "1"  %}
 <div>
 	<button class="btn btn-primary" style="float:right" onclick="location.href='{% url 'app:projectCreate' %}'" type="button">
@@ -21,7 +22,7 @@
 </div>
 {% endifequal %}
     {% if projects %}
-    	<table class="table table-hover">
+  	<table class="table table-hover">
 			<thead>
 				<tr>
 					<th>No</th>
@@ -51,7 +52,18 @@
 					{% endifequal %}
 				</tr>
         {% endfor %}
-        		</table>
+	</table>
+	<div style="float:right;">
+		<ul class="pagination">
+		  <li class="disabled"><a href="#">«</a></li>
+		  <li class="active"><a href="#">1</a></li>
+		  <li><a href="#">2</a></li>
+		  <li><a href="#">3</a></li>
+		  <li><a href="#">4</a></li>
+		  <li><a href="#">5</a></li>
+		  <li><a href="#">»</a></li>
+		</ul>
+	</div>
     {% else %}
         There is no project.。
     {% endif %}

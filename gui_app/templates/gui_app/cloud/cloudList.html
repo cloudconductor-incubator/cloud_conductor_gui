@@ -12,6 +12,7 @@
 {% block content %}
   <div class="cc-title">Cloud management</div>
 	<br>
+	{% include "gui_app/includes/message.html" %}
     <button type="button" class="btn btn-primary" onclick="location.href='{% url 'app:cloudCreate' %}'" style="float:right">
     	<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
     </button>

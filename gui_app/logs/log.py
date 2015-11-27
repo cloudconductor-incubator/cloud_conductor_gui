@@ -3,23 +3,63 @@ from logging import getLogger
 logger = getLogger('app')
 
 
-def info(screen, msg, res, param):
+def info(scid, res, parm, msg):
+    if res != None :
+        response = str(res.status_code) + ':' + res.reason
+        url = ', ' + res.url
+        logger.info(response + ', ' + scid + ', ' + msg + url )
+    elif parm != None:
+        logger.info(scid + ', ' + msg + parm )
+    else:
+        logger.info(scid + ', ' + msg )
+
+def debug(scid, msg, res, param):
     if param != None:
 
-        logger.info(screen + ' Message:' + msg + ' Response:' + res, param)
+        logger.debug(scid + ' Message:' + msg + ' Response:' + res, param)
     else:
-        logger.info(screen + ' Message:' + msg)
+        logger.error(scid + ' Message:' + msg)
 
-def debug(screen, msg, res, param):
-    if param != None:
+def error(scid, res, ex):
+    msg = None
 
-        logger.debug(screen + ' Message:' + msg + ' Response:' + res, param)
+    if res != None and ex != None:
+        response = str(res.status_code) + ':' + res.reason
+
+        if res.status_code == 400:
+            msg = 'msg'
+
+        elif res.status_code == 401:
+            msg = 'msg'
+
+        elif res.status_code == 403:
+            msg = 'msg'
+
+        elif res.status_code == 404:
+            msg = 'msg'
+
+        elif res.status_code == 500:
+            msg = 'msg'
+
+        elif res.status_code == 101:
+            msg = 'msg'
+
+        elif res.status_code == 102:
+            msg = 'msg'
+
+        elif res.status_code == 901:
+            msg = 'msg'
+
+        elif res.status_code == 902:
+            msg = 'msg'
+        else:
+            msg = 'msg'
+
+        logger.error(response + ', ' + scid + ', ' + msg + str(ex))
+    if res != None and ex == None:
+        msg = 'msg'
+        response = str(res.status_code) + ':' + res.reason
+
+        logger.error(response + ', ' + scid + ', ' + msg)
     else:
-        logger.error(screen + ' Message:' + msg)
-
-def error(screen, msg, res, param):
-    if param != None:
-
-        logger.error(screen + ' Message:' + msg + ' Response:' + res, param)
-    else:
-        logger.error(screen + ' Message:' + msg)
+        logger.error(scid + ', ' + str(ex) )

@@ -8,15 +8,21 @@
 {% endblock %}
 {% block breadcrumb %}
 	<li><a href="{% url 'app:cloudList' %}">Cloud management</a></li>
+	{% if cloud.id %}
 	<li><a href="{% url 'app:cloudDetail' cloud.id %}">Cloud Detail</a></li>
+	{% endif %}
 	<li>Cloud Edit</li>
 {% endblock %}
 {% block content %}
 <div class="cc-title">Cloud Edit</div>
-	<form method="post" action="{% url 'app:cloudEdit' cloud.id %}">
-		<input id="id" type="hidden" name="id" value="{{ cloud.id }}">
-		{% include "gui_app/cloud/includes/formCloud.html" %}
-	</form>
+	{% if cloud %}
+		<form method="post" action="{% url 'app:cloudEdit' cloud.id %}">
+			<input id="id" type="hidden" name="id" value="{{ cloud.id }}">
+			{% include "gui_app/cloud/includes/formCloud.html" %}
+		</form>
+	{% else %}
+		This is no cloud.
+	{% endif %}
 {% endblock %}
 
 {% block bodyscript %}{% endblock %}

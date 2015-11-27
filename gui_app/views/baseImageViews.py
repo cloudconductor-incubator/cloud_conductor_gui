@@ -22,8 +22,13 @@ class Path():
 def baseImageDetail(request, id):
     url = 'http://127.0.0.1:8000/api/v1/baseImage/'+id+'/detail/'
     r = requests.get(url)
+    # ---- URL infoLog Output
     baseImage = json.loads(r.text)
+    # ---- Parameter infoLog Output
 
+    # ---- Response errorLog Output
+
+    # ---- Exception errorLog Output
     return render(request, "gui_app/baseImage/baseImageDetail.html", {'baseImage': baseImage })
 
 def baseImageCreate(request):
@@ -40,15 +45,23 @@ def baseImageCreate(request):
         #-- API call, get a response
         url = ApiClass.BaseImage.create.value
         r = requests.get(url)
+        # ---- URL infoLog Output
+
         #-- if response is "OK"
         if r.reason == ResponseType.Response.OK.name:
+            # ---- Parameter infoLog Output
+
+
             return redirect(Path.list)
         else:
+            # ---- Response errorLog Output
             #-- get message?
 
             return redirect(Path.list)
 
     else:
+
+        # ---- Exception errorLog Output
 
         return render(request, "gui_app/baseImage/baseImageCreate.html")
 
@@ -67,26 +80,42 @@ def baseImageEdit(request, id):
         form.full_clean()
         if not form.is_valid():
             msg = ValiUtil.valiCheck(form)
-            return render(request, "gui_app/cloud/baseImageEdit.html", {'baseImage' : p, 'message':msg})
 
+            return render(request, "gui_app/baseImage/baseImageEdit.html", {'baseImage' : p, 'message':msg})
         #-- API call, get a response
         url = 'http://127.0.0.1:8000/api/v1/baseImage/'+id+'/update/'
         r = requests.get(url)
+        # ---- URL infoLog Output
+
         #-- if response is "OK"
         if r.reason == ResponseType.Response.OK.name:
+            # ---- Parameter infoLog Output
+
             return redirect(Path.list)
         else:
+            # ---- Response errorLog Output
+
             return render(request, "gui_app/cloud/baseImageEdit.html", {'baseImage' : p, 'message':msg})
 
     else:
         url = None
+
+        # ---- Exception errorLog Output
+
         return redirect(Path.list)
 
 def baseImageDelete(request, id):
     url = 'http://127.0.0.1:8000/api/v1/baseImage/'+id+'/delete/'
     r = requests.get(url)
+    # ---- URL infoLog Output
+
     json.loads(r.text)
 
+    # ---- Parameter infoLog Output
+
+    # ---- Response errorLog Output
+
+    # ---- Exception errorLog Output
     return redirect(Path.list)
 
 
