@@ -13,8 +13,8 @@
   <div class="cc-title">Cloud management</div>
 	<br>
 	{% include "gui_app/includes/message.html" %}
-    <button type="button" class="btn btn-primary" onclick="location.href='{% url 'app:cloudCreate' %}'" style="float:right">
-    	<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+    <button type="button" class="btn btn-primary btn-sm" onclick="location.href='{% url 'app:cloudCreate' %}'" style="float:right">
+    	<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;　new
     </button>
 	{% if cloud %}
 		<table class="table table-hover">
@@ -44,37 +44,6 @@
 	{% else %}
 		There is no cloud.。
 	{% endif %}
-
-<!--
-    <div class="cc-sub-title" style="display:inline-block;">BaseImage List</div>
-    <button type="button" class="btn btn-primary" onclick="location.href='{% url 'app:baseImageCreate' %}'" style="float:right">
-    	<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-    </button>
-    {% if baseImage %}
-	　　<table class="table table-hover">
-	    <thead>
-	      <tr>
-	        <th>No</th>
-	        <th>Cloud</th>
-	        <th>OS</th>
-	        <th>Create date</th>
-	      </tr>
-	    </thead>
-	    <tbody>
-		{% for b in baseImage %}
-	      <tr>
-	        <td>{{ b.id }}</td>
-	        <td><a href="{% url 'app:baseImageDetail' b.id %}">{{ b.cloud_id }}</a></td>
-	        <td>{{ b.os }}</td>
-	        <td>{{ b.created_at }}</td>
-	      </tr>
-		{% endfor %}
-	    </tbody>
-	  </table>
-	  {% else %}
-	  	There is no cloud.。
-	  {% endif %}
- -->
 
 {% endblock %}
 

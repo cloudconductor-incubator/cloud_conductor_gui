@@ -1,8 +1,15 @@
 eclipse.preferences.version=1
 encoding//gui_app/forms.py=utf-8
 encoding//gui_app/views/accountViews.py=utf-8
+encoding//gui_app/views/applicationViews.py=utf-8
 encoding//gui_app/views/baseImageViews.py=utf-8
+encoding//gui_app/views/blueprintViews.py=utf-8
 encoding//gui_app/views/cloudViews.py=utf-8
+encoding//gui_app/views/environmentViews.py=utf-8
 encoding//gui_app/views/loginViews.py=utf-8
+encoding//gui_app/views/patternViews.py=utf-8
 encoding//gui_app/views/projectViews.py=utf-8
 encoding//gui_app/views/roleViews.py=utf-8
+encoding//gui_app/views/sampleViews.py=utf-8
+encoding//gui_app/views/systemViews.py=utf-8
+encoding//gui_app/views/topViews.py=utf-8

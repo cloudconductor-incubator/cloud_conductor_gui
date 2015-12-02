@@ -121,6 +121,33 @@ h2 {
 	margin-top: 40px;
 }
 
+.button_left{
+	text-align:left;
+	margin-top: 40px;
+}
+
+.btn_group_top{
+	text-align:right;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.btn_group_bottom{
+	text-align:right;
+	margin-top: 0px;
+	margin-bottom: 20px;
+
+}
+
+.right {
+	float:right;
+}
+
+.button_button{
+	text-align:center;
+	margin-top: 40px;
+}
+
 .delete_btn{
 	float:right;
 }

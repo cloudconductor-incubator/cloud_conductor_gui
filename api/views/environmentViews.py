@@ -3,7 +3,6 @@ from django.shortcuts import render
 # -*- coding: utf-8 -*-
 import json
 from collections import OrderedDict
-from django.http import HttpResponse
 from api.views.commonViews import render_json_response
 
 def environment_list(request):

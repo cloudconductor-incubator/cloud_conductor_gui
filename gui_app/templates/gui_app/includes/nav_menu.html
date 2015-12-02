@@ -11,6 +11,7 @@
 			</select>
 			{% endifequal %}
 			<div class="menu-menu"></div>
+			{{ request.session.auth_token }}
 			<ul class="nav">
 				<li class="active">
 					<a href="{% url 'app:top' %}" id="var-menu">
@@ -37,11 +38,11 @@
 					<li class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" href="#proviThree" href="#" id="var-menu"><span class="glyphicon glyphicon-th-large cc-icon" aria-hidden="true"></span>　Provisionning</a></li>
 					<div id="proviThree" class="collapse menu-menu">
 						<ul class="nav spacer navbar-static-top">
-							<li><a href="#" id="var-menu">System</a></li>
-							<li><a href="#" id="var-menu">Environment</a></li>
-							<li><a href="#" id="var-menu">Application</a></li>
-							<li><a href="#" id="var-menu">Blueprint</a></li>
-							<li><a href="#" id="var-menu">pattern</a></li>
+							<li><a href="{% url 'app:systemList' %}" id="var-menu">System</a></li>
+							<li><a href="{% url 'app:environmentList' %}" id="var-menu">Environment</a></li>
+							<li><a href="{% url 'app:applicationList' %}" id="var-menu">Application</a></li>
+							<li><a href="{% url 'app:blueprintList' %}" id="var-menu">Blueprint</a></li>
+							<li><a href="{% url 'app:patternList' %}" id="var-menu">pattern</a></li>
 						</ul>
 					</div>
 				{% endifequal %}

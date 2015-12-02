@@ -15,10 +15,7 @@ from ..enum import ResponseType
 from ..enum.LogType import Message
 from ..enum.FunctionCode import Project
 from ..logs import log
-from logging import getLogger
 from django.core.exceptions import ValidationError
-# logger = getLogger(__name__)
-logger = getLogger('app')
 
 class Path():
     top = "/ccgui/top/"

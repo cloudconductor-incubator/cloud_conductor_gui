@@ -4,8 +4,6 @@ import django.contrib.auth as auth
 import json
 import requests
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render_to_response, get_object_or_404, redirect
-from django.http import HttpResponse
 from django.contrib import messages
 from ..forms import cloudForm
 from ..enum import ApiClass
@@ -124,7 +122,7 @@ def cloudEdit(request, id):
             #-- Get a value from a form
             p = request.POST
             #-- Validate check
-            data = {'auth_token':'token', 'project_id':45, 'id':1}
+            data = {'auth_token':'token', 'project_id':45}
             data.update(p)
             form = cloudForm(data)
             form.full_clean()

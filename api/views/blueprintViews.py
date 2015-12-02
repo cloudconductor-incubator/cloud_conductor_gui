@@ -6,7 +6,7 @@ from collections import OrderedDict
 from django.http import HttpResponse
 from api.views.commonViews import render_json_response
 
-def bluePrint_list(request):
+def blueprint_list(request):
 
     lists = []
 
@@ -25,7 +25,7 @@ def bluePrint_list(request):
     data = OrderedDict([ ('lists', lists) ])
     return render_json_response(request, data)
 
-def bluePrint_detail(request, id):
+def blueprint_detail(request, id):
 
     dict = OrderedDict([
         ('id', "3"),
@@ -40,7 +40,7 @@ def bluePrint_detail(request, id):
 
     return render_json_response(request, dict)
 
-def bluePrint_create(request):
+def blueprint_create(request):
 
     dict = OrderedDict([
         ('id', "3"),
@@ -55,7 +55,7 @@ def bluePrint_create(request):
 
     return render_json_response(request, dict)
 
-def bluePrint_update(request, id):
+def blueprint_update(request, id):
 
     dict = OrderedDict([
         ('id', "3"),
@@ -70,7 +70,7 @@ def bluePrint_update(request, id):
 
     return render_json_response(request, dict)
 
-def bluePrint_delete(request, id):
+def blueprint_delete(request, id):
 
     dict = OrderedDict([
         ('id', "3"),
@@ -85,7 +85,7 @@ def bluePrint_delete(request, id):
 
     return render_json_response(request, dict)
 
-def bluePrint_parameters(request, id):
+def blueprint_parameters(request, id):
 
 ##あとで修正
     dict = OrderedDict([

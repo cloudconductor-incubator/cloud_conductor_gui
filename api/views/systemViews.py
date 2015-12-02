@@ -3,8 +3,6 @@ from django.shortcuts import render
 # -*- coding: utf-8 -*-
 import json
 from collections import OrderedDict
-from django.http import HttpResponse
-from gui_app.models import t_project
 from api.views.commonViews import render_json_response
 
 def system_list(request):
