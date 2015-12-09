@@ -18,6 +18,7 @@
 	{% if cloud %}
 		<form method="post" action="{% url 'app:cloudEdit' cloud.id %}">
 			<input id="id" type="hidden" name="id" value="{{ cloud.id }}">
+			<input id="auth_token" type="hidden" name="auth_token" value="{{ cloud.auth_token }}">
 			{% include "gui_app/cloud/includes/formCloud.html" %}
 		</form>
 	{% else %}

@@ -1,5 +1,6 @@
 {% csrf_token %}
 {% include "gui_app/includes/message.html" %}
+	<input id="cloud_id" type="hidden" name="cloud_id" value="{{ baseImage.cloud_id }}">
 	<div class="cc-select">
 	    <div class="form-group">
 	    	<label><span id="req">*</span>Cloud</label>

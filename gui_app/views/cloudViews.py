@@ -4,166 +4,164 @@ import django.contrib.auth as auth
 import json
 import requests
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages
 from ..forms import cloudForm
 from ..enum import ApiClass
 from ..enum import ResponseType
 from ..enum.LogType import Message
 from ..enum.FunctionCode import Cloud
+from ..enum.CloudType import CloudType
+from ..enum.FunctionCode import FuncCode
+from ..utils import ApiUtil
 from ..utils import ValiUtil
+from ..utils.PathUtil import Path
+from ..utils.PathUtil import Html
+from ..utils.ApiUtil import Url
 from ..logs import log
 from logging import getLogger
 logger = getLogger('app')
 
-class Path():
-    top = "/ccgui/top/"
-    list = "/ccgui/cloud/list/"
-    detail = lambda nid: "/ccgui/cloud/{0}/".format(nid)
-    edit = lambda nid: "/ccgui/cloud/{0}/edit".format(nid)
 
 # Create your views here.
 def cloudList(request):
     try:
-        url = ApiClass.Cloud.list.value
-        c = requests.get(url)
-        log.info(Cloud.list.value, c, None, Message.api_url.value)
-        clist = None
-        if c.reason == ResponseType.Response.OK.name:
-            log.info(Cloud.list.value, None, c.text, Message.api_response.value)
+        # -- Get a cloud list, API call
+        url = Url.cloudList
+        data = {'auth_token': request.session['auth_token'], 'project_id': request.session['project_id']}
+        req = ApiUtil.requestGet(url, FuncCode.cloudList.value, data)
+        clouds = req['lists']
 
-            clouds = json.loads(c.text)
-            clist = clouds['lists']
-            return render(request, "gui_app/cloud/cloudList.html", {'cloud':clist, 'message':'' })
-        else:
-
-            log.error(Cloud.list.value, c, None)
-            return render(request, "gui_app/cloud/cloudList.html", {'cloud':'', 'message':'' })
+        return render(request, Html.cloudList, {'cloud': clouds, 'message': ''})
     except Exception as ex:
 
-        log.error(Cloud.list.value, None, ex)
-        return render(request, "gui_app/cloud/cloudList.html", {'cloud':'', 'message':ex })
+        log.error(FuncCode.cloudList.value, None, ex)
+        return render(request, Html.cloudList, {'cloud': '', 'message': ex})
+
 
 def cloudDetail(request, id):
     try:
-        data = {'auth_token':'token'}
-        url = 'http://127.0.0.1:8000/api/v1/cloud/'+id+'/detail/'
-        url2 = ApiClass.BaseImage.list.value
-        r = requests.get(url, data)
-        log.info(Cloud.detail.value, r, None, Message.api_url.value)
+        # -- Get a cloud list, API call
+        url = Url.cloudDetail(id, Url.url)
+        data = {'auth_token': request.session['auth_token']}
+        cloud = ApiUtil.requestGet(url, FuncCode.cloudDetail.value, data)
 
-        b = requests.get(url2, data)
-        log.info(Cloud.detail.value, b, None, Message.api_url.value)
+        # -- Get a baseImage list, API call
+        url2 = Url.baseImageList
+        data = {'auth_token': request.session['auth_token'], 'project_id': request.session['project_id']}
+        req2 = ApiUtil.requestGet(url2, FuncCode.baseImageList.value, data)
+        baseImages = req2['lists']
 
-        blist = None
-        if r.reason == ResponseType.Response.OK.name:
-            log.info(Cloud.detail.value, None, r.text, Message.api_response.value)
-            cloud = json.loads(r.text)
-        else:
-            log.error(Cloud.detail.value, r, None)
-
-        if b.reason == ResponseType.Response.OK.name:
-            log.info(Cloud.detail.value, None, b.text, Message.api_response.value)
-            baseImages = json.loads(b.text)
-            blist = baseImages['lists']
-        else:
-            log.error(Cloud.create.value, b, None)
-
-        return render(request, "gui_app/cloud/cloudDetail.html", {'cloud': cloud, 'baseImage':blist, 'message':'' })
+        return render(request, Html.cloudDetail, {'cloud': cloud, 'baseImage': baseImages, 'message': ''})
     except Exception as ex:
 
-        log.error(Cloud.detail.value, None, ex)
-        return render(request, "gui_app/cloud/cloudDetail.html", {'cloud': '', 'baseImage':'', 'message':ex})
+        log.error(FuncCode.cloudList.value, None, ex)
+        return render(request, Html.cloudDetail, {'cloud': '', 'baseImage': '', 'message': ex})
 
 
 def cloudCreate(request):
     try:
         if request.method == "POST":
-            #-- Get a value from a form
+            # -- Get a value from a form
+            msg = ''
             p = request.POST
-            #-- Validate check
+            print(p)
+            # -- Validate check
             form = cloudForm(p)
             form.full_clean()
             if not form.is_valid():
                 msg = ValiUtil.valiCheck(form)
-                return render(request, "gui_app/cloud/cloudCreate.html", {'cloud' : p, 'message':msg})
+                return render(request, Html.cloudCreate, {'cloud': p, 'message': msg, 'cloudType': list(CloudType)})
 
-            #-- Call API
-            url = ApiClass.Cloud.create.value
-            data = {'auth_token':'token', 'project_id':45} # session auth_token = request.session['auth_token']
-            data.update(p)
-            r = requests.get(url, data)
-            #-- if response is "OK"
-            if r.reason == ResponseType.Response.OK.name:
-                return redirect(Path.list)
-            else:
-                #-- get message?
-                log.error(Cloud.create.value, r, None)
-                return render(request, "gui_app/cloud/cloudCreate.html", {'cloud' : p, 'message':msg})
+            # -- Create a cloud, api call
+            url = Url.cloudCreate
+            data = {
+                'auth_token': p['auth_token'],
+                'project_id': p['project_id'],
+                'name': p['name'],
+                'type': p['type'],
+                'key': p['key'],
+                'secret': p['secret'],
+                'entry_point': p['entry_point'],
+                'tenant_name': p['tenant_name'],
+                'description': p['description']
+            }
+            # -- API call, get a response
+            ApiUtil.requestPost(url, FuncCode.projectCreate.value, data)
+
+            return redirect(Path.cloudList)
         else:
+            p = {
+                 'auth_token': request.session['auth_token'],
+                 'project_id': 'sss'
+            }
+            cloudTypeList = list(CloudType)
 
-            return render(request, "gui_app/cloud/cloudCreate.html")
+            return render(request, Html.cloudCreate, {'cloud': p, 'cloudTypeList': CloudType, 'cloudType': list(CloudType)})
     except Exception as ex:
+        log.error(FuncCode.cloudList.value, None, ex)
 
-        log.error(Cloud.create.value, None, ex)
-        return render(request, "gui_app/cloud/cloudCreate.html", {'cloud' : '', 'message':ex})
+        return render(request, Html.cloudCreate, {'cloud': request.POST, 'message': ex, 'cloudType': list(CloudType)})
+
 
 def cloudEdit(request, id):
     try:
         if request.method == "GET":
-            url = 'http://127.0.0.1:8000/api/v1/cloud/'+id+'/detail/'
-            r = requests.get(url)
-            log.info(Cloud.edit.value, r, None, Message.api_url.value)
+            token = request.session['auth_token']
+            url = Url.cloudDetail(id, Url.url)
+            data = {
+                    'auth_token': token,
+                    'project_id': 'sss'
+                    }
+            cloud = ApiUtil.requestGet(url, FuncCode.cloudEdit.value, data)
+            cloud.update(data)
 
-            cloud = json.loads(r.text)
-            log.info(Cloud.edit.value, None, r.text, Message.api_response.value)
-
-            return render(request, "gui_app/cloud/cloudEdit.html", {'cloud' : cloud, 'message':''})
+            return render(request, "gui_app/cloud/cloudEdit.html", {'cloud': cloud, 'message': '', 'cloudType': list(CloudType)})
         elif request.method == "POST":
-            #-- Get a value from a form
+            # -- Get a value from a form
             p = request.POST
-            #-- Validate check
-            data = {'auth_token':'token', 'project_id':45}
-            data.update(p)
-            form = cloudForm(data)
+            msg = ''
+            # -- Validate check
+            form = cloudForm(request.POST)
             form.full_clean()
             if not form.is_valid():
                 msg = ValiUtil.valiCheck(form)
-                print(form.is_valid())
-                return render(request, "gui_app/cloud/cloudEdit.html", {'cloud' : p, 'message':msg})
+                return render(request, Html.cloudEdit, {'cloud': p, 'message': msg, 'cloudType': list(CloudType)})
 
-            #-- Call API
-            url = 'http://127.0.0.1:8000/api/v1/cloud/'+id+'/update/'
-            r = requests.get(url, data)
-            log.info(Cloud.edit.value, r, None, Message.api_url.value)
-            #-- if response is "OK"
-            if r.reason == ResponseType.Response.OK.name:
-#                 log.info(Cloud.edit.value, None, r.text, Message.api_response.value)
-                return redirect(Path.list)
-            else:
-                #-- get message?
-                log.error(Cloud.edit.value, r, None)
-                return render(request, "gui_app/cloud/cloudEdit.html", {'cloud' : p, 'message':''})
+            # -- URL set
+            url = Url.cloudEdit(id, Url.url)
+            # -- Set the value to the form
+            data = {
+                    'auth_token': p['auth_token'],
+                    'project_id': p['project_id'],
+                    'name': p['name'],
+                    'type': p['type'],
+                    'key': p['key'],
+                    'secret': p['secret'],
+                    'entry_point': p['entry_point'],
+                    'tenant_name': p['tenant_name'],
+                    'description': p['description']
+                    }
+            # -- API call, get a response
+            ApiUtil.requestPost(url, FuncCode.cloudEdit.value, data)
+
+            return redirect(Path.cloudList)
         else:
             url = None
             return redirect(Path.list)
     except Exception as ex:
-        log.error(Cloud.edit.value, None, ex)
+        log.error(FuncCode.cloudEdit.value, None, ex)
 
-        return render(request, "gui_app/cloud/cloudEdit.html", {'cloud' : '', 'message':ex})
+        return render(request, Html.cloudEdit, {'cloud': request.POST, 'message': ex, 'cloudType': list(CloudType)})
+
 
 def cloudDelete(request, id):
     try:
-        url = 'http://127.0.0.1:8000/api/v1/cloud/'+id+'/delete/'
-        r = requests.get(url)
-        log.info(Cloud.delete.value, r, None, Message.api_url.value)
+        # -- URL and data set
+        url = Url.cloudDetail(id, Url.url)
+        data = {'auth_token': request.session['auth_token']}
+        ApiUtil.requestDelete(url, FuncCode.projectDelete.value, data)
 
-        if r.reason == ResponseType.Response.OK.name:
-            log.info(Cloud.delete.value, None, r.text, Message.api_response.value)
-            return redirect(Path.list)
-        else:
-            log.error(Cloud.delete.value, r, None)
-            return render(request, "gui_app/cloud/cloudDetail.html", {'cloud' : '', 'message':''})
+        return redirect(Path.cloudList)
     except Exception as ex:
-        log.error(Cloud.delete.value, r, None)
-        return render(request, "gui_app/cloud/cloudDetail.html", {'cloud' : '', 'message':ex})
+        log.error(FuncCode.cloudDelete.value, None, ex)
 
+        return render(request, Html.cloudDelete, {'cloud': '', 'message': ex})

@@ -27,39 +27,83 @@ def error(scid, res, ex):
         response = str(res.status_code) + ':' + res.reason
 
         if res.status_code == 400:
-            msg = 'msg'
+            msg = ''
 
         elif res.status_code == 401:
-            msg = 'msg'
+            msg = ''
 
         elif res.status_code == 403:
-            msg = 'msg'
+            msg = ''
 
         elif res.status_code == 404:
-            msg = 'msg'
+            msg = ''
 
         elif res.status_code == 500:
-            msg = 'msg'
+            msg = ''
 
         elif res.status_code == 101:
-            msg = 'msg'
+            msg = ''
 
         elif res.status_code == 102:
-            msg = 'msg'
+            msg = ''
 
         elif res.status_code == 901:
-            msg = 'msg'
+            msg = ''
 
         elif res.status_code == 902:
-            msg = 'msg'
+            msg = ''
         else:
-            msg = 'msg'
+            msg = ''
 
         logger.error(response + ', ' + scid + ', ' + msg + str(ex))
     if res != None and ex == None:
-        msg = 'msg'
+        msg = ''
         response = str(res.status_code) + ':' + res.reason
 
         logger.error(response + ', ' + scid + ', ' + msg)
     else:
         logger.error(scid + ', ' + str(ex) )
+
+def errorMessage(res, ex):
+    msg = None
+
+    if res != None and ex != None:
+        response = str(res.status_code) + ':' + res.reason
+
+        if res.status_code == 400:
+            msg = ''
+
+        elif res.status_code == 401:
+            msg = ''
+
+        elif res.status_code == 403:
+            msg = ''
+
+        elif res.status_code == 404:
+            msg = ''
+
+        elif res.status_code == 500:
+            msg = ''
+
+        elif res.status_code == 101:
+            msg = ''
+
+        elif res.status_code == 102:
+            msg = ''
+
+        elif res.status_code == 901:
+            msg = ''
+
+        elif res.status_code == 902:
+            msg = ''
+        else:
+            msg = ''
+
+        return response + ', ' + msg + str(ex)
+    if res != None and ex == None:
+        msg = ''
+        response = str(res.status_code) + ':' + res.reason
+
+        return response  + ', ' + msg
+    else:
+        return str(ex)

@@ -17,6 +17,14 @@ def project_list(request):
         ('created_at', "2015-03-24T01:26:41.224Z"),
         ('updated_at', "2015-03-24T01:26:41.224Z"),
    ])
+
+    dict.updata = OrderedDict([
+        ('id', "2"),
+        ('name', "sample_project"),
+        ('description', "sample_project_description"),
+        ('created_at', "2015-03-24T01:26:41.224Z"),
+        ('updated_at', "2015-03-24T01:26:41.224Z"),
+   ])
     projects.append(dict)
 
     data = OrderedDict([ ('projects', projects) ])
@@ -71,4 +79,39 @@ def project_delete(request, id):
 
     return render_json_response(request, dict)
 
+def assign_user_list(request):
+
+    lists = []
+
+    dict = OrderedDict([
+        ('id', "1"),
+        ('email', "admin@example.com"),
+        ('name', "admin"),
+        ('admin', "TRUE"),
+        ('created_at', "2015-03-23T06:58:08.280Z"),
+        ('updated_at', "2015-03-23T06:58:08.280Z"),
+    ])
+    lists.append(dict)
+
+    data = OrderedDict([ ('lists', lists) ])
+
+    return render_json_response(request, data)
+
+def project_assign_user(request, id):
+
+    lists = []
+
+    dict = OrderedDict([
+        ('id', "1"),
+        ('email', "admin@example.com"),
+        ('name', "admin"),
+        ('admin', "TRUE"),
+        ('created_at', "2015-03-23T06:58:08.280Z"),
+        ('updated_at', "2015-03-23T06:58:08.280Z"),
+    ])
+    lists.append(dict)
+
+    data = OrderedDict([ ('lists', lists) ])
+
+    return render_json_response(request, data)
 

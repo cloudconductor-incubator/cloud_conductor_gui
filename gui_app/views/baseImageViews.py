@@ -10,112 +10,126 @@ from django.contrib import messages
 from ..forms import baseImageForm
 from ..enum import ApiClass
 from ..enum import ResponseType
+from ..enum.FunctionCode import FuncCode
 from ..utils import ValiUtil
+from ..utils import ApiUtil
+from ..utils.PathUtil import Path
+from ..utils.PathUtil import Html
+from ..utils.ApiUtil import Url
+from ..logs import log
 
-class Path():
-    top = "/ccgui/top/"
-    list = "/ccgui/cloud/list/"
-    detail = lambda nid: "/ccgui/cloud/{0}/".format(nid)
-    edit = lambda nid: "/ccgui/cloud/{0}/edit".format(nid)
 
 # Create your views here.
 def baseImageDetail(request, id):
-    url = 'http://127.0.0.1:8000/api/v1/baseImage/'+id+'/detail/'
-    r = requests.get(url)
-    # ---- URL infoLog Output
-    baseImage = json.loads(r.text)
-    # ---- Parameter infoLog Output
+    try:
+        # -- baseImage DetailAPI call, get a response
+        token = request.session['auth_token']
+        url = Url.baseImageDetail(id, Url.url)
+        data = {'auth_token': token}
+        baseImage = ApiUtil.requestGet(url, FuncCode.baseImageDetail.value,data)
 
-    # ---- Response errorLog Output
+        return render(request, Html.baseImageDetail, {'baseImage': baseImage, 'message': ''})
+    except Exception as ex:
+        log.error(FuncCode.baseImageDetail.value, None, ex)
 
-    # ---- Exception errorLog Output
-    return render(request, "gui_app/baseImage/baseImageDetail.html", {'baseImage': baseImage })
+        return render(request, Html.baseImageDetail, {'baseImage': '', 'message': str(ex)})
 
-def baseImageCreate(request):
-    if request.method == "POST":
-    #-- Get a value from a form
-        p = request.POST
-        #-- Validate check
-        form = baseImageForm(p)
-        form.full_clean()
-        if not form.is_valid():
-            msg = ValiUtil.valiCheck(form)
-            return render(request, "gui_app/baseImage/baseImageCreate.html", {'baseImage' : p, 'message':msg})
+def baseImageCreate(request, cid):
+    try:
+        if request.method == "GET":
+            p = {
+                 'auth_token': request.session['auth_token'],
+                 'cloud_id': cid}
 
-        #-- API call, get a response
-        url = ApiClass.BaseImage.create.value
-        r = requests.get(url)
-        # ---- URL infoLog Output
-
-        #-- if response is "OK"
-        if r.reason == ResponseType.Response.OK.name:
-            # ---- Parameter infoLog Output
-
-
-            return redirect(Path.list)
+            return render(request, Html.baseImageCreate, {'baseImage': p, 'message': ''})
         else:
-            # ---- Response errorLog Output
-            #-- get message?
+            # -- Get a value from a form
+            msg = ''
+            p = request.POST
+            # -- Validate check
+            form = baseImageForm(p)
+            form.full_clean()
+            if not form.is_valid():
+                msg = ValiUtil.valiCheck(form)
+                return render(request, Html.baseImageCreate, {'baseImage': p, 'message': msg})
 
-            return redirect(Path.list)
+            # -- Create a project, api call
+            url = Url.baseImageCreate
+            data = {
+                'auth_token': p['auth_token'],
+                'cloud_id': p['cloud_id'],
+                'ssh_username': p['ssh_username'],
+                'source_image': p['source_image'],
+                'os': p['os'],
+            }
+            # -- API call, get a response
+            ApiUtil.requestPost(url, FuncCode.baseImageCreate.value, data)
 
-    else:
+            return redirect(Path.cloudDetail(cid))
+    except Exception as ex:
+        log.error(FuncCode.baseImageCreate.value, None, ex)
 
-        # ---- Exception errorLog Output
+        return render(request, Html.baseImageCreate, {'baseImage': request.POST, "message": str(ex)})
 
-        return render(request, "gui_app/baseImage/baseImageCreate.html")
 
 def baseImageEdit(request, id):
-    if request.method == "GET":
-        url = 'http://127.0.0.1:8000/api/v1/baseImage/'+id+'/detail/'
-        r = requests.get(url)
-        baseImage = json.loads(r.text)
+    try:
+        if request.method == "GET":
+            token = request.session['auth_token']
+            url = Url.baseImageDetail(id, Url.url)
+            data = {
+                    'auth_token': token
+                    }
+            p = ApiUtil.requestGet(url, FuncCode.baseImageEdit.value, data)
+            p.update(data)
 
-        return render(request, "gui_app/baseImage/baseImageEdit.html", {'baseImage' : baseImage})
-    elif request.method == "POST":
-        #-- Get a value from a form
-        p = request.POST
-        #-- Validate check
-        form = baseImageForm(p)
-        form.full_clean()
-        if not form.is_valid():
-            msg = ValiUtil.valiCheck(form)
-
-            return render(request, "gui_app/baseImage/baseImageEdit.html", {'baseImage' : p, 'message':msg})
-        #-- API call, get a response
-        url = 'http://127.0.0.1:8000/api/v1/baseImage/'+id+'/update/'
-        r = requests.get(url)
-        # ---- URL infoLog Output
-
-        #-- if response is "OK"
-        if r.reason == ResponseType.Response.OK.name:
-            # ---- Parameter infoLog Output
-
-            return redirect(Path.list)
+            return render(request, Html.baseImageEdit, {'baseImage': p, 'message': ''})
         else:
-            # ---- Response errorLog Output
+            # -- Get a value from a form
+            p = request.POST
+            msg = ''
+            # -- Validate check
+            form = baseImageForm(request.POST)
+            form.full_clean()
+            if not form.is_valid():
+                msg = ValiUtil.valiCheck(form)
+                return render(request, Html.baseImageEdit, {'baseImage': p, 'message': msg})
 
-            return render(request, "gui_app/cloud/baseImageEdit.html", {'baseImage' : p, 'message':msg})
+            # -- URL set
+            url = Url.baseImageEdit(id, Url.url)
+            # -- Set the value to the form
+            data = {
+                    'auth_token': request.session['auth_token'],
+                    'cloud_id': p['cloud_id'],
+                    'source_image': p['source_image'],
+                    'ssh_username': p['ssh_username'],
+                    'os': p['os']
+                    }
+            # -- API call, get a response
+            ApiUtil.requestPost(url, FuncCode.baseImageEdit.value, data)
 
-    else:
-        url = None
+            return redirect(Path.cloudDetail(p['cloud_id']))
+    except Exception as ex:
+        log.error(FuncCode.baseImageEdit.value, None, ex)
 
-        # ---- Exception errorLog Output
+        return render(request, Html.baseImageEdit, {'baseImage': request.POST, 'message': ex})
 
-        return redirect(Path.list)
 
 def baseImageDelete(request, id):
-    url = 'http://127.0.0.1:8000/api/v1/baseImage/'+id+'/delete/'
-    r = requests.get(url)
-    # ---- URL infoLog Output
+    try:
+        data = {'auth_token': request.session['auth_token']}
+        # -- Get a baseImage
+        urlb = Url.baseImageDetail(id, Url.url)
+        detail = ApiUtil.requestGet(urlb, FuncCode.baseImageDetail.value, data)
 
-    json.loads(r.text)
+        # -- Delete a baseImage, api call
+        url = Url.baseImageDelete(id, Url.url)
+        ApiUtil.requestDelete(url, FuncCode.baseImageDelete.value, data)
 
-    # ---- Parameter infoLog Output
+        return redirect(Path.cloudDetail('1'))
+    except Exception as ex:
+        log.error(FuncCode.baseImageDelete.value, None, ex)
 
-    # ---- Response errorLog Output
-
-    # ---- Exception errorLog Output
-    return redirect(Path.list)
+        return render(request, Html.baseImageDetail, {'baseImage': '', 'message': ex})
 
 

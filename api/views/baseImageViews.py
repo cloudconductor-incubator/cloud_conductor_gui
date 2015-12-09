@@ -21,6 +21,17 @@ def baseImage_list(request):
     ])
     lists.append(dict)
 
+    dict = OrderedDict([
+        ('id', "2"),
+        ('cloud_id', "1"),
+        ('os', "CentOS-6.5"),
+        ('source_image', "ami-xxxxxxxx"),
+        ('ssh_username', "ec2-user"),
+        ('created_at', "2015-03-23T07:22:34.992Z"),
+        ('updated_at', "2015-03-23T07:23:41.252Z"),
+    ])
+    lists.append(dict)
+
     data = OrderedDict([ ('lists', lists) ])
 
     return render_json_response(request, data)

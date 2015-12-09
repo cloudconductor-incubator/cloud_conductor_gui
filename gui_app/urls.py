@@ -17,7 +17,7 @@ urlpatterns = [
 
     url('^login/', loginViews.login, name="login"),
     url('^logout/', loginViews.logout, name="logout"),
-    url(r"^$", topViews.top, name="top"),
+    url(r"^$", environmentViews.environmentList, name="top"),
 
     url('^project/list', projectViews.projectList, name="projectList"),
     url('^project/create', projectViews.projectCreate, name="projectCreate"),
@@ -34,7 +34,7 @@ urlpatterns = [
     url('^cloud/(?P<id>\d+)/delete/', cloudViews.cloudDelete, name="cloudDelete"),
 
     url('^baseimage/(?P<id>\d+)/detail/', baseImageViews.baseImageDetail, name="baseImageDetail"),
-    url('^baseimage/create', baseImageViews.baseImageCreate, name="baseImageCreate"),
+    url('^cloud/(?P<cid>\d+)/baseimage/create', baseImageViews.baseImageCreate, name="baseImageCreate"),
     url('^baseimage/(?P<id>\d+)/edit/$', baseImageViews.baseImageEdit, name="baseImageEdit"),
     url('^baseimage/(?P<id>\d+)/delete/', baseImageViews.baseImageDelete, name="baseImageDelete"),
 

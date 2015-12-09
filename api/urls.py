@@ -22,6 +22,8 @@ urlpatterns = patterns('',
     url(r'^v1/projects/create/$', views.projectViews.project_create, name='project_create'),     # create
     url(r'^v1/projects/(?P<id>\d+)/update/$', views.projectViews.project_update, name='project_update'),     # update
     url(r'^v1/projects/(?P<id>\d+)/delete/$', views.projectViews.project_delete, name='project_delete'),     # delete
+    url(r'^v1/assignments/$', views.projectViews.assign_user_list, name='assigin_list'),
+    url(r'^v1/assigin/(?P<id>\d+)/edit/$', views.projectViews.project_assign_user, name='assigin_edit'),
 
     url(r'^v1/tokens$', views.tokenViews.token, name='token'),
 
@@ -43,11 +45,11 @@ urlpatterns = patterns('',
     url(r'^v1/cloud/(?P<id>\d+)/update/$', views.cloudViews.cloud_update, name='cloud_update'),
     url(r'^v1/cloud/(?P<id>\d+)/delete/$', views.cloudViews.cloud_delete, name='cloud_delete'),
 #
-    url(r'^v1/baseImage/list/$', views.baseImageViews.baseImage_list, name='baseImage_list'),
-    url(r'^v1/baseImage/(?P<id>\d+)/detail/$', views.baseImageViews.baseImage_detail, name='baseImage_detail'),
-    url(r'^v1/baseImage/create/$', views.baseImageViews.baseImage_create, name='baseImage_create'),
-    url(r'^v1/baseImage/(?P<id>\d+)/update/$', views.baseImageViews.baseImage_update, name='baseImage_update'),
-    url(r'^v1/baseImage/(?P<id>\d+)/delete/$', views.baseImageViews.baseImage_delete, name='baseImage_delete'),
+    url(r'^v1/base_images/list/$', views.baseImageViews.baseImage_list, name='baseImage_list'),
+    url(r'^v1/base_images/(?P<id>\d+)/detail/$', views.baseImageViews.baseImage_detail, name='baseImage_detail'),
+    url(r'^v1/base_images/create/$', views.baseImageViews.baseImage_create, name='baseImage_create'),
+    url(r'^v1/base_images/(?P<id>\d+)/update/$', views.baseImageViews.baseImage_update, name='baseImage_update'),
+    url(r'^v1/base_images/(?P<id>\d+)/delete/$', views.baseImageViews.baseImage_delete, name='baseImage_delete'),
 
     url(r'^v1/blueprint/list/$', views.blueprintViews.blueprint_list, name='blueprint_list'),
     url(r'^v1/blueprint/(?P<id>\d+)/detail/$', views.blueprintViews.blueprint_detail, name='blueprint_detail'),

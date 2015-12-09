@@ -10,7 +10,8 @@
 {% block content %}
 <div class="cc-title">BaseImage Create</div>
 <br>
-	<form method="post" action="{% url 'app:baseImageCreate' %}">
+	<form method="post" action="{% url 'app:baseImageCreate' baseImage.cloud_id %}">
+		<input id="auth_token" type="hidden" name="auth_token" value="{{ baseImage.auth_token }}">
 		{% include "gui_app/baseImage/includes/formbaseImage.html" %}
 	</form>
 {% endblock %}

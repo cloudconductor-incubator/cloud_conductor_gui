@@ -35,7 +35,7 @@ def roleChange(request, id):
     request.session['project_delete'] = role_munu['project_delete']
     request.session['add_user'] = role_munu['add_user']
 
-    return redirect('/ccgui/top/')
+    return redirect('/ccgui')
 
 def index(request):
     return render(request, "gui_app/role/role.html")

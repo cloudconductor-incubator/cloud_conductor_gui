@@ -8,4 +8,5 @@
 <key>DJANGO_SETTINGS_MODULE</key>
 <value>config.settings</value>
 </pydev_variables_property>
+
 </pydev_project>
