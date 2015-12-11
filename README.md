@@ -1,6 +1,6 @@
 # Running Environment
 
-* Branch system
+* Branch environment
 
 * Python 3.4
 * Django 1.8
