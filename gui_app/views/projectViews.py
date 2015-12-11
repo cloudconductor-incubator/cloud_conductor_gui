@@ -128,7 +128,7 @@ def projectDetail(request, id):
         url2 = Url.assignmentList
         data = {
                 'auth_token': token,
-#                 'project_id': requestsession['project_id'],
+                'project_id': requestsession['project_id'],
 #                 'account_id': requestsession['accout_id']
                 }
         a = ApiUtil.requestGet(url2, FuncCode.projectDetail.value,data)
