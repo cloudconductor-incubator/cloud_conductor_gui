@@ -20,6 +20,31 @@ class Path():
     baseImageDetail = lambda id: "/baseImage/project/{0}/".format(id)
     baseImageEdit = lambda id: "/ccgui/baseImage/{0}/edit".format(id)
 
+    systemList = "/ccgui/system/list/"
+    systemCreate = "/ccgui/system/create/"
+    systemDetail = lambda id: "/ccgui/system/{0}/detail".format(id)
+    systemEdit = lambda id: "/ccgui/system/{0}/edit".format(id)
+
+    environmentList = "/ccgui/environment/list/"
+    environmentCreate = "/ccgui/environment/create/"
+    environmentDetail = lambda id: "/ccgui/environment/{0}/detail".format(id)
+    environmentEdit = lambda id: "/ccgui/environment/{0}/edit".format(id)
+
+    applicationList = "/ccgui/application/list/"
+    applicationCreate = "/ccgui/application/create/"
+    applicationDetail = lambda id: "/ccgui/application/{0}/detail".format(id)
+    applicationEdit = lambda id: "/ccgui/application/{0}/edit".format(id)
+
+    blueprintList = "/ccgui/blueprint/list/"
+    blueprintCreate = "/ccgui/blueprint/create/"
+    blueprintDetail = lambda id: "/ccgui/blueprint/{0}/detail".format(id)
+    blueprintEdit = lambda id: "/ccgui/blueprint/{0}/edit".format(id)
+
+    patternList = "/ccgui/pattern/list/"
+    patternCreate = "/ccgui/pattern/create/"
+    patternDetail = lambda id: "/ccgui/pattern/{0}/detail".format(id)
+    patternEdit = lambda id: "/ccgui/pattern/{0}/edit".format(id)
+
 class Html():
     login = 'gui_app/login.html'
     top = "/ccgui/"
@@ -39,4 +64,29 @@ class Html():
     baseImageDetail = "gui_app/baseImage/baseImageDetail.html"
     baseImageCreate = "gui_app/baseImage/baseImageCreate.html"
     baseImageEdit = "gui_app/baseImage/baseImageEdit.html"
+
+    systemList = "gui_app/system/systemList.html"
+    systemDetail = "gui_app/system/systemDetail.html"
+    systemCreate = "gui_app/system/systemCreate.html"
+    systemEdit = "gui_app/system/systemEdit.html"
+
+    environmentList = "gui_app/environment/environmentList.html"
+    environmentDetail = "gui_app/environment/environmentDetail.html"
+    environmentCreate = "gui_app/environment/environmentCreate.html"
+    environmentEdit = "gui_app/environment/environmentEdit.html"
+
+    applicationList = "gui_app/application/applicationList.html"
+    applicationDetail = "gui_app/application/applicationDetail.html"
+    applicationCreate = "gui_app/application/applicationCreate.html"
+    applicationEdit = "gui_app/application/applicationEdit.html"
+
+    blueprintList = "gui_app/blueprint/blueprintList.html"
+    blueprintDetail = "gui_app/blueprint/blueprintDetail.html"
+    blueprintCreate = "gui_app/blueprint/blueprintCreate.html"
+    blueprintEdit = "gui_app/blueprint/blueprintEdit.html"
+
+    patternList = "gui_app/pattern/patternList.html"
+    patternDetail = "gui_app/pattern/patternDetail.html"
+    patternCreate = "gui_app/pattern/patternCreate.html"
+    patternEdit = "gui_app/pattern/patternEdit.html"
 

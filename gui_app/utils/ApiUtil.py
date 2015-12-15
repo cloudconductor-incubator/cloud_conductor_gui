@@ -31,6 +31,36 @@ class Url():
     baseImageDetail = lambda id, id2: id2 +  'base_images/{0}/detail/'.format(id)
     baseImageDelete = lambda id, id2: id2 +  'base_images/{0}/delete/'.format(id)
 
+    systemList = url + 'system/list/'
+    systemCreate = url + 'system/create/'
+    systemEdit = lambda id, id2: id2 +  'system/{0}/update/'.format(id)
+    systemDetail = lambda id, id2: id2 +  'system/{0}/detail/'.format(id)
+    systemDelete = lambda id, id2: id2 +  'system/{0}/delete/'.format(id)
+
+    applicationList = url + 'application/list/'
+    applicationCreate = url + 'application/create/'
+    applicationEdit = lambda id, id2: id2 +  'application/{0}/update/'.format(id)
+    applicationDetail = lambda id, id2: id2 +  'application/{0}/detail/'.format(id)
+    applicationDelete = lambda id, id2: id2 +  'application/{0}/delete/'.format(id)
+
+    environmentList = url + 'environment/list/'
+    environmentCreate = url + 'environment/create/'
+    environmentEdit = lambda id, id2: id2 +  'environment/{0}/update/'.format(id)
+    environmentDetail = lambda id, id2: id2 +  'environment/{0}/detail/'.format(id)
+    environmentDelete = lambda id, id2: id2 +  'environment/{0}/delete/'.format(id)
+
+    blueprintList = url + 'blueprint/list/'
+    blueprintCreate = url + 'blueprint/create/'
+    blueprintEdit = lambda id, id2: id2 +  'blueprint/{0}/update/'.format(id)
+    blueprintDetail = lambda id, id2: id2 +  'blueprint/{0}/detail/'.format(id)
+    blueprintDelete = lambda id, id2: id2 +  'blueprint/{0}/delete/'.format(id)
+
+    patternList = url + 'pattern/list/'
+    patternCreate = url + 'pattern/create/'
+    patternEdit = lambda id, id2: id2 +  'pattern/{0}/update/'.format(id)
+    patternDetail = lambda id, id2: id2 +  'pattern/{0}/detail/'.format(id)
+    patternDelete = lambda id, id2: id2 +  'pattern/{0}/delete/'.format(id)
+
 
 def requestGet(url, scid, payload):
     log.info(scid, None, None, url)
