@@ -36,13 +36,20 @@ class BaseImage(Enum):
     update = u.url + 'baseImage/update/'
     delete = u.url + 'baseImage/delete/'
 
-class BluePrint(Enum):
-    list = u.url + 'bluePrint/list/'
-    detail = u.url + 'bluePrint/detail/'
-    create = u.url + 'bluePrint/create/'
-    update = u.url + 'bluePrint/update/'
-    delete = u.url + 'bluePrint/delete/'
-    parameters = u.url + 'bluePrint/parameters/'
+class Blueprint(Enum):
+    list = u.url + 'blueprint/list/'
+    detail = u.url + 'blueprint/detail/'
+    create = u.url + 'blueprint/create/'
+    update = u.url + 'blueprint/update/'
+    delete = u.url + 'blueprint/delete/'
+    parameters = u.url + 'blueprint/parameters/'
+
+class Pattern(Enum):
+    list = u.url + 'pattern/list/'
+    detail = u.url + 'pattern/detail/'
+    create = u.url + 'pattern/create/'
+    update = u.url + 'pattern/update/'
+    delete = u.url + 'pattern/delete/'
 
 class System(Enum):
     list = u.url + 'system/list/'
@@ -53,6 +60,7 @@ class System(Enum):
     switch = u.url + 'system/switch/'
 
 class Environment(Enum):
+    list = u.url + 'environment/list/'
     detail = u.url + 'environment/detail/'
     create = u.url + 'environment/create/'
     update = u.url + 'environment/update/'
