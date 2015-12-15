@@ -13,7 +13,7 @@ def baseImage_list(request):
     dict = OrderedDict([
         ('id', "1"),
         ('cloud_id', "1"),
-        ('os', "CentOS-6.5"),
+        ('os_version', "CentOS-6.5"),
         ('source_image', "ami-xxxxxxxx"),
         ('ssh_username', "ec2-user"),
         ('created_at', "2015-03-23T07:22:34.992Z"),
@@ -24,7 +24,7 @@ def baseImage_list(request):
     dict = OrderedDict([
         ('id', "2"),
         ('cloud_id', "1"),
-        ('os', "CentOS-6.5"),
+        ('os_version', "CentOS-6.5"),
         ('source_image', "ami-xxxxxxxx"),
         ('ssh_username', "ec2-user"),
         ('created_at', "2015-03-23T07:22:34.992Z"),
@@ -41,7 +41,7 @@ def baseImage_detail(request, id):
     dict = OrderedDict([
         ('id', "1"),
         ('cloud_id', "1"),
-        ('os', "CentOS-6.5"),
+        ('os_version', "CentOS-6.5"),
         ('source_image', "ami-xxxxxxxx"),
         ('ssh_username', "ec2-user"),
         ('created_at', "2015-03-23T07:22:34.992Z"),
@@ -56,7 +56,7 @@ def baseImage_create(request):
     dict = OrderedDict([
         ('id', "1"),
         ('cloud_id', "1"),
-        ('os', "CentOS-6.5"),
+        ('os_version', "CentOS-6.5"),
         ('source_image', "ami-xxxxxxxx"),
         ('ssh_username', "ec2-user"),
         ('created_at', "2015-03-23T07:22:34.992Z"),
@@ -70,7 +70,7 @@ def baseImage_update(request, id):
     dict = OrderedDict([
         ('id', "1"),
         ('cloud_id', "1"),
-        ('os', "CentOS-6.5"),
+        ('os_version', "CentOS-6.5"),
         ('source_image', "ami-xxxxxxxx"),
         ('ssh_username', "ec2-user"),
         ('created_at', "2015-03-23T07:22:34.992Z"),
@@ -85,7 +85,7 @@ def baseImage_delete(request, id):
     dict = OrderedDict([
         ('id', "1"),
         ('cloud_id', "1"),
-        ('os', "CentOS-6.5"),
+        ('os_version', "CentOS-6.5"),
         ('source_image', "ami-xxxxxxxx"),
         ('ssh_username', "ec2-user"),
         ('created_at', "2015-03-23T07:22:34.992Z"),

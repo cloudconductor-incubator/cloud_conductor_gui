@@ -1,0 +1,21 @@
+{% extends "gui_app/base.html" %}
+{% block title %}Blueprint Create{% endblock %}
+{% block headerscript %}
+{% endblock %}
+
+{% block nav %}
+    {% include "gui_app/includes/nav_menu.html" %}
+{% endblock %}
+{% block breadcrumb %}
+	<li><a href="{% url 'app:blueprintList' %}">Blueprint Management</a></li>
+	<li>Blueprint Create</li>
+{% endblock %}
+{% block content %}
+<div class="cc-title">Blueprint Create</div>
+<br>
+	<form method="post" action="{% url 'app:blueprintCreate' %}">
+		{% include "gui_app/blueprint/includes/formBlueprint.html" %}
+	</form>
+{% endblock %}
+
+{% block bodyscript %}{% endblock %}

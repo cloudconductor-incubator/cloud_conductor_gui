@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render, redirect
-import django.contrib.auth as auth
 import json
 import requests
-from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
-from api.views.projectViews import project_list
 from ..forms import projectForm
 from ..utils import RoleUtil
 from ..utils import ValiUtil
@@ -19,7 +16,6 @@ from ..enum import ResponseType
 from ..enum.LogType import Message
 from ..enum.FunctionCode import FuncCode
 from ..logs import log
-from django.core.exceptions import ValidationError
 
 # CloudConductor add
 def projectList(request):
@@ -128,7 +124,7 @@ def projectDetail(request, id):
         url2 = Url.assignmentList
         data = {
                 'auth_token': token,
-                'project_id': requestsession['project_id'],
+                'project_id': request.session['project_id'],
 #                 'account_id': requestsession['accout_id']
                 }
         a = ApiUtil.requestGet(url2, FuncCode.projectDetail.value,data)

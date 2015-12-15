@@ -1,0 +1,80 @@
+{% csrf_token %}
+{% include "gui_app/includes/message.html" %}
+	<input id="project_id" type="hidden" name="project_id" value="{{ env.project_id }}">
+	<input id="auth_token" type="hidden" name="auth_token" value="{{ env.auth_token }}">
+	<div class="cc-select">
+	    <div class="form-group">
+	    	<label><span id="req">*</span>Environment name</label>
+	        <input id="name" name="name" type="text" class="form-control" value="{{ env.name }}">
+	    </div>
+
+	    <div class="form-group">
+	    	<label><span id="req">*</span>System</label>
+	    		<input type="hidden" id="systems" name="systems" class="form-control" value="{{ env.systems }}">
+			<select class="form-control" name="system_id" id="system_id">
+		        <option value=""></option>
+		        {% for s in env.systems %}
+				   <option value="{{ s.id }}" {% if  env.system_id == s.id %} selected="selected" {% endif %}>
+				       {{ s.name }}
+				   </option>
+				{% endfor %}
+		    </select>
+	    </div>
+
+	    <div class="form-group">
+	    	<label><span id="req">*</span>Blueprint</label>
+	    		<input type="hidden" id="systems" name="systems" class="form-control" value="{{ env.blueprints }}">
+			<select class="form-control" name="blueprint_id" id="blueprint_id">
+		        <option value=""></option>
+		        {% for b in env.blueprints %}
+				   <option value="{{ b.id }}" {% if  env.blueprint_id == b.id %} selected="selected" {% endif %}>
+				       {{ b.name }}
+				   </option>
+				{% endfor %}
+		    </select>
+	    </div>
+
+	    <div class="form-group">
+	    	<label><span id="req">*</span>candidates_attributes</label>
+		    <div class="input-group">
+			<span id="sizing-addon2" class="input-group-addon">1.</span>
+				<select class="form-control" name="candidates_attributes" id="candidates_attributes">
+				{% for c in clouds %}
+					<option value="{{ c.id }}" >{{ c.name }}</option>
+				{% endfor %}
+				</select>
+			</div>
+			<div class="input-group">
+			<span id="sizing-addon2" class="input-group-addon">2.</span>
+				<select class="form-control" name="candidates_attributes" id="candidates_attributes">
+				{% for c in clouds %}
+					<option value="{{ c.id }}" >{{ c.name }}</option>
+				{% endfor %}
+				</select>
+			</div>
+			<div class="input-group">
+			<span id="sizing-addon2" class="input-group-addon">3.</span>
+				<select class="form-control" name="candidates_attributes" id="candidates_attributes">
+				{% for c in clouds %}
+					<option value="{{ c.id }}" >{{ c.name }}</option>
+				{% endfor %}
+				</select>
+			</div>
+
+	    </div>
+	    <div class="form-group">
+	    	<label>template_parameters</label>
+	        <input id="template_parameters" name="template_parameters" type="text" class="form-control" value="{{ env.template_parameters }}">
+	    </div>
+	    <div class="form-group">
+	    	<label>user_attributes</label>
+	        <input id="user_attributes" name="user_attributes" type="text" class="form-control" value="{{ env.user_attributes }}">
+	    </div>
+	    <div class="form-group">
+	    	<label>Description</label>
+	        <textarea id="description" name="description" class="form-control">{{ env.description }}</textarea>
+	    </div>
+   		<div class="button_center">
+			<button class="btn btn-success" type="submit"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>&nbsp;save</button>
+		</div>
+    </div>

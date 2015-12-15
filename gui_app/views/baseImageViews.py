@@ -60,7 +60,7 @@ def baseImageCreate(request, cid):
                 'cloud_id': p['cloud_id'],
                 'ssh_username': p['ssh_username'],
                 'source_image': p['source_image'],
-                'os': p['os'],
+                'os_version': p['os_version'],
             }
             # -- API call, get a response
             ApiUtil.requestPost(url, FuncCode.baseImageCreate.value, data)
@@ -103,7 +103,7 @@ def baseImageEdit(request, id):
                     'cloud_id': p['cloud_id'],
                     'source_image': p['source_image'],
                     'ssh_username': p['ssh_username'],
-                    'os': p['os']
+                    'os_version': p['os_version']
                     }
             # -- API call, get a response
             ApiUtil.requestPost(url, FuncCode.baseImageEdit.value, data)

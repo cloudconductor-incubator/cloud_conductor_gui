@@ -2,6 +2,7 @@ from django.conf.urls import include, url
 from django.conf.urls import patterns, url
 from api import views
 from api.views import tokenViews
+from api.views import projectViews
 from api.views import cloudViews
 from api.views import baseImageViews
 from api.views import roleViews

@@ -1,0 +1,28 @@
+{% extends "gui_app/base.html" %}
+{% block title %}Application Edit{% endblock %}
+{% block headerscript %}
+{% endblock %}
+
+{% block nav %}
+    {% include "gui_app/includes/nav_menu.html" %}
+{% endblock %}
+{% block breadcrumb %}
+	<li><a href="{% url 'app:applicationList' %}">Application management</a></li>
+	{% if app.id %}
+	<li><a href="{% url 'app:applicationDetail' app.id %}">Application Detail</a></li>
+	{% endif %}
+	<li>Application Edit</li>
+{% endblock %}
+{% block content %}
+<div class="cc-title">Application Edit</div>
+	{% if app %}
+		<form method="post" action="{% url 'app:applicationEdit' app.id %}">
+			<input id="id" type="hidden" name="id" value="{{ app.id }}">
+			{% include "gui_app/Application/includes/formApplication.html" %}
+		</form>
+	{% else %}
+		This is no Application.
+	{% endif %}
+{% endblock %}
+
+{% block bodyscript %}{% endblock %}

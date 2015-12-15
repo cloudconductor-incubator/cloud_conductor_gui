@@ -1,0 +1,89 @@
+{% block nav %}
+<aside class="aside">
+	<div class="aside-inner">
+		<nav class="sidebar" data-sidebar-anyclick-close="">
+			{% ifequal request.session.pj_pulldown "1"  %}
+			<div style="font-size:7pt; color:#808080; margin-top: 5px;">Project selection:</div>
+			<select class="form-control" style="width:90%; margin-bottom: 10px; margin-left: 5px;">
+				<option>A-Projrct</option>
+				<option>B-Projrct</option>
+				<option>C-Projrct</option>
+			</select>
+			{% endifequal %}
+			<div class="menu-menu"></div>
+			<ul class="nav">
+				<li class="active">
+					<a href="{% url 'app:top' %}" id="var-menu">
+						<span class="glyphicon glyphicon-home cc-icon" aria-hidden="true"></span>　Home
+					</a>
+				</li>
+			</ul>
+			{{ request.session.auth_token }}
+			{{ request.session.project_id }}
+			<div class="var-heading">Management</div>
+			<ul class="nav">
+					</li>
+				{% ifequal request.session.m_project "1"  %}
+					<li>
+						<a href="{% url 'app:projectList' %}" id="var-menu" >
+						<span class="glyphicon glyphicon-folder-close cc-icon" aria-hidden="true"></span>　Project</a>
+					</li>
+				{% endifequal %}
+				{% ifequal request.session.m_cloud "1"  %}
+					<li>
+						<a href="{% url 'app:cloudList' %}" id="var-menu" >
+						<span class="glyphicon glyphicon-cloud cc-icon" aria-hidden="true"></span>　Cloud</a>
+					</li>
+				{% endifequal %}
+				{% ifequal request.session.m_provisionning "1"  %}
+					<li class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" href="#proviThree" href="#" id="var-menu"><span class="glyphicon glyphicon-th-large cc-icon" aria-hidden="true"></span>　Provisionning</a></li>
+					<div id="proviThree" class="collapse menu-menu">
+						<ul class="nav spacer navbar-static-top">
+							<li><a href="{% url 'app:systemList' %}" id="var-menu">System</a></li>
+							<li><a href="{% url 'app:environmentList' %}" id="var-menu">Environment</a></li>
+							<li><a href="{% url 'app:applicationList' %}" id="var-menu">Application</a></li>
+							<li><a href="{% url 'app:blueprintList' %}" id="var-menu">Blueprint</a></li>
+							<li><a href="{% url 'app:patternList' %}" id="var-menu">pattern</a></li>
+						</ul>
+					</div>
+				{% endifequal %}
+				{% ifequal request.session.m_support "1"  %}
+					<li class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" href="#supportThree" href="#" id="var-menu"><span class="glyphicon glyphicon-cog cc-icon" aria-hidden="true"></span>　Support</a></li>
+					<div id="supportThree" class="collapse menu-menu">
+						<ul class="nav spacer navbar-static-top">
+							<li><a href="{% url 'app:accountList' %}" id="var-menu">Account</a></li>
+							<li><a href="#" id="var-menu">Role</a></li>
+							<li><a href="#" id="var-menu">Log</a></li>
+							<li><a href="#" id="var-menu">Config</a></li>
+						</ul>
+					</div>
+
+				{% endifequal %}
+			</ul>
+			<div class="var-heading">Various settings</div>
+			<ul class="nav">
+				{% ifequal request.session.w_cloud_registrarion "1"  %}
+					<li>
+						<a href="#" id="var-menu">Cloud registration</a>
+					</li>
+				{% endifequal %}
+				{% ifequal request.session.w_make_new_app "1"  %}
+					<li>
+						<a href="#" id="var-menu">Make new application</a>
+					</li>
+				{% endifequal %}
+				{% ifequal request.session.w_app_env "1"  %}
+					<li>
+						<a href="#" id="var-menu">Application environment</a>
+					</li>
+				{% endifequal %}
+				{% ifequal request.session.w_deploying_app "1"  %}
+					<li>
+						<a href="#" id="var-menu">Deploying applications</a>
+					</li>
+				{% endifequal %}
+			</ul>
+		</nav>
+	</div>
+</aside>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% csrf_token %}
+{% include "gui_app/includes/message.html" %}
+	<input id="project_id" type="hidden" name="project_id" value="{{ app.project_id }}">
+	<input id="auth_token" type="hidden" name="auth_token" value="{{ app.auth_token }}">
+	<div class="cc-select">
+	    <div class="form-group">
+	    	<label><span id="req">*</span>Cloud name</label>
+	        <input id="name" name="name" type="text" class="form-control" value="{{ app.name }}">
+	    </div>
+	    <div class="form-group">
+	    	<label><span id="req">*</span>System</label>
+	        <input id="system_id" name="system_id" type="text" class="form-control" value="{{ app.system_id }}">
+	    </div>
+	    <div class="form-group">
+	    	<label>Description</label>
+	        <input id="description" name="description" type="text" class="form-control" value="{{ app.description }}">
+	    </div>
+	    <div class="form-group">
+	    	<label>Domain</label>
+	        <input id="domain" name="domain" type="text" class="form-control" value="{{ app.domain }}">
+	    </div>
+	    <div class="button_center">
+			<button class="btn btn-success" type="submit"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>&nbsp;save</button>
+		</div>
+    </div>

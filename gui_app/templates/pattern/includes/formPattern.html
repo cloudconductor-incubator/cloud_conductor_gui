@@ -1,0 +1,43 @@
+{% csrf_token %}
+{% include "gui_app/includes/message.html" %}
+	<input id="project_id" type="hidden" name="project_id" value="{{ system.project_id }}">
+	<input id="auth_token" type="hidden" name="auth_token" value="{{ system.auth_token }}">
+
+	<div class="cc-select">
+	    <div class="form-group">
+	    	<label><span id="req">*</span>Pattern name</label>
+	        <input id="name" name="name" type="text" class="form-control" value="{{ pattern.name }}">
+	    </div>
+	    <div class="form-group">
+	    	<label><span id="req">*</span>URL or Pass</label>
+	        <input id="pattern_url" name="pattern_url" type="text" class="form-control" value="{{ pattern.pattern_url }}">
+	    </div>
+	    <div class="form-group">
+	    	<label><span id="req">*</span>revision</label>
+	        <input id="revision" name="revision" type="text" class="form-control" value="{{ pattern.revision }}">
+	    </div>
+	    <div class="form-group">
+	    	<label><span id="req">*</span>Selection of war files</label>
+	        <input id="war_file" name="war_file" type="text" class="form-control" value="{{ pattern.war_file }}">
+	    </div>
+	    <div class="form-group">
+	  <label for="revision"><span id="req">*</span>Selection of war files</label>
+	    <div class="input-group" style="padding-left: 0px; padding-right: 0px;">
+	      <input id="war_file" name="war_file"type="text" class="form-control" placeholder="Search for...">
+	      <span class="input-group-btn">
+	        <button class="btn btn-default" type="button">Upload</button>
+	      </span>
+	    </div>
+	  </div>
+	    <div class="form-group">
+	    	<label><span id="req">*</span>Editing of Json file</label>
+	        <!--
+	        <input id="json_file" name="json_file" type="text" class="form-control" value="{{ pattern.json_file }}">
+	        -->
+	        <input type="file" name="image_file" />
+			<input type="submit" value="アップロードする" />
+	    </div>
+	    <div class="button_center">
+			<button class="btn btn-success" type="submit"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>&nbsp;save</button>
+		</div>
+    </div>
