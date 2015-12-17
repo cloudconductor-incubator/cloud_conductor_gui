@@ -39,6 +39,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'bootstrapform',  # django-bootstrap-form
     'gui_app',
+    'django_nose'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -72,36 +73,14 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-# Database
-# https://docs.djangoproject.com/en/1.8/ref/settings/#databases
-import json
-from collections import namedtuple
-DatabaseConfig = namedtuple("DatabaseConfig", ["name", "user", "password", "host", "port"])
-db_config_path = os.path.join(os.path.dirname(__file__), "database.json")
-
-if "DATABASE_URL" in os.environ:
-    import dj_database_url
-    DATABASES = {
-        'default': dj_database_url.config()
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
-elif os.path.isfile(db_config_path):
-    with open(db_config_path) as db_config_file:
-        config = json.load(db_config_file)
-        db_config = DatabaseConfig(**config)
-        DATABASES = {
-            'default': {
-                'ENGINE': 'django.db.backends.postgresql_psycopg2',
-                'NAME': db_config.name,
-                'USER': db_config.user,
-                'PASSWORD': db_config.password,
-                'HOST': db_config.host,
-                'PORT': db_config.port
-            }
-        }
-
-else:
-    raise Exception("Database setting is not defined. please confirm database.json or DATABASE_URL env variable")
+}
 
 
 # Internationalization
@@ -200,3 +179,6 @@ LOGGING = {
         }
     }
 }
+
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+NOSE_ARGS = ['--with-coverage','--cover-package=batch','--cover-html',]

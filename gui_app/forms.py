@@ -11,10 +11,6 @@ class loginForm(forms.Form):
     def clean_email(self):
         email = self.cleaned_data['email']
 
-        if len(email) < 6:
-            raise forms.ValidationError(u'Please enter at least 6 characters.')
-        return email
-
 
 class projectForm(forms.Form):
     auth_token = forms.CharField()

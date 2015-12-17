@@ -1,7 +1,0 @@
-{
-  "name":"django.db",
-  "user":"postgres",
-  "password":"password123",
-  "host":"localhost",
-  "port":5432
-}

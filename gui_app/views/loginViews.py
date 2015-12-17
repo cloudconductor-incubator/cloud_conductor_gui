@@ -43,7 +43,6 @@ def login(request):
             token = t['auth_token']
             request.session['auth_token'] = token
 
-
             #-- ProjectListAPI call, get a response
             projectUrl = Url.projectList
             data = {'auth_token': token}
@@ -59,14 +58,7 @@ def login(request):
 #             print(projectList)
 
             return redirect(Path.top)
-#             return render(request, Html.login)
 
-            #-- djagoログイン処理
-    #         if user and user.is_active:
-    #             auth.login(request, user)
-    #             return redirect(Path.view)
-    #         else:
-    #             raise Exception("アクティブなユーザーではありません")
     except Exception as ex:
         log.error(Common.top.value, None, ex)
         return render(request, Html.login, {"message": str(ex) })
