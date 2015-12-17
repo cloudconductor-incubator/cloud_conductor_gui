@@ -1,0 +1,8 @@
+;; file of .gitignore
+
+*.pyc
+*.project
+*.coverage
+*.pydevproject
+.settings/
+.__pycache__/
