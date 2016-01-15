@@ -1,0 +1,437 @@
+{% csrf_token %} {% include "gui_app/includes/message.html" %}
+<input id="project_id" type="hidden" name="project_id"
+	value="{{ cloud.project_id }}">
+<div class="cc-select">
+	<div class="form-group">
+		<label for="Blueprint"><span id="req">*</span> Role name</label>
+		<input class="form-control" id="Blueprint">
+	</div>
+
+	<div class="form-group">
+		<label for="Blueprint"><span id="req">*</span> Wizard authority</label>
+		<table class="table table-hover" style="width: 400px;">
+			<thead>
+				<tr>
+					<th>No</th>
+					<th>Wizard name</th>
+					<th>Authority</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<th>1</th>
+					<th>Cloud registration</th>
+					<td>
+						<div class="checkbox-inline">
+							<input value="baseball" name="interests" id="interest_baseball"
+								type="checkbox">
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<th>2</th>
+					<th>Make new application</th>
+					<td>
+						<div class="checkbox-inline">
+							<input value="baseball" name="interests" id="interest_baseball"
+								type="checkbox">
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<th>3</th>
+					<th>Application environment</th>
+					<td>
+						<div class="checkbox-inline">
+							<input value="baseball" name="interests" id="interest_baseball"
+								type="checkbox">
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<th>4</th>
+					<th>Deploying applications</th>
+					<td>
+						<div class="checkbox-inline">
+							<input value="baseball" name="interests" id="interest_baseball"
+								type="checkbox">
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<div class="form-group">
+			<label for="Blueprint"><span id="req">*</span>Function Authority</label>
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th>No</th>
+						<th>Function name</th>
+						<th>manage</th>
+						<th>read</th>
+						<th>create</th>
+						<th>update</th>
+						<th>destroy</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<th>1</th>
+						<th>Project</th>
+						<td>
+							<div class="checkbox-inline">
+								<input value="baseball" name="interests" id="interest_baseball"
+									type="checkbox">
+							</div>
+						</td>
+						<td>
+							<div class="checkbox-inline">
+								<input value="baseball" name="interests" id="interest_baseball"
+									type="checkbox">
+							</div>
+						</td>
+						<td>
+							<div class="checkbox-inline">
+								<input value="baseball" name="interests" id="interest_baseball"
+									type="checkbox">
+							</div>
+						</td>
+						<td>
+							<div class="checkbox-inline">
+								<input value="baseball" name="interests" id="interest_baseball"
+									type="checkbox">
+							</div>
+						</td>
+						<td>
+							<div class="checkbox-inline">
+								<input value="baseball" name="interests" id="interest_baseball"
+									type="checkbox">
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th>2</th>
+						<th>Cloud</th>
+						<td>
+							<div class="checkbox-inline">
+								<input value="baseball" name="interests" id="interest_baseball"
+									type="checkbox">
+							</div>
+						</td>
+						<td>
+							<div class="checkbox-inline">
+								<input value="baseball" name="interests" id="interest_baseball"
+									type="checkbox">
+							</div>
+						</td>
+						<td>
+							<div class="checkbox-inline">
+								<input value="baseball" name="interests" id="interest_baseball"
+									type="checkbox">
+							</div>
+						</td>
+						<td>
+							<div class="checkbox-inline">
+								<input value="baseball" name="interests" id="interest_baseball"
+									type="checkbox">
+							</div>
+						</td>
+						<td>
+							<div class="checkbox-inline">
+								<input value="baseball" name="interests" id="interest_baseball"
+									type="checkbox">
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th>3</th>
+						<th>BaseImage</th>
+						<td>
+							<div class="checkbox-inline">
+								<input value="baseball" name="interests" id="interest_baseball"
+									type="checkbox">
+							</div>
+						</td>
+						<td>
+							<div class="checkbox-inline">
+								<input value="baseball" name="interests" id="interest_baseball"
+									type="checkbox">
+							</div>
+						</td>
+						<td>
+							<div class="checkbox-inline">
+								<input value="baseball" name="interests" id="interest_baseball"
+									type="checkbox">
+							</div>
+						</td>
+						<td>
+							<div class="checkbox-inline">
+								<input value="baseball" name="interests" id="interest_baseball"
+									type="checkbox">
+							</div>
+						</td>
+						<td>
+							<div class="checkbox-inline">
+								<input value="baseball" name="interests" id="interest_baseball"
+									type="checkbox">
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th>4</th>
+						<th>Blueprint</th>
+						<td>
+							<div class="checkbox-inline">
+								<input value="baseball" name="interests" id="interest_baseball"
+									type="checkbox">
+							</div>
+						</td>
+						<td>
+							<div class="checkbox-inline">
+								<input value="baseball" name="interests" id="interest_baseball"
+									type="checkbox">
+							</div>
+						</td>
+						<td>
+							<div class="checkbox-inline">
+								<input value="baseball" name="interests" id="interest_baseball"
+									type="checkbox">
+							</div>
+						</td>
+						<td>
+							<div class="checkbox-inline">
+								<input value="baseball" name="interests" id="interest_baseball"
+									type="checkbox">
+							</div>
+						</td>
+						<td>
+							<div class="checkbox-inline">
+								<input value="baseball" name="interests" id="interest_baseball"
+									type="checkbox">
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th>5</th>
+						<th>System</th>
+						<td>
+							<div class="checkbox-inline">
+								<input value="baseball" name="interests" id="interest_baseball"
+									type="checkbox">
+							</div>
+						</td>
+						<td>
+							<div class="checkbox-inline">
+								<input value="baseball" name="interests" id="interest_baseball"
+									type="checkbox">
+							</div>
+						</td>
+						<td>
+							<div class="checkbox-inline">
+								<input value="baseball" name="interests" id="interest_baseball"
+									type="checkbox">
+							</div>
+						</td>
+						<td>
+							<div class="checkbox-inline">
+								<input value="baseball" name="interests" id="interest_baseball"
+									type="checkbox">
+							</div>
+						</td>
+						<td>
+							<div class="checkbox-inline">
+								<input value="baseball" name="interests" id="interest_baseball"
+									type="checkbox">
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th>6</th>
+						<th>Environment</th>
+						<td>
+							<div class="checkbox-inline">
+								<input value="baseball" name="interests" id="interest_baseball"
+									type="checkbox">
+							</div>
+						</td>
+						<td>
+							<div class="checkbox-inline">
+								<input value="baseball" name="interests" id="interest_baseball"
+									type="checkbox">
+							</div>
+						</td>
+						<td>
+							<div class="checkbox-inline">
+								<input value="baseball" name="interests" id="interest_baseball"
+									type="checkbox">
+							</div>
+						</td>
+						<td>
+							<div class="checkbox-inline">
+								<input value="baseball" name="interests" id="interest_baseball"
+									type="checkbox">
+							</div>
+						</td>
+						<td>
+							<div class="checkbox-inline">
+								<input value="baseball" name="interests" id="interest_baseball"
+									type="checkbox">
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th>7</th>
+						<th>Application</th>
+						<td>
+							<div class="checkbox-inline">
+								<input value="baseball" name="interests" id="interest_baseball"
+									type="checkbox">
+							</div>
+						</td>
+						<td>
+							<div class="checkbox-inline">
+								<input value="baseball" name="interests" id="interest_baseball"
+									type="checkbox">
+							</div>
+						</td>
+						<td>
+							<div class="checkbox-inline">
+								<input value="baseball" name="interests" id="interest_baseball"
+									type="checkbox">
+							</div>
+						</td>
+						<td>
+							<div class="checkbox-inline">
+								<input value="baseball" name="interests" id="interest_baseball"
+									type="checkbox">
+							</div>
+						</td>
+						<td>
+							<div class="checkbox-inline">
+								<input value="baseball" name="interests" id="interest_baseball"
+									type="checkbox">
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th>8</th>
+						<th>Pattern</th>
+						<td>
+							<div class="checkbox-inline">
+								<input value="baseball" name="interests" id="interest_baseball"
+									type="checkbox">
+							</div>
+						</td>
+						<td>
+							<div class="checkbox-inline">
+								<input value="baseball" name="interests" id="interest_baseball"
+									type="checkbox">
+							</div>
+						</td>
+						<td>
+							<div class="checkbox-inline">
+								<input value="baseball" name="interests" id="interest_baseball"
+									type="checkbox">
+							</div>
+						</td>
+						<td>
+							<div class="checkbox-inline">
+								<input value="baseball" name="interests" id="interest_baseball"
+									type="checkbox">
+							</div>
+						</td>
+						<td>
+							<div class="checkbox-inline">
+								<input value="baseball" name="interests" id="interest_baseball"
+									type="checkbox">
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th>9</th>
+						<th>Account</th>
+						<td>
+							<div class="checkbox-inline">
+								<input value="baseball" name="interests" id="interest_baseball"
+									type="checkbox">
+							</div>
+						</td>
+						<td>
+							<div class="checkbox-inline">
+								<input value="baseball" name="interests" id="interest_baseball"
+									type="checkbox">
+							</div>
+						</td>
+						<td>
+							<div class="checkbox-inline">
+								<input value="baseball" name="interests" id="interest_baseball"
+									type="checkbox">
+							</div>
+						</td>
+						<td>
+							<div class="checkbox-inline">
+								<input value="baseball" name="interests" id="interest_baseball"
+									type="checkbox">
+							</div>
+						</td>
+						<td>
+							<div class="checkbox-inline">
+								<input value="baseball" name="interests" id="interest_baseball"
+									type="checkbox">
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th>10</th>
+						<th>Role</th>
+						<td>
+							<div class="checkbox-inline">
+								<input value="baseball" name="interests" id="interest_baseball"
+									type="checkbox">
+							</div>
+						</td>
+						<td>
+							<div class="checkbox-inline">
+								<input value="baseball" name="interests" id="interest_baseball"
+									type="checkbox">
+							</div>
+						</td>
+						<td>
+							<div class="checkbox-inline">
+								<input value="baseball" name="interests" id="interest_baseball"
+									type="checkbox">
+							</div>
+						</td>
+						<td>
+							<div class="checkbox-inline">
+								<input value="baseball" name="interests" id="interest_baseball"
+									type="checkbox">
+							</div>
+						</td>
+						<td>
+							<div class="checkbox-inline">
+								<input value="baseball" name="interests" id="interest_baseball"
+									type="checkbox">
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<div class="button_center">
+				<button type="button" class="btn btn btn-success"
+					onclick="location.href='roleList.html'">登録</button>
+			</div>
+		</div>
+	</div>
+	{% if save %}
+	<div class="button_center">
+		<button class="btn btn-success" type="submit">
+			<span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>&nbsp;save
+		</button>
+	</div>
+	{% endif %}
+</div>

@@ -1,0 +1,22 @@
+{% csrf_token %}
+{% include "gui_app/includes/message.html" %}
+	<input id="project_id" type="hidden" name="project_id" value="{{ system.project_id }}">
+	<input id="auth_token" type="hidden" name="auth_token" value="{{ system.auth_token }}">
+	<div class="cc-select">
+	    <div class="form-group">
+	    	<label><span id="req">*</span>System name</label>
+	        <input id="name" name="name" type="text" class="form-control" value="{{ system.name }}">
+	    </div>
+	    <div class="form-group">
+	    	<label>Domain</label>
+	        <input id="domain" name="domain" type="text" class="form-control" value="{{ system.domain}}">
+	    </div>
+	    <div class="form-group">
+	    	<label>Description</label>
+	        <textarea id="description" name="description" class="form-control">{{ system.description }}</textarea>
+	    </div>
+   		<div class="button_center">
+			<button class="btn btn-success" type="submit"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>&nbsp;save</button>
+		</div>
+    </div>
+

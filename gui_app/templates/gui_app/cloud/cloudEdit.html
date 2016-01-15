@@ -1,0 +1,29 @@
+{% extends "gui_app/base.html" %}
+{% block title %}Cloud Edit{% endblock %}
+{% block headerscript %}
+{% endblock %}
+
+{% block nav %}
+    {% include "gui_app/includes/nav_menu.html" %}
+{% endblock %}
+{% block breadcrumb %}
+	<li><a href="{% url 'app:cloudList' %}">Cloud management</a></li>
+	{% if cloud.id %}
+	<li><a href="{% url 'app:cloudDetail' cloud.id %}">Cloud Detail</a></li>
+	{% endif %}
+	<li>Cloud Edit</li>
+{% endblock %}
+{% block content %}
+<div class="cc-title">Cloud Edit</div>
+	{% if cloud %}
+		<form method="post" action="{% url 'app:cloudEdit' cloud.id %}">
+			<input id="id" type="hidden" name="id" value="{{ cloud.id }}">
+			<input id="auth_token" type="hidden" name="auth_token" value="{{ cloud.auth_token }}">
+			{% include "gui_app/cloud/includes/formCloud.html" %}
+		</form>
+	{% else %}
+		This is no cloud.
+	{% endif %}
+{% endblock %}
+
+{% block bodyscript %}{% endblock %}

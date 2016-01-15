@@ -1,0 +1,54 @@
+{% extends "gui_app/base.html" %}
+{% block title %}Environment Select{% endblock %}
+{% block headerscript %}
+{% endblock %}
+{% block nav %}
+    {% include "gui_app/includes/nav_menu.html" %}
+{% endblock %}
+{% block breadcrumb %}
+	<li>Make new application</li>
+{% endblock %}
+{% block content %}
+<div class="cc-title">Environment Select</div>
+<br>
+	<form method="post" action="{% url 'app:mkappEnvironmentSelect'%}">
+		{% csrf_token %}
+		{% include "gui_app/includes/message.html" %}
+		<input id="auth_token" type="hidden" name="auth_token" value="{{ project.auth_token }}">
+
+		{% if request.session.project_manage or request.session.system_create  %}
+		<div>
+			<button class="btn btn-primary btn-sm" style="float:right" onclick="location.href='{% url 'app:cloudregistProject' %}'" type="button">
+				<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;　new
+			</button>
+		</div>
+		{% endif %}
+		<br>
+		<div class="form-group">
+	    	<label><span id="req">*</span>System</label>
+			<select class="form-control" name="type" id="type">
+		        <option value=""></option>
+		        {% for s in system %}
+				   <option value="{{ s.id }}" {% if  cloud.id == s.id %} selected="selected" {% endif %}>
+				       {{ s.name }}
+				   </option>
+				{% endfor %}
+		    </select>
+	    </div>
+	</form>
+
+	<div class="button_left">
+			<button type="button" class="btn btn-primary btn-sm hidden" onclick="location.href='#'" >
+				<span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
+				 &nbsp;　back
+			</button>
+			<span class="delete_btn">
+				<button type="submit" class="btn btn-primary btn-sm">
+					<span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>&nbsp;　next
+				</button>
+			</span>
+		</div>
+
+{% endblock %}
+
+{% block bodyscript %}{% endblock %}

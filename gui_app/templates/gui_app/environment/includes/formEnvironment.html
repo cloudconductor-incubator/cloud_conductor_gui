@@ -1,0 +1,99 @@
+{% csrf_token %} {% include "gui_app/includes/message.html" %}
+<input id="project_id" type="hidden" name="project_id" value="{{ env.project_id }}">
+<input id="auth_token" type="hidden" name="auth_token" value="{{ env.auth_token }}">
+<div class="cc-select">
+	<div class="form-group">
+		<label><span id="req">*</span>Environment name</label> <input
+			id="name" name="name" type="text" class="form-control"
+			value="{{ env.name }}">
+	</div>
+
+	<div class="form-group">
+		<label><span id="req">*</span>System</label> <select
+			class="form-control" name="system_id" id="system_id">
+			<option value=""></option>
+			{% for s in env.systems %}
+				<option value="{{ s.id }}" {% if env.system_id == s.id %} selected="selected"{% endif %}>
+					{{ s.name }}
+				</option>
+			{% endfor %}
+		</select>
+	</div>
+
+	<div class="form-group">
+		<label><span id="req">*</span>Blueprint&nbsp;:&nbsp;version</label> <input
+			id="a" type="hidden" name="a" value="{{ env.blueprint_id }}">
+		<input id="a" type="hidden" name="a" value="{{ env.version }}">
+		<select class="form-control" name="blueprint" id="blueprint">
+			<option value=""></option>
+			{% for b in env.blueprints %}
+			<option value="{'id': {{ b.id }}, 'version': {{ b.version }}}" {% ifequal b.id env.blueprint_id %}{% ifequal b.version env.version %} selected="selected"{% endifequal %}{% endifequal %}>
+				{{ b.name }}&nbsp;:&nbsp;{{ b.version }}
+			</option>
+			{% endfor %}
+		</select>
+	</div>
+
+	<div class="form-group">
+		<label><span id="req">*</span>Cloud priority</label>
+		<div class="input-group">
+			<span id="sizing-addon2" class="input-group-addon">1.</span> <input
+				type="hidden" id="candidates_attributes_1"
+				name="candidates_attributes_1"
+				value="{{ env.candidates_attributes_1 }}"> <select
+				class="form-control" name="candidates_attributes_1"
+				id="candidates_attributes_1">
+				<option value=""></option>
+				{% for c in env.clouds %}
+					<option value="{{ c.id }}" {% if c.id == env.candidates_attributes_1 %} selected="selected"{% endif %}>
+					{{ c.name }}</option>
+				{% endfor %}
+			</select>
+		</div>
+		<div class="input-group">
+			<span id="sizing-addon2" class="input-group-addon">2.</span>
+			<input type="hidden" id="candidates_attributes_2" name="candidates_attributes_2" value="{{ env.candidates_attributes_2 }}">
+				<select class="form-control" name="candidates_attributes_2" id="candidates_attributes_2">
+					<option value=""></option>
+					{% for c in env.clouds %}
+						<option value="{{ c.id }}" {% if c.id == env.candidates_attributes_2 %} selected="selected"{% endif %}>
+						{{ c.name }}
+						</option>
+					{% endfor %}
+				</select>
+		</div>
+		<div class="input-group">
+			<span id="sizing-addon2" class="input-group-addon">3.</span>
+			<input type="hidden" id="candidates_attributes_3" name="candidates_attributes_3" value="{{ env.candidates_attributes_3 }}">
+			<select class="form-control" name="candidates_attributes_3" id="candidates_attributes_3">
+				<option value=""></option>
+				{% for c in env.clouds %}
+					<option value="{{ c.id }}" {% if c.id == env.candidates_attributes_3 %} selected="selected"{% endif %}>
+					{{ c.name }}
+					</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+	<div class="form-group">
+		<label>template_parameters</label>
+		<input type="file" onchange="read(this, 'template_parameters', 'temp_output')" accept="application/json"  />
+		<div id="temp_output" class="col-md-10 error_message"></div>
+		<textarea id="template_parameters" name="template_parameters" class="form-control" cols="80" rows="20" wrap="off" onchange="json_check('template_parameters', 'temp_output')">{{ env.template_parameters }}</textarea>
+	</div>
+	<div class="form-group">
+		<label>user_attributes</label>
+		<input type="file" onchange="read(this, 'user_attributes', 'user_output')" accept="application/json"  />
+		<div id="user_output" class="col-md-10 error_message"></div>
+		<textarea id="user_attributes" name="user_attributes" class="form-control" cols="80" rows="20" wrap="off" onchange="json_check('user_attributes', 'user_output')">{{ env.user_attributes }}</textarea>
+	</div>
+
+	<div class="form-group">
+		<label>Description</label>
+		<textarea id="description" name="description" class="form-control">{{ env.description }}</textarea>
+	</div>
+	<div class="button_center">
+		<button class="btn btn-success" type="submit">
+			<span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>&nbsp;save
+		</button>
+	</div>
