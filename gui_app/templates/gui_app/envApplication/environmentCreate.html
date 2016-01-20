@@ -1,0 +1,32 @@
+{% extends "gui_app/base.html" %}
+{% block title %}Environment Create{% endblock %}
+{% block headerscript %}
+{% endblock %}
+
+{% block nav %}
+    {% include "gui_app/includes/nav_menu.html" %}
+{% endblock %}
+{% block breadcrumb %}
+	<li>Applicatioon Environment</li>
+{% endblock %}
+{% block content %}
+<div class="cc-title">Applicatioon Environment</div>
+<br>
+	<form method="post" action="{% url 'app:mkappEnvironmentCreate' %}">
+		{% include "gui_app/environment/includes/formEnvironment.html" %}
+
+		<div class="button_left">
+			<button type="button" class="btn btn-primary btn-sm" onclick="location.href='{% url 'app:mkappSystemSelect' %}'" >
+				<span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
+				 &nbsp;　back
+			</button>
+			<span class="delete_btn">
+				<button type="submit" class="btn btn-primary btn-sm" >
+					<span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>&nbsp;　next
+				</button>
+			</span>
+		</div>
+	</form>
+{% endblock %}
+
+{% block bodyscript %}{% endblock %}

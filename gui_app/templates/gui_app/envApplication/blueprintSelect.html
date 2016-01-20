@@ -1,0 +1,53 @@
+{% extends "gui_app/base.html" %}
+{% block title %}Applicatioon Environment{% endblock %}
+{% block headerscript %}{% endblock %}
+{% block bodyscripttop %}{% endblock %}
+{% block nav %}
+    {% include "gui_app/includes/nav_menu.html" %}
+{% endblock %}
+{% block breadcrumb %}
+	<li>Applicatioon Environment</li>
+{% endblock %}
+{% block content %}
+<div class="cc-title">Applicatioon Environment</div>
+		{% if request.session.system_manage or request.session.system_create  %}
+		<div>
+			<button class="btn btn-primary btn-sm" style="float:right" onclick="location.href='#'" type="button">
+				<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;　new
+			</button>
+		</div>
+		{% endif %}
+<form method="post" action="{% url 'app:envapp_bluprintSelect'%}">
+	<div class="cc-select">
+
+		{% csrf_token %}
+		{% include "gui_app/includes/message.html" %}
+		<h3>Blueprint select</h3>
+		<div class="form-group">
+	    	<label><span id="req">*</span>Blueprint</label>
+			<select class="form-control" name="id" id="id">
+		        <option value=""></option>
+				{% for bp in list %}
+					<option value="{'id': {{ bp.id }}, 'name': '{{ bp.name }}'}" {% if bp.id == blueprint.id %} selected="selected" {% endif %}>
+					{{ vp.name }}
+					</option>
+				{% endfor %}
+		    </select>
+	    </div>
+	    	<div class="cc-desc" id="contents-reload"> Display the contents </div>
+		<div class="button_left">
+			<button type="button" class="btn btn-primary btn-sm" onclick="location.href='{% url 'app:envapp_systemSelect'%}'" >
+				<span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
+				 &nbsp;　back
+			</button>
+			<span class="delete_btn">
+				<button type="submit" class="btn btn-primary btn-sm">
+					<span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>&nbsp;　next
+				</button>
+			</span>
+		</div>
+	</div>
+</form>
+{% endblock %}
+
+{% block bodyscript %}{% endblock %}

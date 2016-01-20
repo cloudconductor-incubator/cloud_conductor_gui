@@ -1,0 +1,13 @@
+
+<div class="form-group">
+   	<label><span id="req">*</span>Environment</label>
+	<select class="form-control" name="id" id="id">
+        <option value=""></option>
+		{% for env in list %}
+			<option value="{'id': {{ env.id }}, 'name': '{{ env.name }}'}" {% ifequal env.id environment.id%} selected="selected"{% endifequal %}>
+			{{ env.name }}
+			</option>
+		{% endfor %}
+    </select>
+</div>
+   	<div class="cc-desc" id="contents-reload"> Display the contents </div>

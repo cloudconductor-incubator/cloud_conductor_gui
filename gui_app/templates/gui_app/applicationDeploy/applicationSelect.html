@@ -1,0 +1,45 @@
+{% extends "gui_app/base.html" %}
+{% block title %}Application Deploy{% endblock %}
+{% block headerscript %}
+{% endblock %}
+{% block nav %}
+    {% include "gui_app/includes/nav_menu.html" %}
+{% endblock %}
+{% block breadcrumb %}
+	<li>Make new application</li>
+{% endblock %}
+{% block content %}
+<div class="cc-title">Application Deploy</div>
+<form method="post" action="{% url 'app:appdeployApplicationSelect'%}">
+	<div class="cc-select">
+		{% csrf_token %}
+		{% include "gui_app/includes/message.html" %}
+		<h3>Application select</h3>
+		<div class="form-group">
+	    	<label><span id="req">*</span>Application</label>
+			<select class="form-control" name="id" id="id">
+		        <option value=""></option>
+				{% for app in list %}
+					<option value="{'id': {{ app.id }}, 'name': '{{ app.name }}'}" {% ifequal app.id application.id%} selected="selected"{% endifequal %}>
+					{{ app.name }}</option>
+				{% endfor %}
+		    </select>
+	    </div>
+
+	    <div class="cc-desc" id="contents-reload"> Display the contents </div>
+		<div class="button_left">
+			<button type="button" class="btn btn-primary btn-sm hidden" onclick="location.href='#'" >
+				<span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
+				 &nbsp;　back
+			</button>
+			<span class="delete_btn">
+				<button type="submit" class="btn btn-primary btn-sm">
+					<span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>&nbsp;　next
+				</button>
+			</span>
+		</div>
+	</div>
+</form>
+{% endblock %}
+
+{% block bodyscript %}{% endblock %}
