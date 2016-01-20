@@ -4,8 +4,12 @@
 <div class="cc-select">
 	<div class="form-group">
 		<label for="Blueprint"><span id="req">*</span> Role name</label>
-		<input class="form-control" id="Blueprint">
+		<input id="name" name="name" type="text" class="form-control" value="{{role.name}}">
 	</div>
+	<div class="form-group">
+    	<label>Description</label>
+        <textarea id="description" name="description" class="form-control">{{role.description}}</textarea>
+    </div>
 
 	<div class="form-group">
 		<label for="Blueprint"><span id="req">*</span> Wizard authority</label>
@@ -78,360 +82,47 @@
 					</tr>
 				</thead>
 				<tbody>
+				{% for item in items %}
 					<tr>
-						<th>1</th>
-						<th>Project</th>
+						<th>{{item.no}}</th>
+						<th>{{item.name}}</th>
 						<td>
 							<div class="checkbox-inline">
-								<input value="baseball" name="interests" id="interest_baseball"
-									type="checkbox">
+								<input name="{{item.item_name}}-{{item.m}}" id="{{item.item_name}}-{{item.m}}" type="checkbox">
 							</div>
 						</td>
 						<td>
 							<div class="checkbox-inline">
-								<input value="baseball" name="interests" id="interest_baseball"
-									type="checkbox">
+								<input name="{{item.item_name}}-{{item.r}}" id="{{item.item_name}}-{{item.r}}" type="checkbox">
 							</div>
 						</td>
 						<td>
 							<div class="checkbox-inline">
-								<input value="baseball" name="interests" id="interest_baseball"
-									type="checkbox">
+								<input name="{{item.item_name}}-{{item.c}}" id="{{item.item_name}}-{{item.c}}" type="checkbox">
 							</div>
 						</td>
 						<td>
 							<div class="checkbox-inline">
-								<input value="baseball" name="interests" id="interest_baseball"
-									type="checkbox">
+								<input name="{{item.item_name}}-{{item.u}}" id="{{item.item_name}}-{{item.u}}" type="checkbox">
 							</div>
 						</td>
 						<td>
 							<div class="checkbox-inline">
-								<input value="baseball" name="interests" id="interest_baseball"
-									type="checkbox">
+								<input name="{{item.item_name}}-{{item.d}}" id="{{item.item_name}}-{{item.d}}" type="checkbox">
 							</div>
 						</td>
 					</tr>
-					<tr>
-						<th>2</th>
-						<th>Cloud</th>
-						<td>
-							<div class="checkbox-inline">
-								<input value="baseball" name="interests" id="interest_baseball"
-									type="checkbox">
-							</div>
-						</td>
-						<td>
-							<div class="checkbox-inline">
-								<input value="baseball" name="interests" id="interest_baseball"
-									type="checkbox">
-							</div>
-						</td>
-						<td>
-							<div class="checkbox-inline">
-								<input value="baseball" name="interests" id="interest_baseball"
-									type="checkbox">
-							</div>
-						</td>
-						<td>
-							<div class="checkbox-inline">
-								<input value="baseball" name="interests" id="interest_baseball"
-									type="checkbox">
-							</div>
-						</td>
-						<td>
-							<div class="checkbox-inline">
-								<input value="baseball" name="interests" id="interest_baseball"
-									type="checkbox">
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<th>3</th>
-						<th>BaseImage</th>
-						<td>
-							<div class="checkbox-inline">
-								<input value="baseball" name="interests" id="interest_baseball"
-									type="checkbox">
-							</div>
-						</td>
-						<td>
-							<div class="checkbox-inline">
-								<input value="baseball" name="interests" id="interest_baseball"
-									type="checkbox">
-							</div>
-						</td>
-						<td>
-							<div class="checkbox-inline">
-								<input value="baseball" name="interests" id="interest_baseball"
-									type="checkbox">
-							</div>
-						</td>
-						<td>
-							<div class="checkbox-inline">
-								<input value="baseball" name="interests" id="interest_baseball"
-									type="checkbox">
-							</div>
-						</td>
-						<td>
-							<div class="checkbox-inline">
-								<input value="baseball" name="interests" id="interest_baseball"
-									type="checkbox">
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<th>4</th>
-						<th>Blueprint</th>
-						<td>
-							<div class="checkbox-inline">
-								<input value="baseball" name="interests" id="interest_baseball"
-									type="checkbox">
-							</div>
-						</td>
-						<td>
-							<div class="checkbox-inline">
-								<input value="baseball" name="interests" id="interest_baseball"
-									type="checkbox">
-							</div>
-						</td>
-						<td>
-							<div class="checkbox-inline">
-								<input value="baseball" name="interests" id="interest_baseball"
-									type="checkbox">
-							</div>
-						</td>
-						<td>
-							<div class="checkbox-inline">
-								<input value="baseball" name="interests" id="interest_baseball"
-									type="checkbox">
-							</div>
-						</td>
-						<td>
-							<div class="checkbox-inline">
-								<input value="baseball" name="interests" id="interest_baseball"
-									type="checkbox">
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<th>5</th>
-						<th>System</th>
-						<td>
-							<div class="checkbox-inline">
-								<input value="baseball" name="interests" id="interest_baseball"
-									type="checkbox">
-							</div>
-						</td>
-						<td>
-							<div class="checkbox-inline">
-								<input value="baseball" name="interests" id="interest_baseball"
-									type="checkbox">
-							</div>
-						</td>
-						<td>
-							<div class="checkbox-inline">
-								<input value="baseball" name="interests" id="interest_baseball"
-									type="checkbox">
-							</div>
-						</td>
-						<td>
-							<div class="checkbox-inline">
-								<input value="baseball" name="interests" id="interest_baseball"
-									type="checkbox">
-							</div>
-						</td>
-						<td>
-							<div class="checkbox-inline">
-								<input value="baseball" name="interests" id="interest_baseball"
-									type="checkbox">
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<th>6</th>
-						<th>Environment</th>
-						<td>
-							<div class="checkbox-inline">
-								<input value="baseball" name="interests" id="interest_baseball"
-									type="checkbox">
-							</div>
-						</td>
-						<td>
-							<div class="checkbox-inline">
-								<input value="baseball" name="interests" id="interest_baseball"
-									type="checkbox">
-							</div>
-						</td>
-						<td>
-							<div class="checkbox-inline">
-								<input value="baseball" name="interests" id="interest_baseball"
-									type="checkbox">
-							</div>
-						</td>
-						<td>
-							<div class="checkbox-inline">
-								<input value="baseball" name="interests" id="interest_baseball"
-									type="checkbox">
-							</div>
-						</td>
-						<td>
-							<div class="checkbox-inline">
-								<input value="baseball" name="interests" id="interest_baseball"
-									type="checkbox">
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<th>7</th>
-						<th>Application</th>
-						<td>
-							<div class="checkbox-inline">
-								<input value="baseball" name="interests" id="interest_baseball"
-									type="checkbox">
-							</div>
-						</td>
-						<td>
-							<div class="checkbox-inline">
-								<input value="baseball" name="interests" id="interest_baseball"
-									type="checkbox">
-							</div>
-						</td>
-						<td>
-							<div class="checkbox-inline">
-								<input value="baseball" name="interests" id="interest_baseball"
-									type="checkbox">
-							</div>
-						</td>
-						<td>
-							<div class="checkbox-inline">
-								<input value="baseball" name="interests" id="interest_baseball"
-									type="checkbox">
-							</div>
-						</td>
-						<td>
-							<div class="checkbox-inline">
-								<input value="baseball" name="interests" id="interest_baseball"
-									type="checkbox">
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<th>8</th>
-						<th>Pattern</th>
-						<td>
-							<div class="checkbox-inline">
-								<input value="baseball" name="interests" id="interest_baseball"
-									type="checkbox">
-							</div>
-						</td>
-						<td>
-							<div class="checkbox-inline">
-								<input value="baseball" name="interests" id="interest_baseball"
-									type="checkbox">
-							</div>
-						</td>
-						<td>
-							<div class="checkbox-inline">
-								<input value="baseball" name="interests" id="interest_baseball"
-									type="checkbox">
-							</div>
-						</td>
-						<td>
-							<div class="checkbox-inline">
-								<input value="baseball" name="interests" id="interest_baseball"
-									type="checkbox">
-							</div>
-						</td>
-						<td>
-							<div class="checkbox-inline">
-								<input value="baseball" name="interests" id="interest_baseball"
-									type="checkbox">
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<th>9</th>
-						<th>Account</th>
-						<td>
-							<div class="checkbox-inline">
-								<input value="baseball" name="interests" id="interest_baseball"
-									type="checkbox">
-							</div>
-						</td>
-						<td>
-							<div class="checkbox-inline">
-								<input value="baseball" name="interests" id="interest_baseball"
-									type="checkbox">
-							</div>
-						</td>
-						<td>
-							<div class="checkbox-inline">
-								<input value="baseball" name="interests" id="interest_baseball"
-									type="checkbox">
-							</div>
-						</td>
-						<td>
-							<div class="checkbox-inline">
-								<input value="baseball" name="interests" id="interest_baseball"
-									type="checkbox">
-							</div>
-						</td>
-						<td>
-							<div class="checkbox-inline">
-								<input value="baseball" name="interests" id="interest_baseball"
-									type="checkbox">
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<th>10</th>
-						<th>Role</th>
-						<td>
-							<div class="checkbox-inline">
-								<input value="baseball" name="interests" id="interest_baseball"
-									type="checkbox">
-							</div>
-						</td>
-						<td>
-							<div class="checkbox-inline">
-								<input value="baseball" name="interests" id="interest_baseball"
-									type="checkbox">
-							</div>
-						</td>
-						<td>
-							<div class="checkbox-inline">
-								<input value="baseball" name="interests" id="interest_baseball"
-									type="checkbox">
-							</div>
-						</td>
-						<td>
-							<div class="checkbox-inline">
-								<input value="baseball" name="interests" id="interest_baseball"
-									type="checkbox">
-							</div>
-						</td>
-						<td>
-							<div class="checkbox-inline">
-								<input value="baseball" name="interests" id="interest_baseball"
-									type="checkbox">
-							</div>
-						</td>
-					</tr>
+				{% endfor %}
 				</tbody>
 			</table>
-
+			{% if save %}
 			<div class="button_center">
-				<button type="button" class="btn btn btn-success"
-					onclick="location.href='roleList.html'">登録</button>
+				<button class="btn btn-success" type="submit">
+					<span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>&nbsp;save
+				</button>
 			</div>
+			{% endif %}
 		</div>
 	</div>
-	{% if save %}
-	<div class="button_center">
-		<button class="btn btn-success" type="submit">
-			<span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>&nbsp;save
-		</button>
-	</div>
-	{% endif %}
+
 </div>

@@ -25,14 +25,14 @@ def get_environment_list(code, token, project_id=None):
 
 def get_environment_list2(code, token, project_id=None):
 
-    environments = get_system_list(code, token, project_id=None)
+    environments = get_environment_list(code, token, project_id=None)
 
     dic = {}
     list = []
     for env in environments:
 
-        dic['id'] = env.get('id')
-        dic['name'] = env.get('name')
+        dic['id'] = str(env.get('id'))
+        dic['name'] =  env.get('name')
         list.append(dic.copy())
 
     return list

@@ -6,6 +6,7 @@ from ..forms import systemForm
 from ..utils import RoleUtil
 from ..utils import ValiUtil
 from ..utils import ApiUtil
+from ..utils import SystemUtil
 from ..utils.PathUtil import Path
 from ..utils.PathUtil import Html
 from ..utils.ApiUtil import Url
@@ -23,7 +24,10 @@ def systemList(request):
         url = Url.systemList
         print(url)
 
-        data = {'auth_token': request.session['auth_token']}
+        data = {
+                'auth_token': request.session['auth_token'],
+                'project_id': request.session['project_id']
+                }
         systems = ApiUtil.requestGet(url, FuncCode.systemList.value, data)
 #         systems = systems['lists']
 
@@ -33,20 +37,17 @@ def systemList(request):
 
         return render(request, Html.systemList, {"system": '', 'message': str(ex)})
 
-    return render(request, Html.systemList, {'system': '', 'baseImage': '', 'message': ex})
+    return render(request, Html.systemList, {'system': '', 'baseImage':'', 'message':ex})
 
 
 def systemDetail(request, id):
     try:
         # -- system DetailAPI call, get a response
-        token = request.session['auth_token']
-        url = Url.systemDetail(id, Url.url)
-        data = {
-            'auth_token': token
-        }
-        p = ApiUtil.requestGet(url, FuncCode.systemDetail.value, data)
+        token = request.session.get('auth_token')
+        code = FuncCode.systemDetail.value
+        system = SystemUtil.get_system_detail(code, token, id)
 
-        return render(request, Html.systemDetail, {'system': p, 'message': ''})
+        return render(request, Html.systemDetail, {'system': system, 'message': ''})
     except Exception as ex:
         log.error(FuncCode.systemDetail.value, None, ex)
 
@@ -56,11 +57,8 @@ def systemDetail(request, id):
 def systemCreate(request):
     try:
         if request.method == "GET":
-            data = {
-                'auth_token': request.session['auth_token'],
-                'project_id': request.session['project_id']
-            }
-            return render(request, Html.systemCreate, {'system': data, 'message': ''})
+
+            return render(request, Html.systemCreate, {'system': '', 'message': '', 'save': True})
         else:
             # -- Get a value from a form
             msg = ''
@@ -71,42 +69,29 @@ def systemCreate(request):
             if not form.is_valid():
                 msg = ValiUtil.valiCheck(form)
 
-                return render(request, Html.systemCreate, {'system': p, 'message': msg})
+                return render(request, Html.systemCreate, {'system': p, 'message': msg, 'save': True})
 
-            # -- Create a system, api call
-            url = Url.systemCreate
-            data = {
-                'auth_token': request.session['auth_token'],
-                'project_id': p['project_id'],
-                'name': p['name'],
-                'description': p['description'],
-                'domain': p['domain'],
-            }
-            # -- API call, get a response
-            ApiUtil.requestPost(url, FuncCode.systemCreate.value, data)
+            code = FuncCode.systemCreate.value
+
+            SystemUtil.create_system(code, request.session.get('auth_token'), request.session.get('project_id')
+                                     , p.get('name'), p.get('description'), p.get('domain'))
 
             return redirect(Path.systemList)
     except Exception as ex:
         p = request.POST
         log.error(FuncCode.systemCreate.value, None, ex)
 
-        return render(request, Html.systemCreate, {'system': p, "message": str(ex)})
+        return render(request, Html.systemCreate, {'system': p, "message": str(ex), 'save': True})
 
 
 def systemEdit(request, id):
     try:
+        code = FuncCode.systemEdit.value
+        token = request.session.get('auth_token')
         if request.method == "GET":
+            system = SystemUtil.get_system_detail(code, token, id)
 
-            url = Url.systemDetail(id, Url.url)
-
-            data = {
-                'auth_token': request.session['auth_token'],
-                'project_id': request.session['project_id']
-            }
-            p = ApiUtil.requestGet(url, FuncCode.systemEdit.value, data)
-            p.update(data)
-
-            return render(request, Html.systemEdit, {'system': p, 'message': ''})
+            return render(request, Html.systemEdit, {'system': system, 'message': '', 'save': True})
         else:
             # -- Get a value from a form
             msg = ''
@@ -116,36 +101,27 @@ def systemEdit(request, id):
             form.full_clean()
             if not form.is_valid():
                 msg = ValiUtil.valiCheck(form)
-                return render(request, Html.systemEdit, {'system': p, 'message': msg})
+                return render(request, Html.systemEdit, {'system': p, 'message': msg, 'save': True})
 
-            # -- Create a system, api call
-            url = Url.systemEdit(id, Url.url)
-            data = {
-                'auth_token': request.session['auth_token'],
-                'project_id': p['project_id'],
-                'name': p['name'],
-                'description': p['description'],
-                'domain': p['domain'],
-            }
-            # -- API call, get a response
-            ApiUtil.requestPut(url, FuncCode.systemEdit.value, data)
+            # -- Edit a system, api call
+            SystemUtil.edit_system(code, token, id, p.get('name'), p.get('description'), p.get('domain'))
 
             return redirect(Path.systemList)
     except Exception as ex:
         log.error(FuncCode.systemEdit.value, None, ex)
 
-        return render(request, Html.systemEdit, {'system': request.POST, "message": str(ex)})
+        return render(request, Html.systemEdit, {'system': request.POST, "message": str(ex), 'save': True})
 
 
 def systemDelete(request, id):
     try:
         # -- URL and data set
-        url = Url.systemDelete(id, Url.url)
-        data = {'auth_token': request.session['auth_token']}
-        ApiUtil.requestDelete(url, FuncCode.systemDelete.value, data)
+        SystemUtil.get_system_delete(code, request.session.get('auth_token'), request.session.get('project_id'))
+
 
         return redirect(Path.systemList)
     except Exception as ex:
         log.error(FuncCode.systemDelete.value, None, ex)
 
         return render(request, Html.systemDetail, {'system': '', 'message': ex})
+

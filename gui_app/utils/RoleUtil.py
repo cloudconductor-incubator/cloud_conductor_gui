@@ -18,13 +18,42 @@ def get_role_list(code, token, project_id=None, account_id=None):
 
     url = Url.roleList
     data = {
-        'auth_token': token,
-        'project_id': project_id,
-        'account_id': account_id,
-    }
+            'auth_token': token,
+            'project_id': project_id,
+            'account_id': account_id,
+            }
     list = ApiUtil.requestGet(url, code, data)
 
     return list
+
+
+def create_role(code, token, project_id,name, description , params):
+    # -- Create a project, api call
+    url = Url.roleCreate
+    data = {
+        'auth_token': token,
+        'project_id': project_id,
+        'name': name,
+        'description': description
+    }
+    # -- API call, get a response
+    role = ApiUtil.requestPost(url, code, data)
+
+
+    for param in params:
+        if '-' in param:
+            if param.split('-')[1] in ['manage','create','update','destroy']:
+                url = Url.permissionCreate(role["id"], Url.url)
+                data = {
+                    'auth_token': token,
+                    'action': param.split('-')[1],
+                    'model': param.split('-')[0],
+                }
+                permission = ApiUtil.requestPost(url, code, data)
+        #ApiUtil.requestPost(url, code, data)
+
+
+    return role
 
 
 def get_role_detail(code, token, id):
@@ -310,3 +339,6 @@ def add_session_role(session, role, permissions):
 #         elif w_app_env:
 #
 #         elif w_deploying_app:
+
+
+

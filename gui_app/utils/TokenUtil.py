@@ -9,6 +9,7 @@ from ..enum.FunctionCode import FuncCode
 from ..logs import log
 
 def get_token(code, email, password):
+    print("get_token:1")
     if StringUtil.isEmpty(code):
         return None
 
@@ -20,6 +21,10 @@ def get_token(code, email, password):
 
     url = Url.token
     data = {'email': email, 'password': password}
+    print("data:")
+    print(data)
     token = ApiUtil.requestPost(url, code, data)
+    print("token:")
+    print(token['auth_token'])
 
     return token

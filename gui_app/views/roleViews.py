@@ -1,44 +1,132 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render, redirect
 import json
-import requests
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render_to_response, get_object_or_404, redirect
+from collections import OrderedDict
+from ..forms import roleForm
+from ..utils import RoleUtil
+from ..utils import ValiUtil
+from ..enum.MessageCode import Error
+from ..utils import ApiUtil
+from ..utils.PathUtil import Path
+from ..utils.PathUtil import Html
+from ..utils.ApiUtil import Url
+from ..utils.ErrorUtil import ApiError
+from ..enum.FunctionCode import FuncCode
+from ..logs import log
 
-def roleChange(request, id):
 
-    roleUrl = 'http://127.0.0.1:8000/api/v1/role/' +id+ '/menu/'
-    role = requests.get(roleUrl)
-    role_munu = json.loads(role.text)
+def roleList(request):
+    try:
+        roles = None
+        # -- Get a project list, API call
+        code = FuncCode.roleList.value
+        token = request.session['auth_token']
+        roles = RoleUtil.get_role_list(code, token)
 
-    request.session['id'] = role_munu['id']
-    request.session['role_id'] = role_munu['role_id']
-    request.session['ac_name'] = role_munu['ac_name']
-    request.session['pj_pulldown'] = role_munu['pj_pulldown']
-    request.session['m_project'] = role_munu['m_project']
-    request.session['m_cloud'] = role_munu['m_cloud']
-    request.session['m_provisionning'] = role_munu['m_provisionning']
-    request.session['m_support'] = role_munu['m_support']
-    request.session['w_cloud_registrarion'] = role_munu['w_cloud_registrarion']
-    request.session['w_make_new_app'] = role_munu['w_make_new_app']
-    request.session['w_app_env'] = role_munu['w_app_env']
-    request.session['w_deploying_app'] = role_munu['w_deploying_app']
+        return render(request, Html.roleList, {'role': roles, 'message': ''})
+    except Exception as ex:
+        log.error(FuncCode.roleList.value, None, ex)
 
-    roleUrl = 'http://127.0.0.1:8000/api/v1/role/' +id+ '/project/'
-    role = requests.get(roleUrl)
-    role_munu = json.loads(role.text)
+        return render(request, Html.roleList, {"role": '', 'message': str(ex)})
 
-    request.session['project_detail'] = role_munu['project_detail']
-    request.session['project_create'] = role_munu['project_create']
-    request.session['project_edit'] = role_munu['project_edit']
-    request.session['project_delete'] = role_munu['project_delete']
-    request.session['add_user'] = role_munu['add_user']
 
-    return redirect('/ccgui')
+def roleDetail(request, id):
+    try:
 
-def index(request):
-    return render(request, "gui_app/role/role.html")
+        return render(request, Html.roleDetail, {'role': '', 'message': ''})
+    except Exception as ex:
+        log.error(FuncCode.roleDetail.value, None, ex)
+
+        return render(request, Html.roleDetail, {'role': '', 'message': str(ex)})
+
 
 def roleCreate(request):
-    return render(request, "gui_app/role/roleCreate.html")
 
+    check_items = []
+    check_items.append({"no":"1", "name":"Project", "m":"manage", "r":"read", "c":"create", "u":"update", "d":"destroy", "item_name":"project"})
+    check_items.append({"no":"2", "name":"Cloud", "m":"manage", "r":"read", "c":"create", "u":"update", "d":"destroy", "item_name":"cloud"})
+    check_items.append({"no":"3", "name":"BaseImage", "m":"manage", "r":"read", "c":"create", "u":"update", "d":"destroy", "item_name":"base_image"})
+    check_items.append({"no":"4", "name":"Blueprint", "m":"manage", "r":"read", "c":"create", "u":"update", "d":"destroy", "item_name":"blueprint"})
+    check_items.append({"no":"5", "name":"System", "m":"manage", "r":"read", "c":"create", "u":"update", "d":"destroy", "item_name":"system"})
+    check_items.append({"no":"6", "name":"Environment", "m":"manage", "r":"read", "c":"create", "u":"update", "d":"destroy", "item_name":"environment"})
+    check_items.append({"no":"7", "name":"Application", "m":"manage", "r":"read", "c":"create", "u":"update", "d":"destroy", "item_name":"application"})
+    check_items.append({"no":"8", "name":"Pattern", "m":"manage", "r":"read", "c":"create", "u":"update", "d":"destroy", "item_name":"pattern"})
+    check_items.append({"no":"9", "name":"Account", "m":"manage", "r":"read", "c":"create", "u":"update", "d":"destroy", "item_name":"account"})
+    check_items.append({"no":"10", "name":"Role", "m":"manage", "r":"read", "c":"create", "u":"update", "d":"destroy", "item_name":"role"})
+
+    try:
+        code = FuncCode.roleCreate.value
+        token = request.session['auth_token']
+        project_id= request.session['project_id']
+
+
+        if request.method == "GET":
+
+            return render(request, Html.roleCreate, {'message': '',
+                                                     'role':{"token":token,'project':project_id},
+                                                     'items':check_items,'save': True})
+        else:
+            # -- Get a value from a form
+            msg = ''
+            p = request.POST
+
+            form = roleForm(request.POST)
+            if not form.is_valid():
+                msg = ValiUtil.valiCheck(form)
+                return render(request, Html.roleCreate, {'role': p, 'message': msg, 'items':check_items,'save': True})
+
+            checkbox = False
+            for param in request.POST:
+                if '-' in param:
+                    if param.split('-')[1] in ['manage','create','update','destroy']:
+                        checkbox = True
+                        break
+
+            if checkbox == False:
+                return render(request, Html.roleCreate, {'role': p, 'message': Error.CheckboxNotSelected.value, 'items':check_items,'save': True})
+
+            # -- API call, get a response
+            RoleUtil.create_role(code, token,project_id, p.get('name'), p.get('description'),p)
+
+            # -- Validate check
+
+            return redirect(Path.roleList)
+    except Exception as ex:
+        log.error(FuncCode.roleCreate.value, None, ex)
+        return render(request, Html.roleCreate, { 'message': str(ex),'role': request.POST,
+                                                 'items':check_items,'save': True},)
+
+
+def roleEdit(request, id):
+    try:
+        code = FuncCode.roleEdit.value
+        data = {
+            'auth_token': request.session['auth_token'],
+            'project_id': request.session['project_id']
+        }
+
+        if request.method == "GET":
+
+            return render(request, Html.roleEdit, {'message': str(ex)})
+        else:
+            # -- Get a value from a form
+
+
+            return redirect(Path.roleList)
+    except Exception as ex:
+        log.error(code, None, ex)
+
+        return render(request, Html.roleEdit, {'message': str(ex)})
+
+def roleDelete(request, id):
+    try:
+        # -- URL and data set
+        url = Url.roleDelete(id, Url.url)
+        data = {'auth_token': request.session['auth_token']}
+        ApiUtil.requestDelete(url, FuncCode.roleDelete.value, data)
+
+        return redirect(Path.roleList)
+    except Exception as ex:
+        log.error(FuncCode.roleDelete.value, None, ex)
+
+        return render(request, Html.roleDetail, {'role': '', 'message': ex})

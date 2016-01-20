@@ -9,7 +9,7 @@ from ..utils.ErrorUtil import ApiError
 
 
 class Url():
-    url = ''
+    url = 'http://52.53.234.193:8080/api/v1/'
 
     token = url + 'tokens'
 
@@ -44,6 +44,13 @@ class Url():
     applicationDetail = lambda id, id2: id2 +  'applications/{0}'.format(id)
     applicationDelete = lambda id, id2: id2 +  'applications/{0}'.format(id)
 
+    applicationDeploy = lambda id, id2: id2 + 'applications/{0}/deploy'.format(id)
+    applicationHistoryList = lambda id, id2: id2 + 'applications/{0}/histories'.format(id)
+    applicationHistoryDetail = lambda id, id2, id3: id3 + 'applications/{0}/histories/{1}'.format(id, id2)
+    applicationHistoryCreate = lambda id, id2: id2 + 'applications/{0}/histories'.format(id)
+    applicationHistoryDetail = lambda id, id2, id3: id3 + 'applications/{0}/histories/{1}'.format(id, id2)
+    applicationHistoryDelete = lambda id, id2, id3: id3 + 'applications/{0}/histories/{1}'.format(id, id2)
+
     environmentList = url + 'environments'
     environmentCreate = url + 'environments'
     environmentEdit = lambda id, id2: id2 +  'environments/{0}'.format(id)
@@ -69,7 +76,7 @@ class Url():
     blueprintHistoriesDetail = lambda id, id2, id3: id3 +  'blueprints/{0}/histories/{1}'.format(id, id2)
 
     patternList = url + 'patterns'
-    patternCreate = url + 'patterns/create/'
+    patternCreate = url + 'patterns/'
     patternEdit = lambda id, id2: id2 +  'patterns/{0}'.format(id)
     patternDetail = lambda id, id2: id2 +  'patterns/{0}'.format(id)
     patternDelete = lambda id, id2: id2 +  'patterns/{0}'.format(id)
@@ -96,7 +103,7 @@ class Url():
     assignmentDetail = lambda id, id2: id2 + 'assignments/{0}'.format(id)
     assignmentDelete = lambda id, id2: id2 + 'assignments/{0}'.format(id)
 
-    assignmentnRoleList = lambda id, id2: id2 + 'assignments/{0}/roles'.format(id)
+    assignmentRoleList = lambda id, id2: id2 + 'assignments/{0}/roles'.format(id)
     assignmentRoleDetail = lambda id, id2, id3: id3 + 'assignments/{0}/roles/{1}'.format(id, id2)
     assignmentRoleCreate = lambda id, id2: id2 +  'assignments/{0}/roles'.format(id)
     assignmentRoleDetail = lambda id, id2, id3: id3 +  'assignments/{0}/roles/{1}'.format(id, id2)
@@ -119,12 +126,12 @@ def requestGet(url, scid, payload):
 
 def requestPost(url, scid, payload): #-- change post
     if payload != None:
-        r = requests.post(url, params=payload)
+        r = requests.post(url, data=payload)
     else:
         r = requests.post(url)
     log.info(scid, r, None, Message.api_url.value)
 
-    if r.status_code == Response.Created.value:
+    if r.status_code == Response.Created.value or r.status_code == Response.Accepted.value:
         log.info(scid, None, r.text, Message.api_response.value)
         param =  json.loads(r.text)
         return param
@@ -132,9 +139,8 @@ def requestPost(url, scid, payload): #-- change post
         raise ApiError(log.errorMessage(r, None))
 
 def requestPut(url, scid, payload): #-- change post
-    print(1)
     if payload != None:
-        r = requests.put(url, params=payload)
+        r = requests.put(url, data=payload)
     else:
         r = requests.put(url)
     log.info(scid, r, None, Message.api_url.value)

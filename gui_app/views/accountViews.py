@@ -41,9 +41,9 @@ def accountDetail(request, id):
         url = Url.accountDetail(id, Url.url)
         print(url)
         data = {
-            'auth_token': token
-        }
-        p = ApiUtil.requestGet(url, FuncCode.accountDetail.value, data)
+                'auth_token': token
+                }
+        p = ApiUtil.requestGet(url, FuncCode.accountDetail.value,data)
 
         # -- AccountAPI call, get a response
 #         url2 = Url.assignmentList
@@ -59,21 +59,19 @@ def accountDetail(request, id):
 
         return render(request, Html.accountDetail, {'account': '', 'message': str(ex)})
 
-
 def accountCreate(request):
 
     try:
         token = request.session['auth_token']
         code = FuncCode.accountCreate.value
-        list = RoleUtil.get_role_list(
-            code, token, project_id=request.session['project_id'])
+        list = RoleUtil.get_role_list(code, token, project_id=request.session['project_id'])
 
         if request.method == "GET":
             data = {
-                'auth_token': token
-            }
+                    'auth_token': token
+                    }
 
-            return render(request, Html.accountCreate, {'account': data, 'roleList': list, 'message': ''})
+            return render(request, Html.accountCreate, {'account': data, 'roleList': list,'message': ''})
         else:
             # -- Get a value from a form
             p = request.POST
@@ -82,12 +80,10 @@ def accountCreate(request):
             form = accountForm(request.POST)
             form.full_clean()
             if not form.is_valid():
-                msg = ValiUtil.valiCheck(form)
-                return render(request, Html.accountCreate, {'account': p, 'message': form.errors})
 
+                return render(request, Html.accountCreate, {'account': p, 'message': form.errors})
             # -- AccountCreateAPI call, get a response
-            response = AccountUtil.get_account_create(
-                code, token, p['email'], p['password'], p['repassword'], p['admin'])
+            response = AccountUtil.get_account_create(code, token, p['email'], p['password'], p['repassword'], p['admin'])
 
             return redirect(Path.accountList)
     except Exception as ex:
@@ -102,8 +98,8 @@ def accountEdit(request, id):
             token = request.session['auth_token']
             url = Url.accountDetail(id, Url.url)
             data = {
-                'auth_token': token
-            }
+                    'auth_token': token
+                    }
             p = ApiUtil.requestGet(url, FuncCode.accountEdit.value, data)
             p.update(data)
 
@@ -116,20 +112,20 @@ def accountEdit(request, id):
             form = accountForm(request.POST)
             form.full_clean()
             if not form.is_valid():
-                msg = ValiUtil.valiCheck(form)
+
                 return render(request, Html.accountEdit, {'account': p, 'message': msg})
 
             # -- URL set
             url = Url.accountEdit(id, Url.url)
             # -- Set the value to the form
             data = {
-                'auth_token': request.session['auth_token'],
-                'email': p['email'],
-                'password': p['password'],
-                'repassword': p['repassword'],
-                'admin': p['admin'],
-                'role': p['role'],
-            }
+                    'auth_token': request.session['auth_token'],
+                    'email': p['email'],
+                    'password': p['password'],
+                    'repassword': p['repassword'],
+                    'admin': p['admin'],
+                    'role': p['role'],
+                    }
             # -- API call, get a response
             ApiUtil.requestPost(url, FuncCode.accountEdit.value, data)
 

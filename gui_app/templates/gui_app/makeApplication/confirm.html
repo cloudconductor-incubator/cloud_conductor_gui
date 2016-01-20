@@ -11,7 +11,7 @@
 {% block content %}
 <div class="cc-title">Confirm</div>
 <br>
-	<form method="post" action="{% url 'app:cloudregistConfirm'%}">
+	<form method="post" action="{% url 'app:mkappConfirm'%}">
 	{% csrf_token %}
 	{% include "gui_app/includes/message.html" %}
 		<div class="cc-select">
@@ -21,38 +21,38 @@
 			</div>
 			<div class="panel-body">
 				<p class="help-block">Are you sure you want to be registered with this content?</p>
-				<h3>Project</h3>
+				<h3>System</h3>
 				<table class="table">
 					<tbody>
-						<tr><th>Project name</th><td>{{ project.name }}</td></tr>
-						<tr><th>Decription</th><td>{{ project.description }}</td></tr>
+						<tr><th>System name</th><td>{{ system.name }}</td></tr>
+						<tr><th>Decription</th><td></td></tr>
 					</tbody>
 				</table>
-				<h3>Cloud</h3>
+				<h3>Environment</h3>
 				<table class="table">
 					<tbody>
-						<tr><th>Cloud name</th><td>{{ cloud.name }}</td></tr>
-						<tr><th>Cloud type</th><td>{{ cloud.type }}</td></tr>
-						<tr><th>AccessKey</th><td>{{ cloud.key }}</td></tr>
-						<tr><th>SecretKey</th><td>{{ cloud.secret }}</td></tr>
-						<tr><th>Region name</th><td>{{ cloud.entry_point }}</td></tr>
-						<tr><th>Decription</th><td>{{ cloud.description }}</td></tr>
-						<tr><th>Tenant name</th><td>{{ cloud.tenant_name }}</td></tr>
+						<tr><th>Environment name</th><td>{{ environment.name }}</td></tr>
 					</tbody>
 				</table>
-				<h3>BaseImage</h3>
+				<h3>Application</h3>
 				<table class="table">
 					<tbody>
-						<tr><th>OS Version</th><td>{{ baseImage.os_version }}</td></tr>
-						<tr><th>source_image</th><td>{{ baseImage.source_image }}</td></tr>
-						<tr><th>SSH user name</th><td>{{ baseImage.ssh_username }}</td></tr>
+						<tr><th>Application name</th><td>{{ application.name }}</td></tr>
+						<tr><th>Domain</th><td>{{ application.domain }}</td></tr>
+						<tr><th>Description</th><td>{{ application.description }}</td></tr>
+						<tr><th>URL</th><td>{{ application.url }}</td></tr>
+						<tr><th>Type</th><td>{{ application.type }}</td></tr>
+						<tr><th>Revision</th><td>{{ application.revision }}</td></tr>
+						<tr><th>Pre deploy</th><td>{{ application.pre_deploy }}</td></tr>
+						<tr><th>Post deploy</th><td>{{ application.post_deploy }}</td></tr>
+						<tr><th>Parameters</th><td>{{ application.parameters }}</td></tr>
 					</tbody>
 				</table>
 			</div>
 		</div>
 		</div>
 		<div class="button_left">
-			<button type="button" class="btn btn-primary btn-sm" onclick="location.href='{% url 'app:cloudregistBaseimage' %}'" >
+			<button type="button" class="btn btn-primary btn-sm" onclick="location.href='{% url 'app:mkappEnvironmentSelect' %}'" >
 				<span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
 				 &nbsp;　back
 			</button>

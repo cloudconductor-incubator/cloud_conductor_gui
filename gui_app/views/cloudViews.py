@@ -19,6 +19,7 @@ from logging import getLogger
 logger = getLogger('app')
 
 
+# Create your views here.
 def cloudList(request):
     try:
         # -- Get a cloud list, API call
@@ -50,8 +51,7 @@ def cloudDetail(request, id):
                 'project_id': request.session['project_id'],
                 'cloud_id': id,
                 }
-        baseImages = ApiUtil.requestGet(
-            url2, FuncCode.baseImageList.value, data)
+        baseImages = ApiUtil.requestGet(url2, FuncCode.baseImageList.value, data)
 #         baseImages = baseImages['lists']
 
         return render(request, Html.cloudDetail, {'cloud': cloud, 'baseImage': baseImages, 'message': ''})
@@ -74,7 +74,7 @@ def cloudCreate(request):
                 'cloudType': cloudType
             }
 
-            return render(request, Html.cloudCreate, {'cloud': p, 'message': '', 'cloudType': list(CloudType), 'save': True})
+            return render(request, Html.cloudCreate, {'cloud': p, 'message':'', 'cloudType': list(CloudType), 'save': True})
 
         else:
             # -- Get a value from a form

@@ -72,7 +72,7 @@ def applicationCreate(request):
                 'systems': systems,
             })
 
-            return render(request, Html.applicationCreate, {'app': data, 'message': '', 'systems': systems})
+            return render(request, Html.applicationCreate, {'app': data, 'message': '', 'systems': systems, 'save': True})
         else:
             # -- Get a value from a form
             msg = ''
@@ -87,7 +87,7 @@ def applicationCreate(request):
                 cpPost.update({
                     'systems': systems,
                 })
-                return render(request, Html.applicationCreate, {'app': cpPost, 'message': msg})
+                return render(request, Html.applicationCreate, {'app': cpPost, 'message': msg, 'save': True})
 
             # -- Create a application, api call
             url = Url.applicationCreate
@@ -106,7 +106,7 @@ def applicationCreate(request):
     except Exception as ex:
         log.error(FuncCode.applicationCreate.value, None, ex)
 
-        return render(request, Html.applicationCreate, {'app': request.POST, "message": str(ex)})
+        return render(request, Html.applicationCreate, {'app': request.POST, "message": str(ex), 'save': True})
 
 
 def applicationEdit(request, id):
@@ -130,7 +130,7 @@ def applicationEdit(request, id):
             })
             print(data)
 
-            return render(request, Html.applicationEdit, {'app': data, 'message': ''})
+            return render(request, Html.applicationEdit, {'app': data, 'message': '', 'save': True})
         else:
             # -- Get a value from a form
             msg = ''
@@ -141,7 +141,7 @@ def applicationEdit(request, id):
             if not form.is_valid():
                 msg = ValiUtil.valiCheck(form)
                 print(p)
-                return render(request, Html.applicationEdit, {'app': p, 'message': msg})
+                return render(request, Html.applicationEdit, {'app': p, 'message': msg, 'save': True})
 
             # -- Create a application, api call
             url = Url.applicationEdit(id, Url.url)
@@ -160,7 +160,7 @@ def applicationEdit(request, id):
     except Exception as ex:
         log.error(FuncCode.applicationEdit.value, None, ex)
 
-        return render(request, Html.applicationEdit, {'app': request.POST, "message": str(ex)})
+        return render(request, Html.applicationEdit, {'app': request.POST, "message": str(ex), 'save': True})
 
 
 def applicationDelete(request, id):

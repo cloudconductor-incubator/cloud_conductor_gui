@@ -2,18 +2,21 @@
 from django.shortcuts import render, redirect
 import json
 import requests
+import ast
 from collections import OrderedDict
-from ..forms import projectForm
-from ..forms import cloudForm
-from ..forms import baseImageForm
+from ..forms import w_applicationForm
+from ..forms import w_environmentForm
+from ..forms import environmentSelectForm
+from ..forms import systemSelectForm
+from ..forms import systemForm
 from ..utils import RoleUtil
 from ..utils import ValiUtil
 from ..utils import ApiUtil
-from ..utils import ProjectUtil
-from ..utils import CloudUtil
 from ..utils import SystemUtil
+from ..utils import ApplicationUtil
 from ..utils import EnvironmentUtil
-from ..utils import BaseimageUtil
+from ..utils import ApplicationHistoryUtil
+from ..utils.BlueprintUtil import get_blueprint_version
 from ..utils import StringUtil
 from ..utils.PathUtil import Path
 from ..utils.PathUtil import Html
@@ -21,9 +24,9 @@ from ..utils.ApiUtil import Url
 from ..utils.ErrorUtil import ApiError
 from ..enum import ResponseType
 from ..enum.LogType import Message
-from ..enum.CloudType import CloudType
-from ..enum.OSVersion import OSVersion
 from ..enum.FunctionCode import FuncCode
+from ..enum.ApplicationType import ApplicaionType
+from ..enum.ProtocolType import ProtocolType
 from ..logs import log
 
 
@@ -33,216 +36,272 @@ def systemSelect(request):
 
         id = session.get('project_id')
         token = session.get('auth_token')
-        code = FuncCode.cloudReg_project.value
+        code = FuncCode.newapp_system.value
+        list = SystemUtil.get_system_list2(code, token, id)
 
         if request.method == "GET":
-            list = SystemUtil.get_system_list2(code, token, id)
-            print(list)
+            system = session.get('system')
 
-            return render(request, Html.newapp_systemSelect, {"system": list, 'message': ''})
+            return render(request, Html.newapp_systemSelect, {"list": list, 'system': system, 'message': ''})
         elif request.method == "POST":
+            p = request.POST
+            cpPost = p.copy()
+            system = putSystem(cpPost)
+            form = environmentSelectForm(system)
+            if not form.is_valid():
 
-            p = Path.newapp_applicationCreate
-            print(Path.newapp_applicationCreate)
+                return render(request, Html.newapp_systemSelect, {"list": list, 'system': system, 'message': form.errors})
 
-            return redirect('mkappApplicationCreate')
+            session['system'] = system
 
+            return redirect(Path.newapp_applicationCreate)
     except Exception as ex:
         log.error(FuncCode.newapp_system.value, None, ex)
 
         return render(request, Html.newapp_systemSelect, {"system": '', 'message': str(ex)})
 
 
-# def systemCreate(request):
-#     try:
-#         if request.method == "GET":
-#
-#             project = request.session.get('project')
-#             p = {'auth_token': request.session['auth_token']}
-#             if project:
-#                 p.update(project)
-#
-#             return render(request, Html.newapp_applicationCreate, {"project": p, 'message': ''})
-#         elif request.method == "POST":
-#             param = request.POST
-#             # -- Validate check
-#             form = projectForm(param)
-#             if not form.is_valid():
-#                 project = param.copy()
-#                 return render(request, Html.newapp_applicationCreate, {"project": project, 'message': form.errors})
-#
-#             # -- Session add
-#             project = projectPut(param)
-#             request.session['project'] = project
-#
-#             return redirect(Path.newapp_environmntSelect)
-#     except Exception as ex:
-#         log.error(FuncCode.newapp_applicationCreate.value, None, ex)
-#
-#         return render(request, Html.newapp_applicationCreate, {"project": request.POST, 'message': str(ex)})
+def systemCreate(request):
+    try:
+        code = FuncCode.newapp_system.value
+        if request.method == "GET":
+            system = request.session.get('system')
+
+            return render(request, Html.newapp_systemCreate, {"system": system, 'message': ''})
+        elif request.method == "POST":
+            param = request.POST
+
+            # -- Validate check
+            form = systemForm(param)
+            if not form.is_valid():
+
+                return render(request, Html.newapp_systemCreate, {"system": param, 'message': form.errors})
+
+            # -- Session add
+            system = systemPut(param)
+            request.session['system'] = system
+
+            return redirect(Path.newapp_applicationCreate)
+    except Exception as ex:
+        log.error(FuncCode.newapp_system.value, None, ex)
+
+        return render(request, Html.newapp_systemCreate, {"application": '', 'message': str(ex)})
 
 
 def applicationCreate(request):
     try:
+        code = FuncCode.newapp_application.value
         if request.method == "GET":
-            param = {
-                     'auth_token': request.session['auth_token'],
-                     'project_id': request.session['project_id'],
-                     }
+            application = request.session.get('application')
 
-            cloud = request.session.get('cloud')
-            if StringUtil.isNotEmpty(cloud):
-                param.update(cloud)
-
-            return render(request, Html.newapp_applicationCreate, {"cloud": param, 'cloudType': list(CloudType),'message': ''})
+            return render(request, Html.newapp_applicationCreate, {"app": application, 'apptype': list(ApplicaionType),
+                                                                   'protocol': list(ProtocolType), 'message': ''})
         elif request.method == "POST":
             param = request.POST
 
             # -- Validate check
-            form = cloudForm(param)
+            form = w_applicationForm(param)
             if not form.is_valid():
-                cloud = param.copy()
 
-                return render(request, Html.newapp_applicationCreate, {"cloud": cloud, 'cloudType': list(CloudType), 'message': form.errors})
+                return render(request, Html.newapp_applicationCreate, {"application": param, 'apptype': list(ApplicaionType),
+                                                                       'protocol': list(ProtocolType), 'message': form.errors})
 
             # -- Session add
-            cloud = cloudPut(param)
-            request.session['cloud'] = cloud
+            application = applicationPut(param)
+            request.session['application'] = application
 
-            return redirect(Path.newapp_environmntSelect)
+            return redirect(Path.newapp_environmentSelect)
     except Exception as ex:
-        log.error(FuncCode.newapp_applicationCreate.value, None, ex)
+        log.error(FuncCode.newapp_application.value, None, ex)
 
-        return render(request, Html.newapp_applicationCreate, {"cloud": request.POST, 'cloudType': list(CloudType), 'message': str(ex)})
+        return render(request, Html.newapp_applicationCreate, {"application": '', 'apptype': list(ApplicaionType),
+                                                               'protocol': list(ProtocolType), 'message': str(ex)})
 
 
 def environmentSelect(request):
     try:
+        code = FuncCode.newapp_environment.value
+        session = request.session
+        token = session['auth_token']
+        project_id = session['project_id']
+        list = EnvironmentUtil.get_environment_list2(code, token, project_id)
+
         if request.method == "GET":
-            list = SystemUtil.get_system_list2(code, token, id)
-            print(list)
+            environment = session.get('environment')
 
-            return render(request, Html.newapp_environmntSelect, {"baseImage": param, 'osversion': list(OSVersion), 'message': ''})
+            return render(request, Html.newapp_environmentSelect, {"list": list, 'environment': environment, 'message': ''})
         elif request.method == "POST":
-            param = request.POST
-
-            # -- Validate check
-            form = baseImageForm(param)
+            p = request.POST
+            cpPost = p.copy()
+            environment = putEnvironment(cpPost)
+            form = environmentSelectForm(environment)
             if not form.is_valid():
-                baseimage = param.copy()
 
-                return render(request, Html.newapp_environmntSelect, {"baseImage": baseimage, 'osversion': list(OSVersion), 'message': form.errors})
+                return render(request, Html.newapp_environmentSelect, {"list": list, 'environment': environment,
+                                                                       'message': form.errors})
 
-            baseimage = baseimagePut(request.POST)
-            request.session['baseimage'] = baseimage
+            request.session['environment'] = environment
 
             return redirect(Path.newapp_confirm)
     except Exception as ex:
-        log.error(FuncCode.newapp_environmntSelect.value, None, ex)
+        log.error(FuncCode.newapp_environment.value, None, ex)
 
-        return render(request, Html.newapp_environmntSelect, {
-                                                                  "baseimage": request.POST, 'message': str(ex),
-                                                                  'wizard': True})
+        return render(request, Html.newapp_environmentSelect, {"list": '', 'environment': '', 'message': ''})
+
+
+def environmentCreate(request):
+    try:
+        code = FuncCode.newapp_environment.value
+        session = request.session
+        data = {
+            'auth_token': session.get('auth_token'),
+            'project_id': session.get('project_id')
+        }
+
+        clouds = ApiUtil.requestGet(Url.cloudList, code, data)
+        systems = ApiUtil.requestGet(Url.systemList, code, data)
+        blueprints = get_blueprint_version(code, data)
+
+        if request.method == "GET":
+            environment = request.session.get('environment')
+
+            return render(request, Html.newapp_environmentCreate, {'clouds': clouds, 'systems': systems,
+                                                                   'blueprints': blueprints, 'env': environment,
+                                                                   'message': ''})
+        elif request.method == "POST":
+            param = request.POST
+            # -- Validate check
+            form = w_environmentForm(param)
+            if not form.is_valid():
+
+                return render(request, Html.newapp_environmentCreate, {'clouds': clouds, 'systems': systems,
+                                                                       'blueprints': blueprints, 'env': param,
+                                                                       'message': form.errors})
+
+            # -- Session add
+            application = applicationPut(param)
+            request.session['environment'] = environment
+
+            return redirect(Path.newapp_environmentCreate)
+    except Exception as ex:
+        log.error(FuncCode.newapp_environment.value, None, ex)
+
+        return render(request, Html.newapp_environmentCreate, {"env": '', 'message': str(ex)})
 
 
 def confirm(request):
-    try:
+    #     try:
+    session = request.session
+    sys_session = session.get('system')
+    app_session = session.get('application')
+    env_session = session.get('environment')
+
+    if request.method == "GET":
+
+        return render(request, Html.newapp_confirm, {"system": sys_session, 'application': app_session, 'environment': env_session, 'message': ''})
+    elif request.method == "POST":
         session = request.session
-        pj_session = session.get('project')
-        cl_session = session.get('cloud')
-        bi_session = session.get('baseimage')
+        code = FuncCode.newapp_confirm.value
+        token = session.get('auth_token')
+        project_id = ''
 
-        if request.method == "GET":
+        # -- application createt
+        application = ApplicationUtil.create_application(code, token, sys_session.get('id'),
+                        app_session.get('name'), app_session.get('description'), app_session.get('domain'))
 
-            return render(request, Html.newapp_confirm, {"project": pj_session, 'cloud': cl_session, 'baseImage': bi_session, 'message': ''})
-        elif request.method == "POST":
-            session = request.session
-            code = FuncCode.cloudReg_confirm.value
-            token = session.get('auth_token')
-            project_id = ''
+        # -- applicationHistory create
+        history = ApplicationHistoryUtil.create_history(code, token, application.get('id'), app_session.get('url'),
+                        app_session.get('type'), app_session.get('protocol'), app_session.get('revision'),
+                        app_session.get('pre_deploy'), app_session.get('post_deploy'), app_session.get('parameters'))
 
-            print(pj_session)
+        # -- application deploy
+        deploy = ApplicationUtil.deploy_application(
+            code, token, env_session.get('id'), application.get('id'))
 
-            # -- project Create
-            if pj_session:
-                project = ProjectUtil.create_project(code, token, pj_session.get('name'),
-                                                     pj_session.get('description'))
-                project_id = project.get('id')
-            else:
-                project_id = session.get('project_id')
+        # -- session delete
+        sessionDelete(session)
 
-            print(project_id)
-            # -- cloud Create
-            cloud = CloudUtil.create_cloud(code, token, project_id,
-                                           cl_session.get('name'), cl_session.get('type'), cl_session.get('key'),
-                                           cl_session.get('secret'), cl_session.get('entry_point'),
-                                           cl_session.get('tenant_name'), cl_session.get('description'))
-
-            # -- baseimage Create
-            print(cloud)
-            print(cloud.get('id'))
-            baseimage = BaseimageUtil.create_baseimage(code, token, cloud.get('id'), bi_session.get('ssh_username'),
-                                                       bi_session.get('source_image'), bi_session.get('os_version'))
-
-            # -- session delete
-            sessionDelete(session)
-
-            return redirect(Path.top)
-    except Exception as ex:
-        log.error(FuncCode.newapp_confirm.value, None, ex)
-        session = request.session
-
-        return render(request, Html.newapp_confirm, {"project": session.get('project'),'cloud': session.get('cloud'),
-                                                          'baseImage': session.get('baseimage'), 'message': str(ex)})
+        return redirect(Path.top)
+#     except Exception as ex:
+#         log.error(FuncCode.newapp_confirm.value, None, ex)
+#         session = request.session
+#
+#         return render(request, Html.newapp_confirm, {"project": session.get('project'),'cloud': session.get('cloud'),
+#                                                           'baseImage': session.get('baseimage'), 'message': str(ex)})
 
 
-def projectPut(req):
+def putEnvironment(param):
+
+    environment = param.get('environment', None)
+    if environment != None and environment != '':
+        environment = ast.literal_eval(environment)
+
+        param['id'] = blueprint.get('id')
+        param['name'] = blueprint.get('name')
+
+    return param
+
+
+def putSystem(param):
+
+    system = param.get('system', None)
+    if system != None and system != '':
+        system = ast.literal_eval(system)
+
+        param['id'] = system.get('id')
+        param['name'] = blueprint.get('name')
+
+    return param
+
+
+def systemPut(req):
     if StringUtil.isEmpty(req):
         return None
 
-    project = {
+    system = {
+        'id': req.get('id'),
+        'name': req.get('name'),
+    }
+    return system
+
+
+def environmentPut(req):
+    if StringUtil.isEmpty(req):
+        return None
+
+    environment = {
+        'id': req.get('id'),
+        'name': req.get('name'),
+    }
+    return environment
+
+
+def applicationPut(req):
+    if StringUtil.isEmpty(req):
+        return None
+
+    application = {
         'name': req.get('name'),
         'description': req.get('description'),
-    }
-    return project
-
-
-def cloudPut(req):
-    if StringUtil.isEmpty(req):
-        return None
-
-    cloud = {
-        'name': req.get('name'),
+        'domain': req.get('domain'),
+        'url': req.get('url'),
         'type': req.get('type'),
-        'key': req.get('key'),
-        'secret': req.get('secret'),
-        'entry_point': req.get('entry_point'),
-        'description': req.get('description'),
-        'tenant_name': req.get('tenant_name'),
+        'protocol': req.get('protocol'),
+        'revision': req.get('revision'),
+        'pre_deploy': req.get('pre_deploy'),
+        'post_deploy': req.get('post_deploy'),
+        'parameters': req.get('parameters'),
     }
-    return cloud
-
-
-def baseimagePut(req):
-    if StringUtil.isEmpty(req):
-        return None
-
-    baseimage = {
-        'os_version': req.get('os_version'),
-        'source_image': req.get('source_image'),
-        'ssh_username': req.get('ssh_username'),
-    }
-    return baseimage
-
+    return application
 
 
 def sessionDelete(session):
 
-    if 'project' in session:
-        del session['project']
+    if 'system' in session:
+        del session['system']
 
-    if 'cloud' in session:
-        del session['cloud']
+    if 'environment' in session:
+        del session['environment']
 
-    if 'baseimage' in session:
-        del session['baseimage']
+    if 'application' in session:
+        del session['application']

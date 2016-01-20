@@ -91,13 +91,13 @@ button.cc-menu-change{
 }
 
 .cc-desc {
-    width:90%;
+	width: 100%;
     border: solid 1px #DCDCDC;
     padding: 30px 30px 30px 10px;
 }
 
 .cc-desc2 {
-    width:90%;
+    width:100%;
     border: dashed 1px #DCDCDC;
     padding: 30px 30px 30px 10px;
 }
@@ -114,7 +114,7 @@ button.cc-menu-change{
 }
 
 .cc-select{
-    width:70%;
+    width:600px;
     padding: 30px;
 }
 

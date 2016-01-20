@@ -19,6 +19,7 @@ from ..enum.OSVersion import OSVersion
 from ..logs import log
 
 
+
 def blueprintList(request):
     try:
         blueprints = None
@@ -29,8 +30,7 @@ def blueprintList(request):
             'auth_token': request.session['auth_token'],
             'project_id': request.session['project_id']
         }
-        blueprints = ApiUtil.requestGet(
-            url, FuncCode.blueprintList.value, data)
+        blueprints = ApiUtil.requestGet(url, FuncCode.blueprintList.value, data)
 
         return render(request, Html.blueprintList, {'blueprints': blueprints, 'message': ''})
     except Exception as ex:
@@ -106,7 +106,9 @@ def blueprintCreate(request):
             print("post:")
             print(p)
 
+
             pattern_id[i]
+
 
             # -- 1.Create a blueprint, api call
             url = Url.blueprintCreate
@@ -178,6 +180,7 @@ def blueprintEdit(request, id):
             patterns = ApiUtil.requestGet(
                 url, FuncCode.blueprintCreate.value, data)
 
+
             return render(request, Html.blueprintEdit, {'blueprint': p, 'patternSelect': patternSelect, 'message': ''})
         else:
             # -- Get a value from a form
@@ -197,7 +200,7 @@ def blueprintEdit(request, id):
                 'project_id': p['project_id'],
                 'name': p['name'],
                 'description': p['description'],
-                #                 'patterns_attributes': p['patterns_attributes'],
+#                 'patterns_attributes': p['patterns_attributes'],
             }
             # -- API call, get a response
             ApiUtil.requestPut(url, FuncCode.blueprintEdit.value, data)

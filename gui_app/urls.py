@@ -5,6 +5,7 @@ from .views import baseImageViews
 from .views import roleViews
 from .views import loginViews
 from .views import accountViews
+from .views import roleViews
 from .views import systemViews
 from .views import environmentViews
 from .views import applicationViews
@@ -13,6 +14,8 @@ from .views import patternViews
 from .views import topViews
 from .views import cloudRegistrationViews
 from .views import makeApplicationViews
+from .views import applicationEnvironmentViews
+from .views import applicationDeployViews
 
 from .views import testFileViews
 
@@ -54,7 +57,6 @@ urlpatterns = [
     url('^environment/create', environmentViews.environmentCreate, name="environmentCreate"),
     url('^environment/(?P<id>\d+)/edit/$', environmentViews.environmentEdit, name="environmentEdit"),
     url('^environment/(?P<id>\d+)/delete/', environmentViews.environmentDelete, name="environmentDelete"),
-    url('^environment/upload/', environmentViews.fileUpload, name="fileUpload"),
 
     url('^application/list', applicationViews.applicationList, name="applicationList"),
     url('^application/(?P<id>\d+)/detail/', applicationViews.applicationDetail, name="applicationDetail"),
@@ -80,14 +82,17 @@ urlpatterns = [
     url('^pattern/(?P<id>\d+)/edit/$', patternViews.patternEdit, name="patternEdit"),
     url('^pattern/(?P<id>\d+)/delete/', patternViews.patternDelete, name="patternDelete"),
 
-    url('^role/index/', roleViews.index, name="role"),
-    url('^role/(?P<id>\d+)/menu/', roleViews.roleChange, name="roleChange"),
-
     url('^account/list', accountViews.accountList, name="accountList"),
     url('^account/(?P<id>\d+)/detail/', accountViews.accountDetail, name="accountDetail"),
     url('^account/create/', accountViews.accountCreate, name="accountCreate"),
     url('^account/(?P<id>\d+)/edit/', accountViews.accountEdit, name="accountEdit"),
     url('^account/(?P<id>\d+)/delete/', accountViews.accountDelete, name="accountDelete"),
+
+    url('^role/list', roleViews.roleList, name="roleList"),
+    url('^role/(?P<id>\d+)/detail/', roleViews.roleDetail, name="roleDetail"),
+    url('^role/create/', roleViews.roleCreate, name="roleCreate"),
+    url('^role/(?P<id>\d+)/edit/', roleViews.roleEdit, name="roleEdit"),
+    url('^role/(?P<id>\d+)/delete/', roleViews.roleDelete, name="roleDelete"),
 
     url('^role/create/', roleViews.roleCreate, name="roleCreate"),
 
@@ -97,10 +102,21 @@ urlpatterns = [
     url('^cloudregist/baseimage/create/', cloudRegistrationViews.baseimageCreate, name="cloudregistBaseimage"),
     url('^cloudregist/confirm/', cloudRegistrationViews.confirm, name="cloudregistConfirm"),
 
-    url('^makeapplication/system/select/', makeApplicationViews.systemSelect, name="mkappSystemSelect"),
-    url('^makeapplication/application/create/', makeApplicationViews.applicationCreate, name="mkappApplicationCreate"),
-    url('^makeapplication/environment/select/', makeApplicationViews.environmentSelect, name="mkappEnvironmentSelect"),
-    url('^makeapplication/confirm/', makeApplicationViews.confirm, name="mkappConfirm"),
+    url('^newapp/system/select/', makeApplicationViews.systemSelect, name="mkappSystemSelect"),
+    url('^newapp/system/create/', makeApplicationViews.systemCreate, name="mkappSystemCreate"),
+    url('^newapp/application/create/', makeApplicationViews.applicationCreate, name="mkappApplicationCreate"),
+    url('^newapp/environment/select/', makeApplicationViews.environmentSelect, name="mkappEnvironmentSelect"),
+    url('^newapp/environment/create/', makeApplicationViews.environmentCreate, name="mkappEnvironmentCreate"),
+    url('^newapp/confirm/', makeApplicationViews.confirm, name="mkappConfirm"),
+
+    url('^envapp/system/select/', applicationEnvironmentViews.systemSelect, name="envapp_systemSelect"),
+    url('^envapp/blueprint/select/', applicationEnvironmentViews.blueprintSelect, name="envapp_bluprintSelect"),
+    url('^envapp/environment/select/', applicationEnvironmentViews.environmentSelect, name="envapp_environmentSelect"),
+    url('^envapp/confirm/', applicationEnvironmentViews.confirm, name="envapp_confirm"),
+
+    url('^appdeploy/application/select/', applicationDeployViews.applicationSelect, name="appdeployApplicationSelect"),
+    url('^appdeploy/environment/select/', applicationDeployViews.environmentSelect, name="appdeployEnvironmentSelect"),
+    url('^appdeploy/confirm/', applicationDeployViews.confirm, name="appdeployConfirm"),
 
 
 # -- delete

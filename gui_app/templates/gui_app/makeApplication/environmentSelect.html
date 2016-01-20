@@ -9,36 +9,33 @@
 	<li>Make new application</li>
 {% endblock %}
 {% block content %}
-<div class="cc-title">Environment Select</div>
-<br>
-	<form method="post" action="{% url 'app:mkappEnvironmentSelect'%}">
-		{% csrf_token %}
-		{% include "gui_app/includes/message.html" %}
-		<input id="auth_token" type="hidden" name="auth_token" value="{{ project.auth_token }}">
-
-		{% if request.session.project_manage or request.session.system_create  %}
+<div class="cc-title">Make new application</div>
+		{% if request.session.environment_manage or request.session.environment_create  %}
 		<div>
-			<button class="btn btn-primary btn-sm" style="float:right" onclick="location.href='{% url 'app:cloudregistProject' %}'" type="button">
+			<button class="btn btn-primary btn-sm" style="float:right" onclick="location.href='{% url 'app:mkappEnvironmentCreate' %}'" type="button">
 				<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;　new
 			</button>
 		</div>
 		{% endif %}
-		<br>
+<form method="post" action="{% url 'app:envapp_environmentSelect'%}">
+	<div class="cc-select">
+		{% csrf_token %}
+		{% include "gui_app/includes/message.html" %}
+		<h3>Environment select</h3>
 		<div class="form-group">
-	    	<label><span id="req">*</span>System</label>
-			<select class="form-control" name="type" id="type">
+	    	<label><span id="req">*</span>Environment</label>
+			<select class="form-control" name="id" id="id">
 		        <option value=""></option>
-		        {% for s in system %}
-				   <option value="{{ s.id }}" {% if  cloud.id == s.id %} selected="selected" {% endif %}>
-				       {{ s.name }}
-				   </option>
+				{% for env in list %}
+					<option value="{{ env.id }}" {% ifequal env.id environment.id%} selected="selected"{% endifequal %}>
+					{{ env.name }}
+					<input id="name" type="hidden" name="name" value="{{ env.name }}"></option>
 				{% endfor %}
 		    </select>
 	    </div>
-	</form>
-
-	<div class="button_left">
-			<button type="button" class="btn btn-primary btn-sm hidden" onclick="location.href='#'" >
+	    	<div class="cc-desc" id="contents-reload"> Display the contents </div>
+		<div class="button_left">
+			<button type="button" class="btn btn-primary btn-sm" onclick="location.href='{% url 'app:mkappApplicationCreate' %}'" >
 				<span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
 				 &nbsp;　back
 			</button>
@@ -48,7 +45,8 @@
 				</button>
 			</span>
 		</div>
-
+	</div>
+</form>
 {% endblock %}
 
 {% block bodyscript %}{% endblock %}

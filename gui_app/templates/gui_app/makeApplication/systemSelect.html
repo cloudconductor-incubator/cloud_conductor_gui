@@ -1,7 +1,7 @@
 {% extends "gui_app/base.html" %}
-{% block title %}Project Select{% endblock %}
-{% block headerscript %}
-{% endblock %}
+{% block title %}Make new application{% endblock %}
+{% block headerscript %}{% endblock %}
+{% block bodyscripttop %}{% endblock %}
 {% block nav %}
     {% include "gui_app/includes/nav_menu.html" %}
 {% endblock %}
@@ -10,28 +10,31 @@
 {% endblock %}
 {% block content %}
 <div class="cc-title">Make new application</div>
-<br>
-	<form method="post" action="{% url 'app:mkappSystemSelect'%}">
-		{% csrf_token %}
-		{% include "gui_app/includes/message.html" %}
-		<input id="auth_token" type="hidden" name="auth_token" value="{{ project.auth_token }}">
-
-		{% if request.session.project_manage or request.session.project_create  %}
+		{% if request.session.system_manage or request.session.system_create  %}
 		<div>
-			<button class="btn btn-primary btn-sm" style="float:right" onclick="location.href='{% url 'app:cloudregistProject' %}'" type="button">
+			<button class="btn btn-primary btn-sm" style="float:right" onclick="location.href='{% url 'app:mkappSystemCreate' %}'" type="button">
 				<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;　new
 			</button>
 		</div>
 		{% endif %}
+<form method="post" action="{% url 'app:mkappSystemSelect'%}">
+	<div class="cc-select">
 
-		<h3>Project</h3>
-		<table class="table">
-			<tbody>
-				<tr><th>Project name</th><td>{{ project.name }}</td></tr>
-				<tr><th>Decription</th><td>{{ project.description }}</td></tr>
-			</tbody>
-		</table>
-
+		{% csrf_token %}
+		{% include "gui_app/includes/message.html" %}
+		<h3>System select</h3>
+		<div class="form-group">
+	    	<label><span id="req">*</span>System</label>
+			<select class="form-control" name="id" id="id">
+		        <option value=""></option>
+				{% for sys in list %}
+					<option value="{{ sys.id }}" {% if sys.id == system.id %} selected="selected" {% endif %}>
+					{{ sys.name }}
+					<input id="name" type="hidden" name="name" value="{{ sys.name }}"></option>
+				{% endfor %}
+		    </select>
+	    </div>
+	    	<div class="cc-desc" id="contents-reload"> Display the contents </div>
 		<div class="button_left">
 			<button type="button" class="btn btn-primary btn-sm hidden" onclick="location.href='#'" >
 				<span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
@@ -43,9 +46,8 @@
 				</button>
 			</span>
 		</div>
-
-	</form>
-
+	</div>
+</form>
 {% endblock %}
 
 {% block bodyscript %}{% endblock %}

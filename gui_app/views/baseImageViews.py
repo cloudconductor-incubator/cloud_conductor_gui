@@ -38,15 +38,13 @@ def baseImageDetail(request, id):
 
 def baseImageCreate(request, cid):
     try:
-        oSVersion = list(OSVersion)
-
         if request.method == "GET":
             p = {
                 'auth_token': request.session['auth_token'],
                 'cloud_id': cid,
             }
 
-            return render(request, Html.baseImageCreate, {'baseImage': p, 'osversion': list(OSVersion), 'message': '', 'save': True})
+            return render(request, Html.baseImageCreate, {'baseImage': p,'osversion': list(OSVersion), 'message': '', 'save': True})
         else:
             # -- Get a value from a form
             msg = ''
@@ -57,7 +55,7 @@ def baseImageCreate(request, cid):
                 msg = ValiUtil.valiCheck(form)
                 cpPost = p.copy()
 
-                return render(request, Html.baseImageCreate, {'baseImage': cpPost, 'osversion': list(OSVersion), 'message': form.errors, 'save': True})
+                return render(request, Html.baseImageCreate, {'baseImage': cpPost,'osversion': list(OSVersion), 'message': form.errors, 'save': True})
 
             # -- Create a project, api call
             url = Url.baseImageCreate
@@ -75,7 +73,7 @@ def baseImageCreate(request, cid):
     except Exception as ex:
         log.error(FuncCode.baseImageCreate.value, None, ex)
 
-        return render(request, Html.baseImageCreate, {'baseImage': request.POST, 'osversion': list(OSVersion), "message": str(ex), 'save': True})
+        return render(request, Html.baseImageCreate, {'baseImage': request.POST,'osversion': list(OSVersion), "message": str(ex), 'save': True})
 
 
 def baseImageEdit(request, id):
@@ -89,7 +87,7 @@ def baseImageEdit(request, id):
             p = ApiUtil.requestGet(url, FuncCode.baseImageEdit.value, data)
             p.update(data)
 
-            return render(request, Html.baseImageEdit, {'baseImage': p, 'osversion': list(OSVersion), 'message': '', 'save': True})
+            return render(request, Html.baseImageEdit, {'baseImage': p,'osversion': list(OSVersion), 'message': '', 'save': True})
         else:
             # -- Get a value from a form
             p = request.POST
@@ -100,7 +98,7 @@ def baseImageEdit(request, id):
                 msg = ValiUtil.valiCheck(form)
                 cpPost = p.copy()
 
-                return render(request, Html.baseImageEdit, {'baseImage': p, 'osversion': list(OSVersion), 'message': form.errors, 'save': True})
+                return render(request, Html.baseImageEdit, {'baseImage': p,'osversion': list(OSVersion), 'message': form.errors, 'save': True})
 
             # -- URL set
             url = Url.baseImageEdit(id, Url.url)
@@ -119,7 +117,7 @@ def baseImageEdit(request, id):
     except Exception as ex:
         log.error(FuncCode.baseImageEdit.value, None, ex)
 
-        return render(request, Html.baseImageEdit, {'baseImage': request.POST, 'osversion': list(OSVersion), 'message': ex, 'save': True})
+        return render(request, Html.baseImageEdit, {'baseImage': request.POST,'osversion': list(OSVersion), 'message': ex, 'save': True})
 
 
 def baseImageDelete(request, id):

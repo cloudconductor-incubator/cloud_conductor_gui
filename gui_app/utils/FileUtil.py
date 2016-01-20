@@ -3,7 +3,6 @@ from django.http import HttpResponse
 import io
 from django.http import *
 
-
 def download(request):
 
     print("fileUtil now")
@@ -18,7 +17,6 @@ def download(request):
 
 def download_file(request):
     print("fileUtil now")
-    response = HttpResponse(
-        open('/path/to/downloadfile', 'rb').read(), mimetype='text/plain')
+    response = HttpResponse(open('/path/to/downloadfile','rb').read(), mimetype='text/plain')
     response['Content-Disposition'] = 'filename=text.txt'
     return response

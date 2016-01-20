@@ -92,8 +92,8 @@ def get_blueprint_pattern_list(code, id, token):
         return None
 
     data = {
-        'auth_token': token,
-    }
+            'auth_token': token,
+        }
 
     url = Url.blueprintPattrnList(id, Url.url)
     list = ApiUtil.requestGet(url, code, data)
@@ -116,9 +116,9 @@ def get_pattern_list(code, id, token, pjid):
         return None
 
     data = {
-        'auth_token': token,
-        'project_id': pjid,
-    }
+            'auth_token': token,
+            'project_id': pjid,
+        }
 
     bpptternList = get_blueprint_pattern_list(code, id, token)
     if StringUtil.isEmpty(bpptternList):
@@ -133,14 +133,14 @@ def get_pattern_list(code, id, token, pjid):
     list = []
 #     bpptternList = bpptternList['lists']
 #     patternList = patternList['lists']
-    for bpt in bpptternList:
+    for bpt in bpptternList :
 
         for pt in patternList:
 
             if pt.get('id') == bpt.get('pattern_id'):
 
                 dic['id'] = pt.get('id')
-                dic['name'] = pt.get('name')
+                dic['name'] =  pt.get('name')
                 dic['revision'] = pt.get('revision')
                 dic['protocol'] = pt.get('protocol')
                 list.append(dic.copy())

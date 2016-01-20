@@ -8,7 +8,6 @@ from ..enum import ResponseType
 from ..enum.FunctionCode import FuncCode
 from ..logs import log
 
-
 def get_account_list(code, token, project_id=None):
     if StringUtil.isEmpty(code):
         return None
@@ -17,13 +16,12 @@ def get_account_list(code, token, project_id=None):
         return None
 
     data = {
-        'auth_token': token,
-        'project_id': project_id,
-    }
+            'auth_token': token,
+            'project_id': project_id,
+            }
 
     url = Url.accountList
     list = ApiUtil.requestGet(url, code, data)
-#     list = list['lists']
     return list
 
 
@@ -59,12 +57,12 @@ def get_account_create(code, token, email, password, repassword, admin):
 
     # -- Set the value to the form
     data = {
-        'auth_token': token,
-        'email': email,
-        'password': password,
-        'password_confirmation': repassword,
-        'admin': admin_role,
-    }
+            'auth_token': token,
+            'email': email,
+            'password': password,
+            'password_confirmation': repassword,
+            'admin': admin_role,
+            }
     # -- API call, get a response
     response = ApiUtil.requestPost(url, code, data)
 

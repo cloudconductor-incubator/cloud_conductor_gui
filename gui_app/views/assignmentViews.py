@@ -17,8 +17,7 @@ from ..enum.LogType import Message
 from ..enum.FunctionCode import FuncCode
 from ..logs import log
 
-
-
+# CloudConductor add
 def assignmentList(request):
     try:
         projects = None
@@ -75,8 +74,8 @@ def assignmentEdit(request, id=None):
             token = request.session['auth_token']
             url = Url.projectDetail(id, Url.url)
             data = {
-                'auth_token': token
-            }
+                    'auth_token': token
+                    }
             p = ApiUtil.requestGet(url, FuncCode.projectEdit.value, data)
             p.update(data)
 
@@ -96,10 +95,10 @@ def assignmentEdit(request, id=None):
             url = Url.projectEdit(id, Url.url)
             # -- Set the value to the form
             data = {
-                'auth_token': request.session['auth_token'],
-                'name': p['name'],
-                'description': p['description']
-            }
+                    'auth_token': request.session['auth_token'],
+                    'name': p['name'],
+                    'description': p['description']
+                    }
             # -- API call, get a response
             ApiUtil.requestPost(url, FuncCode.projectEdit.value, data)
 
@@ -122,3 +121,4 @@ def assignmentDelete(request, id):
         log.error(FuncCode.projectDelete.value, None, ex)
 
         return render(request, Html.projectDetail, {'project': '', 'accounts': '', 'message': str(ex)})
+

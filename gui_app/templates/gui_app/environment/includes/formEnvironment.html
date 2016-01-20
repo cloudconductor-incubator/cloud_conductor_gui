@@ -12,7 +12,7 @@
 		<label><span id="req">*</span>System</label> <select
 			class="form-control" name="system_id" id="system_id">
 			<option value=""></option>
-			{% for s in env.systems %}
+			{% for s in systems %}
 				<option value="{{ s.id }}" {% if env.system_id == s.id %} selected="selected"{% endif %}>
 					{{ s.name }}
 				</option>
@@ -26,7 +26,7 @@
 		<input id="a" type="hidden" name="a" value="{{ env.version }}">
 		<select class="form-control" name="blueprint" id="blueprint">
 			<option value=""></option>
-			{% for b in env.blueprints %}
+			{% for b in blueprints %}
 			<option value="{'id': {{ b.id }}, 'version': {{ b.version }}}" {% ifequal b.id env.blueprint_id %}{% ifequal b.version env.version %} selected="selected"{% endifequal %}{% endifequal %}>
 				{{ b.name }}&nbsp;:&nbsp;{{ b.version }}
 			</option>
@@ -37,14 +37,10 @@
 	<div class="form-group">
 		<label><span id="req">*</span>Cloud priority</label>
 		<div class="input-group">
-			<span id="sizing-addon2" class="input-group-addon">1.</span> <input
-				type="hidden" id="candidates_attributes_1"
-				name="candidates_attributes_1"
-				value="{{ env.candidates_attributes_1 }}"> <select
-				class="form-control" name="candidates_attributes_1"
-				id="candidates_attributes_1">
+			<span id="sizing-addon2" class="input-group-addon">1.</span>
+			<select class="form-control" name="candidates_attributes_1" id="candidates_attributes_1">
 				<option value=""></option>
-				{% for c in env.clouds %}
+				{% for c in clouds %}
 					<option value="{{ c.id }}" {% if c.id == env.candidates_attributes_1 %} selected="selected"{% endif %}>
 					{{ c.name }}</option>
 				{% endfor %}
@@ -55,7 +51,7 @@
 			<input type="hidden" id="candidates_attributes_2" name="candidates_attributes_2" value="{{ env.candidates_attributes_2 }}">
 				<select class="form-control" name="candidates_attributes_2" id="candidates_attributes_2">
 					<option value=""></option>
-					{% for c in env.clouds %}
+					{% for c in clouds %}
 						<option value="{{ c.id }}" {% if c.id == env.candidates_attributes_2 %} selected="selected"{% endif %}>
 						{{ c.name }}
 						</option>
@@ -67,7 +63,7 @@
 			<input type="hidden" id="candidates_attributes_3" name="candidates_attributes_3" value="{{ env.candidates_attributes_3 }}">
 			<select class="form-control" name="candidates_attributes_3" id="candidates_attributes_3">
 				<option value=""></option>
-				{% for c in env.clouds %}
+				{% for c in clouds %}
 					<option value="{{ c.id }}" {% if c.id == env.candidates_attributes_3 %} selected="selected"{% endif %}>
 					{{ c.name }}
 					</option>
@@ -92,8 +88,10 @@
 		<label>Description</label>
 		<textarea id="description" name="description" class="form-control">{{ env.description }}</textarea>
 	</div>
+	{% if save %}
 	<div class="button_center">
 		<button class="btn btn-success" type="submit">
 			<span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>&nbsp;save
 		</button>
 	</div>
+	{% endif %}

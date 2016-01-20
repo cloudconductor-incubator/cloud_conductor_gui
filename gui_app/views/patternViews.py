@@ -24,7 +24,10 @@ def patternList(request):
         url = Url.patternList
         print(url)
 
-        data = {'auth_token': request.session['auth_token']}
+        data = {
+                'auth_token': request.session['auth_token'],
+                'project_id': request.session['project_id']
+                }
         patterns = ApiUtil.requestGet(url, FuncCode.patternList.value, data)
 #         patterns = patterns['lists']
 
@@ -79,9 +82,9 @@ def patternCreate(request):
             url = Url.patternCreate
             data = {
                 'auth_token': request.session['auth_token'],
-                'project_id': p['project_id'],
-                'url': p['url'],
-                'revision': p['revision'],
+                'project_id': request.session['project_id'],
+                'url': p.get('url'),
+                'revision': p.get('revision'),
             }
             # -- API call, get a response
             ApiUtil.requestPost(url, FuncCode.patternCreate.value, data)

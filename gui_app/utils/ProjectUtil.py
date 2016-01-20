@@ -26,17 +26,9 @@ def get_project_list(code, token):
 
 def get_project_list2(code, token):
 
-    if StringUtil.isEmpty(code):
-        return None
+    projects = get_project_list(code, token)
 
-    if StringUtil.isEmpty(token):
-        return None
-
-    url = Url.projectList
-    data = {'auth_token': token}
-    projects = ApiUtil.requestGet(url, code, data)
-
-    if StringUtil.isEmpty(projects):
+    if StringUtil.isNotEmpty(projects):
         dic = {}
         list = []
         for project in projects:
@@ -63,9 +55,9 @@ def get_project_detail(code, token, id):
 
     url = Url.projectDetail(id, Url.url)
     data = {
-        'auth_token': token,
-        'id': id,
-    }
+            'auth_token': token,
+            'id': id,
+            }
     project = ApiUtil.requestGet(url, code, data)
 
     return project
@@ -81,5 +73,19 @@ def create_project(code, token, name, description):
     }
     # -- API call, get a response
     project = ApiUtil.requestPost(url, code, data)
+
+    return project
+
+
+def edit_project(code, token, id, name, description):
+    # -- Create a project, api call
+    url = Url.projectEdit(id, Url.url)
+    data = {
+        'auth_token': token,
+        'name': name,
+        'description': description
+    }
+    # -- API call, get a response
+    project = ApiUtil.requestPut(url, code, data)
 
     return project

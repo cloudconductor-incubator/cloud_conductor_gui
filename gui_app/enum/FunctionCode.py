@@ -58,23 +58,29 @@ class FuncCode(Enum):
     accountEdit = 'GM3540'
     accountDelete = 'GM3550'
 
+    roleList = 'GM3210'
+    roleDetail = 'GM3220'
+    roleCreate = 'GM3230'
+    roleEdit = 'GM3240'
+    roleDelete = 'GM3250'
+
     cloudReg_project = 'GW420-1'
     cloudReg_cloud = 'GW420-2'
     cloudReg_baseimage = 'GW420-3'
     cloudReg_confirm = 'GW420-4'
 
     newapp_system = 'GW120-1'
-    newapp_Application = 'GW120-2'
+    newapp_application = 'GW120-2'
     newapp_environment = 'GW120-3'
     newapp_confirm = 'GW120-4'
 
-    appEnv_system = 'GW250-1'
-    appEnv_blueprint = 'GW250-2'
-    appEnv_environment = 'GW250-3'
-    appEnv_confirm = 'GW250-4'
+    appenv_system = 'GW250-1'
+    appenv_blueprint = 'GW250-2'
+    appenv_environment = 'GW250-3'
+    appenv_confirm = 'GW250-4'
 
-    appDep_environment = 'GW350-1'
-    appDep_blueprint = 'GW350-2'
+    appDep_application = 'GW350-1'
+    appDep_environment = 'GW350-2'
     appDep_confirm = 'GW350-3'
 
 

@@ -8,14 +8,11 @@ from ..forms import environmentForm
 from ..utils import RoleUtil
 from ..utils import ValiUtil
 from ..utils import ApiUtil
-from ..utils import FileUtil
 from ..utils.PathUtil import Path
 from ..utils.PathUtil import Html
 from ..utils.ApiUtil import Url
 from ..utils.ErrorUtil import ApiError
 from ..utils.BlueprintUtil import get_blueprint_version
-from ..enum import ResponseType
-from ..enum.LogType import Message
 from ..enum.FunctionCode import FuncCode
 from ..logs import log
 
@@ -24,14 +21,14 @@ def environmentList(request):
     try:
         envs = None
         # -- Get a environment list, API call
-#         url = Url.environmentList
-#         print(url)
-#
-#         data = {
-#             'auth_token': request.session['auth_token'],
-#             'project_id': request.session['project_id']
-#         }
-#         envs = ApiUtil.requestGet(url, FuncCode.environmentList.value, data)
+        url = Url.environmentList
+        print(url)
+
+        data = {
+            'auth_token': request.session['auth_token'],
+            'project_id': request.session['project_id']
+        }
+        envs = ApiUtil.requestGet(url, FuncCode.environmentList.value, data)
 
         return render(request, Html.environmentList, {'envs': envs, 'message': ''})
     except Exception as ex:
@@ -59,78 +56,50 @@ def environmentDetail(request, id):
 
 def environmentCreate(request):
     try:
+        p = request.POST
         code = FuncCode.environmentCreate.value
         data = {
             'auth_token': request.session['auth_token'],
             'project_id': request.session['project_id']
         }
 
-        fileForm = UploadFileForm()
         clouds = ApiUtil.requestGet(Url.cloudList, code, data)
-#         clouds = clouds['lists']
         systems = ApiUtil.requestGet(Url.systemList, code, data)
-#         systems = systems['lists']
         blueprints = get_blueprint_version(code, data)
 
         if request.method == "GET":
 
-            data.update({
-                'clouds': clouds,
-                'systems': systems,
-                'blueprints': blueprints,
-                'fileForm': fileForm,
-            })
-
-            return render(request, Html.environmentCreate, {'env': data, 'message': ''})
+            return render(request, Html.environmentCreate, {'env': data, 'clouds': clouds, 'systems': systems,
+                                                            'blueprints': blueprints, 'message': '', 'save': True})
         else:
             # -- Get a value from a form
             msg = ''
             p = request.POST
             # -- Validate check
             cpPost = p.copy()
-            form = environment_form(cpPost)
+            param = putBlueprint(cpPost)
+#             form = environment_form(cpPost)
+
+            form = environmentForm(param)
+            form.full_clean()
             if not form.is_valid():
                 msg = ValiUtil.valiCheck(form)
-                cpPost.update({
-                    'clouds': clouds,
-                    'systems': systems,
-                    'blueprints': blueprints,
-                })
-                print(cpPost)
 
-                return render(request, Html.environmentCreate, {'env': cpPost, 'message': form.errors})
+                return render(request, Html.environmentCreate, {'env': cpPost, 'clouds': clouds, 'systems': systems,
+                                                                'blueprints': blueprints, 'message': form.errors, 'save': True})
 
             # -- Create a environment, api call
             url = Url.environmentCreate
             # -- API call, get a response
-            ApiUtil.requestPost(
+            a = ApiUtil.requestPost(
                 url, FuncCode.environmentCreate.value, addEnvironmentParam(cpPost))
-
-            print(1)
-            #-- file download
-            file = FileUtil.download(request)
-#             file = FileUtil.download_file(request)
-            print(file)
 
             return redirect(Path.environmentList)
     except Exception as ex:
         log.error(FuncCode.environmentCreate.value, None, ex)
 
-        return render(request, Html.environmentCreate, {'env': request.POST, "message": str(ex)})
-
-
-def environment_form(param):
-
-    blueprint = param.get('blueprint', None)
-    if blueprint != None and blueprint != '':
-        blueprint = ast.literal_eval(blueprint)
-
-        param['blueprint_id'] = blueprint.get('id')
-        param['version'] = blueprint.get('version')
-
-    form = environmentForm(param)
-
-    return form
+        return render(request, Html.environmentCreate, {'env': request.POST, 'clouds': '', 'systems': '',
+                                                        'blueprints': '', 'message': str(ex), 'save': True})
 
 
 def environmentEdit(request, id):
@@ -146,9 +115,7 @@ def environmentEdit(request, id):
         p.update(data)
 
         clouds = ApiUtil.requestGet(Url.cloudList, code, data)
-#         clouds = clouds['lists']
         systems = ApiUtil.requestGet(Url.systemList, code, data)
-#         systems = systems['lists']
         blueprints = get_blueprint_version(code, data)
 
         if request.method == "GET":
@@ -158,7 +125,8 @@ def environmentEdit(request, id):
                 'blueprints': blueprints,
             })
 
-            return render(request, Html.environmentEdit, {'env': p, 'message': ''})
+            return render(request, Html.environmentEdit, {'env': data, 'clouds': clouds, 'systems': systems,
+                                                          'blueprints': blueprints, 'message': '', 'save': True})
         else:
             # -- Get a value from a form
             msg = ''
@@ -174,7 +142,8 @@ def environmentEdit(request, id):
                     'blueprints': blueprints,
                 })
 
-                return render(request, Html.environmentEdit, {'env': cpPost, 'message': form.errors})
+                return render(request, Html.environmentEdit, {'env': cpPost, 'clouds': clouds, 'systems': systems,
+                                                              'blueprints': blueprints, 'message': form.errors, 'save': True})
 
             # -- Create a environment, api call
             url = Url.environmentEdit(id, Url.url)
@@ -186,7 +155,20 @@ def environmentEdit(request, id):
     except Exception as ex:
         log.error(code, None, ex)
 
-        return render(request, Html.environmentEdit, {'env': request.POST, "message": str(ex)})
+        return render(request, Html.environmentEdit, {'env': request.POST, 'clouds': '', 'systems': '',
+                                                      'blueprints': '', 'message': str(ex), 'save': True})
+
+
+def putBlueprint(param):
+
+    blueprint = param.get('blueprint', None)
+    if blueprint != None and blueprint != '':
+        blueprint = ast.literal_eval(blueprint)
+
+        param['blueprint_id'] = blueprint.get('id')
+        param['version'] = blueprint.get('version')
+
+    return param
 
 
 def environmentDelete(request, id):
@@ -204,13 +186,21 @@ def environmentDelete(request, id):
 
 
 def addEnvironmentParam(param):
-
     # candidates_attributes
-    candidates_attributes = [
-        {"cloud_id": param.get('candidates_attributes_1'), "priority": 1},
-        {"cloud_id": param.get('candidates_attributes_2'), "priority": 2},
-        {"cloud_id": param.get('candidates_attributes_3'), "priority": 3}
-    ]
+    candidates_attributes = []
+    dic = {
+        'cloud_id': int(param.get('candidates_attributes_1')), 'priority': 1}
+    candidates_attributes.append(dic)
+
+    if param.get('candidates_attributes_2'):
+        dic = {
+            'cloud_id': int(param.get('candidates_attributes_2')), 'priority': 2}
+        candidates_attributes.append(dic)
+
+    if param.get('candidates_attributes_3'):
+        dic = {
+            'cloud_id': int(param.get('candidates_attributes_3')), 'priority': 3}
+        candidates_attributes.append(dic)
 
     data = {
         'auth_token': param.get('auth_token'),
@@ -223,27 +213,6 @@ def addEnvironmentParam(param):
         'template_parameters': param.get('template_parameters'),
         'user_attributes': param.get('user_attributes'),
         'candidates_attributes': candidates_attributes,
-
     }
 
     return data
-
-
-def fileUpload(request):
-    form = UploadFileForm(request.POST, request.FILES)
-    prit("ppppppppppppppppppppp")
-    if form.is_valid():
-        updir = r'c:\\website\\django\\mysite\\upload\\' + \
-            form.cleaned_data['title']
-        destination = open(updir, 'wb+')
-        upfile = request.FILES['file']
-        for chunk in upfile.chunks():
-            destination.write(chunk)
-        destination.close()
-        msg = 'Uploaded.'
-
-        t = loader.get_template('fileuptest/index.html')
-        c = Context()
-        c['form'] = form
-        c['msg'] = msg
-        return HttpResponse(t.render(c))

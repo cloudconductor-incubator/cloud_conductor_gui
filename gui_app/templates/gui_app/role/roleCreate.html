@@ -13,7 +13,6 @@
 {% block content %}
 <div class="cc-title">Role Create</div>
 		<form method="post" action="{% url 'app:roleCreate' %}">
-			<input id="auth_token" type="hidden" name="auth_token" value="{{ role.auth_token }}">
 			{% include "gui_app/role/includes/formRole.html" %}
 		</form>
 {% endblock %}

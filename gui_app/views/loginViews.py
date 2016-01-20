@@ -58,16 +58,20 @@ def login(request):
 #             projects = projects['projects']
             print(projects)
             if projects:
+                print(1)
                 project_list = projects
 
                 for project in projects:
                     project_id = project.get('id')
                     project_name = project.get('name')
+                    print(2)
                     break
 
             else:
+                print(3)
                 raise(Error.Authentication.value)
 
+            print(4)
             #-- AccountApi call, get a response
             account = AccountUtil.get_account(code, token, email)
             if not account:
@@ -79,6 +83,8 @@ def login(request):
             if not role:
                 raise(Error.Authentication.value)
             #-- PermissionListAPI call, get a response
+            print(role.get('id'))
+            print(5)
             permissions = PermissionUtil.get_permission_list(code, token, role.get('id'))
 
             if not permissions:

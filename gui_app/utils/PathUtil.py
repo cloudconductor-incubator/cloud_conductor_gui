@@ -50,16 +50,35 @@ class Path():
     accountDetail = lambda id: "/account/project/{0}/".format(id)
     accountEdit = lambda id: "/ccgui/account/{0}/edit".format(id)
 
+    roleList = "/ccgui/role/list/"
+    roleCreate = "/ccgui/role/create/"
+    roleDetail = lambda id: "/role/project/{0}/".format(id)
+    roleEdit = lambda id: "/ccgui/role/{0}/edit".format(id)
+
     cloudregist_projectCreate = "/ccgui/cloudregist/project/create/"
     cloudregist_projectSelect = "/ccgui/cloudregist/project/select/"
     cloudregist_cloudCreate = "/ccgui/cloudregist/cloud/create/"
     cloudregist_baseimageCreate = "/ccgui/cloudregist/baseimage/create/"
     cloudregist_confirm = "/ccgui/cloudregist/confirm/"
 
-    newapp_systemSelect = "ccgui/makeapplication/system/select/"
-    newapp_applicationCreate = "ccgui/makeapplication/application/create/"
-    newapp_environmntSelect = "ccgui/makeapplication/environment/select/"
-    newapp_confirm = "ccgui/makeapplication/confirm/"
+    newapp_systemSelect = "/ccgui/newapp/system/select/"
+    newapp_systemCreate = "/ccgui/newapp/system/create/"
+    newapp_applicationCreate = "/ccgui/newapp/application/create/"
+    newapp_environmentSelect = "/ccgui/newapp/environment/select/"
+    newapp_environmentCreate = "/ccgui/newapp/environment/create/"
+    newapp_confirm = "/ccgui/newapp/confirm/"
+
+    envapp_systemSelect = "/ccgui/envapp/system/select/"
+#     envapp_systemCreate = "/ccgui/envapp/system/create/"
+    envapp_bluprintSelect = "/ccgui/envapp/blueprint/select/"
+    envapp_environmentSelect = "/ccgui/envapp/environment/select/"
+#     envapp_environmentCreate = "/ccgui/envapp/environment/create/"
+    envapp_confirm = "/ccgui/envapp/confirm/"
+
+    appdeploy_applicationSelect = "/ccgui/appdeploy/application/select/"
+    appdeploy_environmentSelect = "/ccgui/appdeploy/environment/select/"
+    appdeploy_confirm = "/ccgui/appdeploy/confirm/"
+
 
 
 class Html():
@@ -113,6 +132,12 @@ class Html():
     accountEdit = "gui_app/account/accountEdit.html"
     accountDelete = "gui_app/account/accountDetail.html"
 
+    roleList = "gui_app/role/roleList.html"
+    roleCreate = "gui_app/role/roleCreate.html"
+    roleDetail = "gui_app/role/roleDetail.html"
+    roleEdit = "gui_app/role/roleEdit.html"
+    roleDelete = "gui_app/role/roleDetail.html"
+
     cloudregist_projectCreate = "gui_app/cloudRegistration/projectCreate.html"
     cloudregist_projectSelect = "gui_app/cloudRegistration/projectSelect.html"
     cloudregist_cloudCreate = "gui_app/cloudRegistration/cloudCreate.html"
@@ -120,6 +145,21 @@ class Html():
     cloudregist_confirm = "gui_app/cloudRegistration/confirm.html"
 
     newapp_systemSelect = "gui_app/makeApplication/systemSelect.html"
+    newapp_systemCreate = "gui_app/makeApplication/systemCreate.html"
     newapp_applicationCreate = "gui_app/makeApplication/applicationCreate.html"
-    newapp_environmntSelect = "gui_app/makeApplication/environmentSelect.html"
+    newapp_environmentSelect = "gui_app/makeApplication/environmentSelect.html"
+    newapp_environmentCreate = "gui_app/makeApplication/environmentCreate.html"
     newapp_confirm = "gui_app/makeApplication/confirm.html"
+
+    envapp_systemSelect = "gui_app/envApplication/systemSelect.html"
+#     envapp_systemCreate = "gui_app/envApplication/systemCreate.html"
+    envapp_bluprintSelect = "gui_app/envApplication/blueprintSelect.html"
+    envapp_environmentSelect = "gui_app/envApplication/environmentSelect.html"
+#     envapp_environmentCreate = "gui_app/envApplication/environmentCreate.html"
+    envapp_confirm = "gui_app/envApplication/confirm.html"
+
+    appdeploy_applicationSelect = "gui_app/applicationDeploy/applicationSelect.html"
+    appdeploy_environmentSelect = "gui_app/applicationDeploy/environmentSelect.html"
+    appdeploy_confirm = "gui_app/applicationDeploy/confirm.html"
+
+
