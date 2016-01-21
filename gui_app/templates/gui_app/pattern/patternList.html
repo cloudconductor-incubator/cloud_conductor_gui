@@ -13,9 +13,11 @@
   <div class="cc-title">Pattern management</div>
 	<br>
 	{% include "gui_app/includes/message.html" %}
-    <button type="button" class="btn btn-primary btn-sm" onclick="location.href='{% url 'app:patternCreate' %}'" style="float:right">
+    {% if request.session.pattern_manage or request.session.pattern_create  %}
+	<button type="button" class="btn btn-primary btn-sm" onclick="location.href='{% url 'app:patternCreate' %}'" style="float:right">
     	<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;　new
     </button>
+	{% endif %}
 	{% if patterns %}
 		<table class="table table-hover">
 		    <thead>
@@ -30,7 +32,13 @@
 		    {% for p in patterns %}
 			      <tr>
 			        <td>{{ p.id }}</td>
-			        <td><a href="{% url 'app:patternDetail' p.id %}">{{ p.name }}</a></td>
+			        <td>
+			        {% if request.session.pattern_manage or request.session.pattern_update or request.session.pattern_destroy  %}
+			        	<a href="{% url 'app:patternDetail' p.id %}">{{ p.name }}</a>
+					{% else %}
+						{{ p.name }}
+					{% endif %}
+			        </td>
 			        <td>{{ p.type }}</td>
 			        <td>{{ p.created_at }}</td>
 			      </tr>

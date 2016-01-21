@@ -42,6 +42,24 @@ def get_project_list2(code, token):
         return None
 
 
+def get_project_list3(code, token):
+
+    projects = get_project_list(code, token)
+
+    if StringUtil.isNotEmpty(projects):
+        dic = {}
+        list = []
+        for project in projects:
+            dic['id'] = project.get('id')
+            dic['name'] = project.get('name')
+            list.append(dic.copy())
+
+        return list
+
+    else:
+        return None
+
+
 def get_project_detail(code, token, id):
 
     if StringUtil.isEmpty(code):

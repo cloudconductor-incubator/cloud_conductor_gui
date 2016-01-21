@@ -55,13 +55,11 @@
 		<div class="panel-heading">Account List</div>
 		<div class="panel-body">
 
-	{% ifequal request.session.add_user "1" %}
 	<div class="btn_group_top">
 		<button type="button" class="btn btn-success btn-sm" onclick="location.href='{% url 'app:projectAddUser' project.id %}'">
 			<span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp;　edit
 		</button>
 	</div>
-	{% endifequal %}
 
 		<table class="table table-hover">
 			<thead>

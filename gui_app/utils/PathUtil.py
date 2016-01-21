@@ -71,8 +71,8 @@ class Path():
     envapp_systemSelect = "/ccgui/envapp/system/select/"
 #     envapp_systemCreate = "/ccgui/envapp/system/create/"
     envapp_bluprintSelect = "/ccgui/envapp/blueprint/select/"
-    envapp_environmentSelect = "/ccgui/envapp/environment/select/"
-#     envapp_environmentCreate = "/ccgui/envapp/environment/create/"
+#     envapp_environmentSelect = "/ccgui/envapp/environment/select/"
+    envapp_environmentCreate = "/ccgui/envapp/environment/create/"
     envapp_confirm = "/ccgui/envapp/confirm/"
 
     appdeploy_applicationSelect = "/ccgui/appdeploy/application/select/"
@@ -90,6 +90,8 @@ class Html():
     projectEdit = "gui_app/project/projectEdit.html"
     projectDelete = "gui_app/project/projectDetail.html"
     addUser = "gui_app/project/projectAddUser.html"
+
+    assignmentEdit = "gui_app/assignment/assignmentEdit.html"
 
     cloudList = "gui_app/cloud/cloudList.html"
     cloudDetail = "gui_app/cloud/cloudDetail.html"
@@ -110,6 +112,7 @@ class Html():
     environmentDetail = "gui_app/environment/environmentDetail.html"
     environmentCreate = "gui_app/environment/environmentCreate.html"
     environmentEdit = "gui_app/environment/environmentEdit.html"
+    environmentAjaxBlueprint = "gui_app/environment/environmentAjaxBlueprint.html"
 
     applicationList = "gui_app/application/applicationList.html"
     applicationDetail = "gui_app/application/applicationDetail.html"
@@ -154,8 +157,8 @@ class Html():
     envapp_systemSelect = "gui_app/envApplication/systemSelect.html"
 #     envapp_systemCreate = "gui_app/envApplication/systemCreate.html"
     envapp_bluprintSelect = "gui_app/envApplication/blueprintSelect.html"
-    envapp_environmentSelect = "gui_app/envApplication/environmentSelect.html"
-#     envapp_environmentCreate = "gui_app/envApplication/environmentCreate.html"
+#     envapp_environmentSelect = "gui_app/envApplication/environmentSelect.html"
+    envapp_environmentCreate = "gui_app/envApplication/environmentCreate.html"
     envapp_confirm = "gui_app/envApplication/confirm.html"
 
     appdeploy_applicationSelect = "gui_app/applicationDeploy/applicationSelect.html"

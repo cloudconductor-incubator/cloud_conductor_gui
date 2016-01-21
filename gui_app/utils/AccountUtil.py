@@ -45,23 +45,18 @@ def get_account(code, token, email):
     return None
 
 
-def get_account_create(code, token, email, password, repassword, admin):
+def get_account_create(code, token, name, email, password, repassword, admin):
     # -- URL set
     url = Url.accountCreate
-
-    admin_role = ''
-    if admin == 'ture':
-        admin_role = '1'
-    elif admin == 'false':
-        admin_role = '0'
 
     # -- Set the value to the form
     data = {
             'auth_token': token,
+            'name': name,
             'email': email,
             'password': password,
             'password_confirmation': repassword,
-            'admin': admin_role,
+            'admin': int(admin),
             }
     # -- API call, get a response
     response = ApiUtil.requestPost(url, code, data)

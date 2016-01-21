@@ -35,7 +35,13 @@
         {% for ac in accounts %}
             	<tr>
 					<td>{{ ac.id }}</td>
-					<td><a href="{% url 'app:accountDetail' ac.id %}">{{ ac.name }}</a></td>
+					<td>
+					{% if request.session.project_manage or request.session.project_update or request.session.project_destroy  %}
+						<a href="{% url 'app:accountDetail' ac.id %}">{{ ac.name }}</a>
+					{% else %}
+						{{ ac.name }}
+					{% endif %}
+					</td>
 					<td>{{ ac.email }}</td>
 					<td>{{ ac.role }}</td>
 					<td>{{ ac.admin }}</td>

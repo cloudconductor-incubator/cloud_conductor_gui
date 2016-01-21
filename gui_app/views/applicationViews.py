@@ -6,6 +6,8 @@ from ..forms import applicationForm
 from ..utils import RoleUtil
 from ..utils import ValiUtil
 from ..utils import ApiUtil
+from ..utils import ApplicationUtil
+from ..utils import ApplicationHistoryUtil
 from ..utils.PathUtil import Path
 from ..utils.PathUtil import Html
 from ..utils.ApiUtil import Url
@@ -13,6 +15,8 @@ from ..utils.ErrorUtil import ApiError
 from ..enum import ResponseType
 from ..enum.LogType import Message
 from ..enum.FunctionCode import FuncCode
+from ..enum.ApplicationType import ApplicaionType
+from ..enum.ProtocolType import ProtocolType
 from ..logs import log
 
 
@@ -28,7 +32,6 @@ def applicationList(request):
             'project_id': request.session['project_id']
         }
         apps = ApiUtil.requestGet(url, FuncCode.applicationList.value, data)
-#         apps = apps['lists']
 
         return render(request, Html.applicationList, {'apps': apps, 'message': ''})
     except Exception as ex:
@@ -58,13 +61,15 @@ def applicationDetail(request, id):
 
 def applicationCreate(request):
     try:
+        token = request.session['auth_token']
+        project_id = request.session['project_id']
+        code = FuncCode.applicationCreate.value
         data = {
-                'auth_token': request.session['auth_token'],
-                'project_id': request.session['project_id']
-            }
+            'auth_token': token,
+            'project_id': project_id
+        }
         url = Url.systemList
-        systems = ApiUtil.requestGet(url, FuncCode.systemList.value, data)
-#         systems = systems['lists']
+        systems = ApiUtil.requestGet(url, code, data)
 
         if request.method == "GET":
 
@@ -72,7 +77,9 @@ def applicationCreate(request):
                 'systems': systems,
             })
 
-            return render(request, Html.applicationCreate, {'app': data, 'message': '', 'systems': systems, 'save': True})
+            return render(request, Html.applicationCreate, {'app': data, 'apptype': list(ApplicaionType),
+                                                            'protocol': list(ProtocolType), 'message': '',
+                                                            'systems': systems, 'save': True})
         else:
             # -- Get a value from a form
             msg = ''
@@ -87,20 +94,16 @@ def applicationCreate(request):
                 cpPost.update({
                     'systems': systems,
                 })
-                return render(request, Html.applicationCreate, {'app': cpPost, 'message': msg, 'save': True})
+                return render(request, Html.applicationCreate, {'app': cpPost, 'apptype': list(ApplicaionType),
+                                                                'protocol': list(ProtocolType), 'message': form.errors,
+                                                                'save': True})
 
             # -- Create a application, api call
-            url = Url.applicationCreate
-            data = {
-                'auth_token': p['auth_token'],
-                'project_id': p['project_id'],
-                'system_id': p['system_id'],
-                'name': p['name'],
-                'description': p['description'],
-                'domain': p['domain']
-            }
-            # -- API call, get a response
-            ApiUtil.requestPost(url, FuncCode.applicationCreate.value, data)
+            app = ApplicationUtil.create_application(
+                code, token, p['system_id'], p['name'], p['description'], p['domain'])
+            ApplicationHistoryUtil.create_history(code, token, app.get('id'), p.get('url'), p.get('type'),
+                                                  p.get('protocol'),  p.get('revision'), p.get('pre_deploy'),
+                                                  p.get('post_deploy'), p.get('parameters'))
 
             return redirect(Path.applicationList)
     except Exception as ex:
@@ -111,26 +114,31 @@ def applicationCreate(request):
 
 def applicationEdit(request, id):
     try:
+        code = FuncCode.systemList.value
+        token = request.session['auth_token']
+        project_id = request.session['project_id']
         if request.method == "GET":
 
             url = Url.applicationDetail(id, Url.url)
 
             data = {
-                'auth_token': request.session['auth_token'],
-                'project_id': request.session['project_id']
+                'auth_token': token,
+                'project_id': project_id
             }
             p = ApiUtil.requestGet(url, FuncCode.applicationEdit.value, data)
             data.update(p)
 
             url2 = Url.systemList
-            systems = ApiUtil.requestGet(url2, FuncCode.systemList.value, data)
-#             systems = systems['lists']
+            systems = ApiUtil.requestGet(url2, code, data)
             data.update({
                 'systems': systems,
             })
             print(data)
+            newhis = ApplicationHistoryUtil.get_new_history(code, token, id)
+            history = ApplicationHistoryUtil.get_history_detail(code, token, newhis.get('id'))
+            print(history)
 
-            return render(request, Html.applicationEdit, {'app': data, 'message': '', 'save': True})
+            return render(request, Html.applicationEdit, {'app': data, 'history': history, 'message': '', 'save': True})
         else:
             # -- Get a value from a form
             msg = ''

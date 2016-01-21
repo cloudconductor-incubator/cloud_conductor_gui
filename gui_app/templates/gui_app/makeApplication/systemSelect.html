@@ -23,18 +23,9 @@
 		{% csrf_token %}
 		{% include "gui_app/includes/message.html" %}
 		<h3>System select</h3>
-		<div class="form-group">
-	    	<label><span id="req">*</span>System</label>
-			<select class="form-control" name="id" id="id">
-		        <option value=""></option>
-				{% for sys in list %}
-					<option value="{{ sys.id }}" {% if sys.id == system.id %} selected="selected" {% endif %}>
-					{{ sys.name }}
-					<input id="name" type="hidden" name="name" value="{{ sys.name }}"></option>
-				{% endfor %}
-		    </select>
-	    </div>
-	    	<div class="cc-desc" id="contents-reload"> Display the contents </div>
+		{% include "gui_app/envApplication/includes/formSystemSelect.html" %}
+
+	    <div class="cc-desc" id="contents-reload"> Display the contents </div>
 		<div class="button_left">
 			<button type="button" class="btn btn-primary btn-sm hidden" onclick="location.href='#'" >
 				<span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>

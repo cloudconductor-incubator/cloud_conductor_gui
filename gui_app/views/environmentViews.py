@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render, redirect
 import json
+import html
 import requests
 import ast
 from collections import OrderedDict
 from ..forms import environmentForm
-from ..utils import RoleUtil
 from ..utils import ValiUtil
 from ..utils import ApiUtil
+from ..utils import BlueprintHistoryUtil
 from ..utils.PathUtil import Path
 from ..utils.PathUtil import Html
 from ..utils.ApiUtil import Url
@@ -58,9 +59,11 @@ def environmentCreate(request):
     try:
         p = request.POST
         code = FuncCode.environmentCreate.value
+        token = request.session['auth_token']
+        project_id = request.session['project_id']
         data = {
-            'auth_token': request.session['auth_token'],
-            'project_id': request.session['project_id']
+            'auth_token': token,
+            'project_id': project_id
         }
 
         clouds = ApiUtil.requestGet(Url.cloudList, code, data)
@@ -159,6 +162,45 @@ def environmentEdit(request, id):
                                                       'blueprints': '', 'message': str(ex), 'save': True})
 
 
+def createForm(js, keyParent):
+    ''' json to HTML input field '''
+
+    PATRITION = '/'
+    inpt = []
+
+    if isinstance(js, dict):
+        for k in js.keys():
+            v = js[k]
+            kk = keyParent + PATRITION + k
+            if keyParent == '':
+                kk = k
+            inpt.extend(createForm(v, kk))
+    else:
+        inpt.append((keyParent, js))
+
+    return inpt
+
+
+def environmentAjaxBlueprint(request):
+    try:
+        p = request.GET
+        bp = putBlueprint(p.copy())
+
+        code = FuncCode.environmentCreate.value
+        token = request.session['auth_token']
+        param = BlueprintHistoryUtil.get_blueprint_history_list(
+            code, token, bp['blueprint_id'], bp['version'])
+
+        ff = createForm(param, '')
+
+        return render(request, Html.environmentAjaxBlueprint, {'blueprint': param, 'inputs': ff})
+
+    except Exception as ex:
+        log.error(code, None, ex)
+
+        return render(request, Html.environmentAjaxBlueprint, {})
+
+
 def putBlueprint(param):
 
     blueprint = param.get('blueprint', None)
@@ -187,31 +229,33 @@ def environmentDelete(request, id):
 
 def addEnvironmentParam(param):
     # candidates_attributes
+    print(param)
     candidates_attributes = []
     dic = {
-        'cloud_id': int(param.get('candidates_attributes_1')), 'priority': 1}
+        'cloud_id': param.get('candidates_attributes_1'), 'priority': '1'}
     candidates_attributes.append(dic)
 
     if param.get('candidates_attributes_2'):
         dic = {
-            'cloud_id': int(param.get('candidates_attributes_2')), 'priority': 2}
+            'cloud_id': param.get('candidates_attributes_2'), 'priority': '2'}
         candidates_attributes.append(dic)
 
     if param.get('candidates_attributes_3'):
         dic = {
-            'cloud_id': int(param.get('candidates_attributes_3')), 'priority': 3}
+            'cloud_id': param.get('candidates_attributes_3'), 'priority': '3'}
         candidates_attributes.append(dic)
 
+    print(candidates_attributes)
     data = {
         'auth_token': param.get('auth_token'),
         'project_id': param.get('project_id'),
         'system_id': param.get('system_id'),
-        'blueprint_id': param.get('blueprint_id'),
-        'version': param.get('version'),
+        'blueprint_id': str(param.get('blueprint_id')),
+        'version': str(param.get('version')),
         'name': param.get('name'),
-        'description': param.get('description'),
-        'template_parameters': param.get('template_parameters'),
-        'user_attributes': param.get('user_attributes'),
+        'description': param.get('description', ''),
+        'template_parameters': param.get('template_parameters', ''),
+        'user_attributes': param.get('user_attributes', ''),
         'candidates_attributes': candidates_attributes,
     }
 

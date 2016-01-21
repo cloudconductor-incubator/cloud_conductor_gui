@@ -45,14 +45,6 @@ def accountDetail(request, id):
                 }
         p = ApiUtil.requestGet(url, FuncCode.accountDetail.value,data)
 
-        # -- AccountAPI call, get a response
-#         url2 = Url.assignmentList
-#         data = {
-#                 'auth_token': token,
-#                 'project_id': request.session['project_id'],
-#                 }
-#         a = ApiUtil.requestGet(url2, FuncCode.accountDetail.value,data)
-
         return render(request, Html.accountDetail, {'account': p, 'message': ''})
     except Exception as ex:
         log.error(FuncCode.accountDetail.value, None, ex)
@@ -83,7 +75,7 @@ def accountCreate(request):
 
                 return render(request, Html.accountCreate, {'account': p, 'message': form.errors})
             # -- AccountCreateAPI call, get a response
-            response = AccountUtil.get_account_create(code, token, p['email'], p['password'], p['repassword'], p['admin'])
+            response = AccountUtil.get_account_create(code, token, p['name'], p['email'], p['password'], p['repassword'], p['admin'])
 
             return redirect(Path.accountList)
     except Exception as ex:

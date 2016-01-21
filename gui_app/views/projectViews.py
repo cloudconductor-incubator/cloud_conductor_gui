@@ -6,6 +6,7 @@ from django.shortcuts import redirect
 from ..forms import projectForm
 from ..utils import RoleUtil
 from ..utils import ProjectUtil
+from ..utils import SessionUtil
 from ..utils import ValiUtil
 from ..utils import ApiUtil
 from ..utils import PermissionUtil
@@ -17,23 +18,6 @@ from ..enum import ResponseType
 from ..enum.LogType import Message
 from ..enum.FunctionCode import FuncCode
 from ..logs import log
-
-# CloudConductor add
-# def projectList(request):
-#     try:
-#         projects = None
-#         # -- Get a project list, API call
-#         url = Url.projectList
-#         data = {'auth_token': request.session['auth_token']}
-#         projects = ApiUtil.requestGet(url, FuncCode.projectList.value, data)
-# #         projects = projects['projects']
-#
-#         return render(request, Html.projectList, {'projects': projects,
-#                                                   'message': ''})
-#     except Exception as ex:
-#         log.error(FuncCode.projectList.value, None, ex)
-#
-#         return render(request, Html.projectList, {"projects": '', 'message': str(ex)})
 
 
 def projectList(request):
@@ -53,6 +37,10 @@ def projectList(request):
 
 def projectCreate(request):
     try:
+        code = FuncCode.projectCreate.value
+        token = request.session['auth_token']
+        s = request.session
+
         if request.method == "GET":
             p = {'auth_token': request.session['auth_token']}
 
@@ -70,12 +58,14 @@ def projectCreate(request):
             # -- Create a project, api call
             url = Url.projectCreate
             data = {
-                'auth_token': request.session['auth_token'],
+                'auth_token': token,
                 'name': p['name'],
                 'description': p['description']
             }
             # -- API call, get a response
-            ApiUtil.requestPost(url, FuncCode.projectCreate.value, data)
+            ApiUtil.requestPost(url, code, data)
+
+            SessionUtil.edit_project_session(code, token, request.session)
 
             return redirect(Path.projectList)
     except Exception as ex:
@@ -84,7 +74,7 @@ def projectCreate(request):
         return render(request, Html.projectCreate, {'project': request.POST, "message": str(ex), 'save': True})
 
 
-def projectEdit(request, id=None):
+def projectEdit(request, id):
     try:
         code = FuncCode.projectEdit.value
         token = request.session['auth_token']
@@ -106,7 +96,8 @@ def projectEdit(request, id=None):
                 return render(request, Html.projectEdit, {'project': p, 'message': msg, 'save': True})
 
             # -- API call, get a response
-            ProjectUtil.edit_project(code, token, id, p.get('name'), p.get('description'))
+            project = ProjectUtil.edit_project(code, token, id, p.get('name'), p.get('description'))
+            SessionUtil.edit_project_session(code, token, request.session, id, project.get('name'))
 
             return redirect(Path.projectList)
     except Exception as ex:
@@ -124,16 +115,36 @@ def projectDetail(request, id):
         p = ProjectUtil.get_project_detail(code, token, id)
 
         # -- AccountAPI call, get a response
-        url2 = Url.assignmentList
+        url2 = Url.accountList
         data = {
                 'auth_token': token,
-                'project_id': request.session['project_id'],
-#                 'account_id': requestsession['accout_id']
+                'project_id': id,
                 }
         accounts = ApiUtil.requestGet(url2, FuncCode.projectDetail.value,data)
-#         accounts = accounts['lists']
 
-        return render(request, Html.projectDetail, {'project': p, 'accounts': accounts, 'message': ''})
+        accountList = []
+        for account in accounts:
+            url2 = Url.roleList
+            data = {
+                    'auth_token': token,
+                    'project_id': id,
+                    'account_id': account["id"]
+                    }
+            assignments = ApiUtil.requestGet(url2, FuncCode.projectDetail.value,data)
+            role = ""
+            for assignment in assignments:
+                role = assignment["name"]
+
+            accountList.append({'id':account["id"],
+                                'name':account["name"],
+                                'role':role,
+                                'admin':account["admin"],
+                                'email':account["email"],
+                                })
+
+
+
+        return render(request, Html.projectDetail, {'project': p, 'accounts': accountList, 'message': ''})
     except Exception as ex:
         log.error(FuncCode.projectDetail.value, None, ex)
 
@@ -143,9 +154,13 @@ def projectDetail(request, id):
 def projectDelete(request, id):
     try:
         # -- URL and data set
+        code = FuncCode.projectDelete.value
         url = Url.projectDelete(id, Url.url)
-        data = {'auth_token': request.session['auth_token']}
-        ApiUtil.requestDelete(url, FuncCode.projectDelete.value, data)
+        session = request.session
+        token = session['auth_token']
+        data = {'auth_token': token}
+        ApiUtil.requestDelete(url, code, data)
+        SessionUtil.edit_project_session(code, token, session, id)
 
         return redirect(Path.projectList)
     except Exception as ex:

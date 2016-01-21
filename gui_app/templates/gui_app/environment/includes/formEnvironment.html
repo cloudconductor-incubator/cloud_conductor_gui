@@ -1,6 +1,21 @@
 {% csrf_token %} {% include "gui_app/includes/message.html" %}
 <input id="project_id" type="hidden" name="project_id" value="{{ env.project_id }}">
 <input id="auth_token" type="hidden" name="auth_token" value="{{ env.auth_token }}">
+<script>
+$(function(){
+  $("#blueprint").change(function () {
+    //alert($(this).val());
+    var param = {blueprint:$(this).val()};
+    if ($(this).val() == '' || param == null) {
+    	$('#template_parameters-div').html('');
+    } else {
+	    $.get('ajax', param, function(data) {
+			$('#template_parameters-div').html(data);
+	    });
+	}
+  });
+});
+</script>
 <div class="cc-select">
 	<div class="form-group">
 		<label><span id="req">*</span>Environment name</label> <input
@@ -20,21 +35,7 @@
 		</select>
 	</div>
 
-	<div class="form-group">
-		<label><span id="req">*</span>Blueprint&nbsp;:&nbsp;version</label> <input
-			id="a" type="hidden" name="a" value="{{ env.blueprint_id }}">
-		<input id="a" type="hidden" name="a" value="{{ env.version }}">
-		<select class="form-control" name="blueprint" id="blueprint">
-			<option value=""></option>
-			{% for b in blueprints %}
-			<option value="{'id': {{ b.id }}, 'version': {{ b.version }}}" {% ifequal b.id env.blueprint_id %}{% ifequal b.version env.version %} selected="selected"{% endifequal %}{% endifequal %}>
-				{{ b.name }}&nbsp;:&nbsp;{{ b.version }}
-			</option>
-			{% endfor %}
-		</select>
-	</div>
-
-	<div class="form-group">
+<div class="form-group">
 		<label><span id="req">*</span>Cloud priority</label>
 		<div class="input-group">
 			<span id="sizing-addon2" class="input-group-addon">1.</span>
@@ -71,11 +72,24 @@
 			</select>
 		</div>
 	</div>
+
+	<div class="form-group">
+		<label><span id="req">*</span>Blueprint&nbsp;:&nbsp;version</label> <input
+			id="a" type="hidden" name="a" value="{{ env.blueprint_id }}">
+		<input id="a" type="hidden" name="a" value="{{ env.version }}">
+		<select class="form-control" name="blueprint" id="blueprint">
+			<option value=""></option>
+			{% for b in blueprints %}
+			<option value="{'id': {{ b.id }}, 'version': {{ b.version }}}" {% ifequal b.id env.blueprint_id %}{% ifequal b.version env.version %} selected="selected"{% endifequal %}{% endifequal %}>
+				{{ b.name }}&nbsp;:&nbsp;{{ b.version }}
+			</option>
+			{% endfor %}
+		</select>
+	</div>
+
 	<div class="form-group">
 		<label>template_parameters</label>
-		<input type="file" onchange="read(this, 'template_parameters', 'temp_output')" accept="application/json"  />
-		<div id="temp_output" class="col-md-10 error_message"></div>
-		<textarea id="template_parameters" name="template_parameters" class="form-control" cols="80" rows="20" wrap="off" onchange="json_check('template_parameters', 'temp_output')">{{ env.template_parameters }}</textarea>
+		<div id="template_parameters-div"></div>
 	</div>
 	<div class="form-group">
 		<label>user_attributes</label>

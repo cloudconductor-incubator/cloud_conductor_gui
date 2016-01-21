@@ -244,12 +244,12 @@ def putEnvironment(param):
 
 def putSystem(param):
 
-    system = param.get('system', None)
+    system = param.get('id', None)
     if system != None and system != '':
         system = ast.literal_eval(system)
 
         param['id'] = system.get('id')
-        param['name'] = blueprint.get('name')
+        param['name'] = system.get('name')
 
     return param
 

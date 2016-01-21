@@ -21,6 +21,11 @@
 				{% endfor %}
 			{% endif %}
 
+			auth_token:{{ request.session.auth_token }}<br>
+			project_id:{{ request.session.project_id }}<br>
+			account_id:{{ request.session.account_id }}<br>
+			account_name:{{ request.session.account_name }}
+
 			<div class="menu-menu"></div>
 			<ul class="nav">
 				<li class="active">
@@ -52,13 +57,13 @@
 								<li><a href="{% url 'app:systemList' %}" id="var-menu">System</a></li>
 							{% endif %}
 							{% if request.session.m_environment %}
-								<li><a href="#" id="var-menu">Environment</a></li>
+								<li><a href="{% url 'app:environmentList' %}" id="var-menu">Environment</a></li>
 							{% endif %}
 							{% if request.session.m_application %}
-								<li><a href="#" id="var-menu">Application</a></li>
+								<li><a href="{% url 'app:applicationList' %}" id="var-menu">Application</a></li>
 							{% endif %}
 							{% if request.session.m_blueprint %}
-								<li><a href="#" id="var-menu">Blueprint</a></li>
+								<li><a href="{% url 'app:blueprintList' %}" id="var-menu">Blueprint</a></li>
 							{% endif %}
 							{% if request.session.m_pattern %}
 								<li><a href="{% url 'app:patternList' %}" id="var-menu">pattern</a></li>
@@ -74,7 +79,7 @@
 								<li><a href="{% url 'app:accountList' %}" id="var-menu">Account</a></li>
 							{% endif %}
 							{% if request.session.m_role %}
-								<li><a href="{% url 'app:roleCreate' %}" id="var-menu">Role</a></li>
+								<li><a href="{% url 'app:roleList' %}" id="var-menu">Role</a></li>
 							{% endif %}
 						</ul>
 					</div>
@@ -83,16 +88,24 @@
 			<div class="var-heading">Various settings</div>
 			<ul class="nav">
 					<li><a href="{% url 'app:cloudregistProjectSelect'%}" id="var-menu">Cloud registration</a></li>
-					<li><a href="#" id="var-menu">Make new application</a></li>
-					<li><a href="#" id="var-menu">Application environment</a></li>
-					<li><a href="#" id="var-menu">Deploying applications</a></li>
-			</ul>
-			<!--
-			<ul class="nav">
-					<li><a href="{% url 'app:cloudregistProjectSelect'%}" id="var-menu">Cloud registration</a></li>
 					<li><a href="{% url 'app:mkappSystemSelect'%}" id="var-menu">Make new application</a></li>
 					<li><a href="{% url 'app:envapp_systemSelect'%}" id="var-menu">Application environment</a></li>
 					<li><a href="{% url 'app:appdeployApplicationSelect'%}" id="var-menu">Deploying applications</a></li>
+			</ul>
+			<!--
+			<ul class="nav">
+				{% if request.session.w_cloud_registrarion %}
+					<li><a href="{% url 'app:cloudregistProject'%}" id="var-menu">Cloud registration</a></li>
+				{% endif %}
+				{% if request.session.w_make_new_app %}
+					<li><a href="#" id="var-menu">Make new application</a></li>
+				{% endif %}
+				{% if request.session.w_app_env %}
+					<li><a href="#" id="var-menu">Application environment</a></li>
+				{% endif %}
+				{% if request.session.w_deploying_app %}
+					<li><a href="#" id="var-menu">Deploying applications</a></li>
+				{% endif %}
 			</ul>
 			-->
 		</nav>

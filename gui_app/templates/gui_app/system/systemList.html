@@ -13,9 +13,11 @@
   <div class="cc-title">System management</div>
 	<br>
 	{% include "gui_app/includes/message.html" %}
-    <button type="button" class="btn btn-primary btn-sm" onclick="location.href='{% url 'app:systemCreate' %}'" style="float:right">
-    	<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;　new
-    </button>
+	{% if request.session.system_manage or request.session.system_create  %}
+	    <button type="button" class="btn btn-primary btn-sm" onclick="location.href='{% url 'app:systemCreate' %}'" style="float:right">
+	    	<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;　new
+	    </button>
+    {% endif %}
 	{% if system %}
 		<table class="table table-hover">
 		    <thead>
@@ -31,7 +33,12 @@
 		    {% for s in system %}
 			      <tr>
 			        <td>{{ s.id }}</td>
-			        <td><a href="{% url 'app:systemDetail' s.id %}">{{ s.name }}</a></td>
+			        <td>
+			        {% if request.session.system_manage or request.session.system_update or request.session.system_destroy  %}
+			        	<a href="{% url 'app:systemDetail' s.id %}">{{ s.name }}</a>
+					{% else %}
+						{{ s.name }}
+					{% endif %}
 			        <td>{{ s.description }}</td>
 			        <td>{{ s.domain }}</td>
 			        <td>{{ s.created_at }}</td>

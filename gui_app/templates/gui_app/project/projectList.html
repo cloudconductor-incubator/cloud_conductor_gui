@@ -21,30 +21,34 @@
 	</button>
 </div>
 {% endif %}
-    {% if projects %}
-  	<table class="table table-hover">
-			<thead>
-				<tr>
-					<th>No</th>
-					<th>Project Name</th>
-					<th>Description</th>
-					<th>Creation Date</th>
-				</tr>
-			</thead>
-        {% for p in projects %}
-            	<tr>
-					<td>{{ p.id }}</td>
-					<td>
+{% if projects %}
+ 	<table class="table table-hover">
+		<thead>
+			<tr>
+				<th>No</th>
+				<th>Project Name</th>
+				<th>Description</th>
+				<th>Creation Date</th>
+			</tr>
+		</thead>
+       {% for p in projects %}
+           	<tr>
+				<td>{{ p.id }}</td>
+				<td>
+					{% if request.session.project_manage or request.session.project_update or request.session.project_destroy  %}
 						<a href="{% url 'app:projectDetail' p.id %}">{{ p.name }}</a>
-					</td>
-					<td>{{ p.description }}</td>
-					<td>{{ p.created_at }}</td>
-				</tr>
-        {% endfor %}
-	</table>
-    {% else %}
-        There is no project.。
-    {% endif %}
+					{% else %}
+						{{ p.name }}
+					{% endif %}
+				</td>
+				<td>{{ p.description }}</td>
+				<td>{{ p.created_at }}</td>
+			</tr>
+       {% endfor %}
+</table>
+{% else %}
+	There is no project.。
+{% endif %}
 
 {% endblock %}
 

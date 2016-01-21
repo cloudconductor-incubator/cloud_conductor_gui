@@ -6,7 +6,7 @@
     {% include "gui_app/includes/nav_menu.html" %}
 {% endblock %}
 {% block breadcrumb %}
-	<li>Applicatioon Environment</li>
+	<li>Application Environment</li>
 {% endblock %}
 {% block content %}
 <div class="cc-title">Applicatioon Environment</div>
@@ -29,12 +29,13 @@
 		        <option value=""></option>
 				{% for bp in list %}
 					<option value="{'id': {{ bp.id }}, 'name': '{{ bp.name }}'}" {% if bp.id == blueprint.id %} selected="selected" {% endif %}>
-					{{ vp.name }}
+					{{ bp.name }}
 					</option>
 				{% endfor %}
 		    </select>
 	    </div>
-	    	<div class="cc-desc" id="contents-reload"> Display the contents </div>
+
+    	<div class="cc-desc" id="contents-reload"> Display the contents </div>
 		<div class="button_left">
 			<button type="button" class="btn btn-primary btn-sm" onclick="location.href='{% url 'app:envapp_systemSelect'%}'" >
 				<span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>

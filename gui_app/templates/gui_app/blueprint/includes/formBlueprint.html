@@ -30,7 +30,24 @@
 					</div>
 			{% endfor %}
 				</div>
-		</div>
+				<div class="form-group">
+			      <p class="control-label"><b><span id="req">*</span>Authority</b></p>
+			      <div class="radio-inline">
+			        <input type="checkbox" value="1" name="admin" id="admin" {% ifequal account.admin "true" %} checked {% endifequal %}>
+			          <label for="adin">Admin</label>
+			          <input type="checkbox" value="2" name="admin" id="admin" {% ifequal account.admin "true" %} checked {% endifequal %}>
+			          <label for="adin">Admin</label>
+			          <input type="checkbox" value="3" name="admin" id="admin" {% ifequal account.admin "true" %} checked {% endifequal %}>
+			          <label for="adin">Admin</label>
+			          <input type="checkbox" value="4" name="admin" id="admin" {% ifequal account.admin "true" %} checked {% endifequal %}>
+			          <label for="adin">Admin</label>
+			      </div>
+			      <div class="radio-inline">
+			        <input type="radio" value="0" name="admin" id="admin" {% ifequal account.admin "false" %} checked {% endifequal %}>
+			        <label for="nomal">normal</label>
+			      </div>
+			    </div>
+				</div>
 
    		<div class="button_center">
 			<button class="btn btn-success" type="submit"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>&nbsp;save</button>

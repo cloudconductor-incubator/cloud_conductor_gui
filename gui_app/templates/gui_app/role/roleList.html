@@ -27,13 +27,21 @@
 					<th>No</th>
 					<th>Role Name</th>
 					<th>Creation Date</th>
+					<th>Creation Date</th>
 				</tr>
 			</thead>
-        {% for ac in accounts %}
+        {% for role in roles %}
             	<tr>
 					<td>{{role.id}}</td>
-					<td><a href="#">{{role.name}}</a></td>
-					<td></td>
+					<td>
+					{% if request.session.role_manage or request.session.role_update or request.session.role_destroy  %}
+						<a href="{% url 'app:roleEdit' role.id %}">{{role.name}}</a>
+					{% else %}
+						{{ role.name }}
+					{% endif %}
+					</td>
+					<td>{{ role.description }}</td>
+					<td>{{ role.created_at }}</td>
 				</tr>
         {% endfor %}
         		</table>

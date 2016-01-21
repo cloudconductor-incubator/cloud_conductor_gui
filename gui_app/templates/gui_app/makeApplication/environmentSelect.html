@@ -17,7 +17,7 @@
 			</button>
 		</div>
 		{% endif %}
-<form method="post" action="{% url 'app:envapp_environmentSelect'%}">
+<form method="post" action="{% url 'app:mkappEnvironmentSelect' %}">
 	<div class="cc-select">
 		{% csrf_token %}
 		{% include "gui_app/includes/message.html" %}

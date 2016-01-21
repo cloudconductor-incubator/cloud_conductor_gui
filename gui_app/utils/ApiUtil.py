@@ -96,9 +96,9 @@ class Url():
     permissionList = lambda id, id2: id2 + 'roles/{0}/permissions'.format(id)
     permissionDetail = lambda id, id2, id3: id3 + 'roles/{0}/permissions/{1}'.format(id, id2)
     permissionCreate = lambda id, id2: id2 +  'roles/{0}/permissions'.format(id)
-    permissionDetail = lambda id, id2, id3: id3 +  'roles/{0}/permissions/{1}'.format(id, id2)
+    permissionDelete = lambda id, id2, id3: id3 +  'roles/{0}/permissions/{1}'.format(id, id2)
 
-    assignmentList = url + 'assignments'
+    assignmentEdit = url + 'assignments'
     assignmentCreate = url + 'assignments'
     assignmentDetail = lambda id, id2: id2 + 'assignments/{0}'.format(id)
     assignmentDelete = lambda id, id2: id2 + 'assignments/{0}'.format(id)
@@ -125,6 +125,7 @@ def requestGet(url, scid, payload):
 #         raise ApiError(scid, r)
 
 def requestPost(url, scid, payload): #-- change post
+    print(payload)
     if payload != None:
         r = requests.post(url, data=payload)
     else:
@@ -134,6 +135,7 @@ def requestPost(url, scid, payload): #-- change post
     if r.status_code == Response.Created.value or r.status_code == Response.Accepted.value:
         log.info(scid, None, r.text, Message.api_response.value)
         param =  json.loads(r.text)
+        print(param)
         return param
     else:
         raise ApiError(log.errorMessage(r, None))

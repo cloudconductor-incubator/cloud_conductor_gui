@@ -21,9 +21,11 @@ def roleList(request):
         # -- Get a project list, API call
         code = FuncCode.roleList.value
         token = request.session['auth_token']
-        roles = RoleUtil.get_role_list(code, token)
+        project_id = request.session['project_id']
 
-        return render(request, Html.roleList, {'role': roles, 'message': ''})
+        roles = RoleUtil.get_role_list(code, token,project_id)
+
+        return render(request, Html.roleList, {'roles': roles, 'message': ''})
     except Exception as ex:
         log.error(FuncCode.roleList.value, None, ex)
 
@@ -100,23 +102,21 @@ def roleCreate(request):
 def roleEdit(request, id):
     try:
         code = FuncCode.roleEdit.value
-        data = {
-            'auth_token': request.session['auth_token'],
-            'project_id': request.session['project_id']
-        }
-
         if request.method == "GET":
 
-            return render(request, Html.roleEdit, {'message': str(ex)})
+            role = RoleUtil.get_role_detail(code, request.session['auth_token'], id)
+
+            return render(request, Html.roleEdit, {'message': '',
+                                                   'role':role["role"],'items':role["check_items"],'save': True},)
         else:
             # -- Get a value from a form
-
-
+            RoleUtil.edit_role(code, request.session['auth_token'],id, request.POST.get('name'), request.POST.get('description'),request.POST)
             return redirect(Path.roleList)
+
     except Exception as ex:
         log.error(code, None, ex)
-
-        return render(request, Html.roleEdit, {'message': str(ex)})
+        role = RoleUtil.get_role_detail(code, request.session['auth_token'], id)
+        return render(request, Html.roleEdit, {'message': str(ex),'role':role["role"],'items':role["check_items"],'save': True})
 
 def roleDelete(request, id):
     try:

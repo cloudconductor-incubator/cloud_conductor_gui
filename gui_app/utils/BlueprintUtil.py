@@ -9,7 +9,7 @@ from ..enum.FunctionCode import FuncCode
 from ..logs import log
 
 
-def create_blueprint(code, token, pjid, name, description):
+def get_blueprint_list(code, token, project_id=None):
 
     if StringUtil.isEmpty(code):
         return None
@@ -17,19 +17,64 @@ def create_blueprint(code, token, pjid, name, description):
     if StringUtil.isEmpty(token):
         return None
 
-    if StringUtil.isEmpty(pjid):
+    if StringUtil.isEmpty(project_id):
+        return None
+
+    data = {
+            'auth_token': token,
+            'project_id': project_id,
+            }
+    url = Url.blueprintList
+    list = ApiUtil.requestGet(url, code, data)
+
+    return list
+
+
+def get_blueprint_list2(code, token, project_id=None):
+
+    blueprints = get_blueprint_list(code, token, project_id)
+    print(blueprints)
+
+    if StringUtil.isEmpty(blueprints):
+        return None
+
+    dic = {}
+    list = []
+    for bp in blueprints:
+        dic['id'] = str(bp.get('id'))
+        dic['name'] = bp.get('name')
+        list.append(dic.copy())
+
+    return list
+
+
+def create_blueprint(code, token, project_id, name, description):
+
+    if StringUtil.isEmpty(code):
+        return None
+
+    if StringUtil.isEmpty(token):
+        return None
+
+    if StringUtil.isEmpty(project_id):
         return None
 
     if StringUtil.isEmpty(name):
         return None
 
-    url = Url.blueprintList
+    data = {
+            'auth_token': token,
+            'project_id': project_id,
+            'name': name,
+            'description': description,
+            }
+    url = Url.blueprintCreate
     list = ApiUtil.requestPost(url, code, data)
 
     return list
 
 
-def edit_blueprint(code, token, pjid, name, description):
+def edit_blueprint(code, token, id, project_id, name, description):
 
     if StringUtil.isEmpty(code):
         return None
@@ -37,10 +82,17 @@ def edit_blueprint(code, token, pjid, name, description):
     if StringUtil.isEmpty(token):
         return None
 
-    if StringUtil.isEmpty(pjid):
+    if StringUtil.isEmpty(project_id):
         return None
 
-    url = Url.blueprintEdit
+    data = {
+            'auth_token': token,
+            'project_id': project_id,
+            'name': name,
+            'description': description,
+            }
+
+    url = Url.blueprintEdit(id, Url.url)
     list = ApiUtil.requestPost(url, code, data)
 
     return list
@@ -131,8 +183,6 @@ def get_pattern_list(code, id, token, pjid):
 
     dic = {}
     list = []
-#     bpptternList = bpptternList['lists']
-#     patternList = patternList['lists']
     for bpt in bpptternList :
 
         for pt in patternList:

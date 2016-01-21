@@ -1,5 +1,5 @@
 {% extends "gui_app/base.html" %}
-{% block title %}Applicatioon Environment{% endblock %}
+{% block title %}Application Environment{% endblock %}
 {% block headerscript %}{% endblock %}
 {% block bodyscripttop %}{% endblock %}
 {% block nav %}
@@ -23,17 +23,9 @@
 		{% csrf_token %}
 		{% include "gui_app/includes/message.html" %}
 		<h3>System select</h3>
-		<div class="form-group">
-	    	<label><span id="req">*</span>System</label>
-			<select class="form-control" name="id" id="id">
-		        <option value=""></option>
-				{% for sys in list %}
-					<option value="{'id': {{ sys.id }}, 'name': '{{ sys.name }}'}" {% if sys.id == system.id %} selected="selected" {% endif %}>
-					{{ sys.name }}
-					</option>
-				{% endfor %}
-		    </select>
-	    </div>
+
+		{% include "gui_app/envApplication/includes/formSystemSelect.html" %}
+
 	    	<div class="cc-desc" id="contents-reload"> Display the contents </div>
 		<div class="button_left">
 			<button type="button" class="btn btn-primary btn-sm hidden" onclick="location.href='#'" >

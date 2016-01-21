@@ -5,14 +5,16 @@ import requests
 import ast
 from collections import OrderedDict
 from ..forms import w_applicationForm
-from ..forms import w_environmentForm
+from ..forms import w_appenv_environmentForm
 from ..forms import environmentSelectForm
 from ..forms import systemSelectForm
+from ..forms import blueprintSelectForm
 from ..forms import systemForm
 from ..utils import ApiUtil
 from ..utils import SystemUtil
 from ..utils import ApplicationUtil
 from ..utils import EnvironmentUtil
+from ..utils import BlueprintUtil
 from ..utils import ApplicationHistoryUtil
 from ..utils.BlueprintUtil import get_blueprint_version
 from ..utils import StringUtil
@@ -45,12 +47,12 @@ def systemSelect(request):
             p = request.POST
             cpPost = p.copy()
             system = putSystem(cpPost)
-#             form = environmentSelectForm(system)
-#             if not form.is_valid():
-#
-#                 return render(request, Html.envapp_systemSelect, {"list": list, 'system': system, 'message': form.errors})
+            form = systemSelectForm(system)
+            if not form.is_valid():
 
-#             session['system'] = system
+                return render(request, Html.envapp_systemSelect, {"list": list, 'system': system, 'message': form.errors})
+
+            session['system'] = system
 
             return redirect(Path.envapp_bluprintSelect)
     except Exception as ex:
@@ -65,61 +67,70 @@ def blueprintSelect(request):
         session = request.session
         token = session['auth_token']
         project_id = session['project_id']
-#         list = EnvironmentUtil.get_environment_list2(code, token, project_id)
+        list = BlueprintUtil.get_blueprint_list2(code, token, project_id)
+        print(list)
 
         if request.method == "GET":
-            environment = session.get('environment')
+            blueprint = session.get('blueprint')
 
-            return render(request, Html.envapp_bluprintSelect, {"list": list, 'environment': environment, 'message': ''})
+            return render(request, Html.envapp_bluprintSelect, {'list': list, 'blueprint': blueprint, 'message': ''})
         elif request.method == "POST":
             p = request.POST
             cpPost = p.copy()
-            environment = putEnvironment(cpPost)
-#             form = environmentSelectForm(environment)
-#             if not form.is_valid():
-#
-#                 return render(request, Html.envapp_bluprintSelect, {"list": list, 'environment': environment,
-#                                                                        'message': form.errors})
+            blueprint = putBlueprint(cpPost)
+            form = blueprintSelectForm(blueprint)
+            if not form.is_valid():
 
-#             request.session['environment'] = environment
+                return render(request, Html.envapp_bluprintSelect, {'list': list, 'blueprint': blueprint,
+                                                                        'message': form.errors})
 
-            return redirect(Path.envapp_environmentSelect)
+            request.session['blueprint'] = blueprint
+
+            return redirect(Path.envapp_environmentCreate)
     except Exception as ex:
         log.error(FuncCode.appenv_blueprint.value, None, ex)
 
-        return render(request, Html.envapp_bluprintSelect, {"list": '', 'environment': '', 'message': ''})
+        return render(request, Html.envapp_bluprintSelect, {'list': '', 'blueprint': '', 'message': str(ex)})
 
 
-def environmentSelect(request):
+def environmentCreate(request):
     try:
-        code = FuncCode.appenv_environment.value
+        code = FuncCode.newapp_environment.value
         session = request.session
-        token = session['auth_token']
-        project_id = session['project_id']
-        list = EnvironmentUtil.get_environment_list2(code, token, project_id)
+        data = {
+            'auth_token': session.get('auth_token'),
+            'project_id': session.get('project_id')
+        }
+
+        clouds = ApiUtil.requestGet(Url.cloudList, code, data)
+        systems = ApiUtil.requestGet(Url.systemList, code, data)
+        blueprints = get_blueprint_version(code, data)
 
         if request.method == "GET":
-            environment = session.get('environment')
+            environment = request.session.get('environment')
 
-            return render(request, Html.envapp_environmentSelect, {"list": list, 'environment': environment, 'message': ''})
+            return render(request, Html.envapp_environmentCreate, {'clouds': clouds, 'systems': systems,
+                                                                   'blueprints': blueprints, 'env': environment,
+                                                                   'message': ''})
         elif request.method == "POST":
-            p = request.POST
-            cpPost = p.copy()
-            environment = putEnvironment(cpPost)
-            form = environmentSelectForm(environment)
+            param = request.POST
+            # -- Validate check
+            form = w_appenv_environmentForm(param)
             if not form.is_valid():
 
-                return render(request, Html.envapp_environmentSelect, {"list": list, 'environment': environment,
+                return render(request, Html.envapp_environmentCreate, {'clouds': clouds, 'systems': systems,
+                                                                       'blueprints': blueprints, 'env': param,
                                                                        'message': form.errors})
 
+            # -- Session add
+            environment = environmentPut(param)
             request.session['environment'] = environment
 
-            return redirect(Path.envapp_confirm)
+            return redirect(Path.envapp_environmentCreate)
     except Exception as ex:
         log.error(FuncCode.appenv_environment.value, None, ex)
 
-        return render(request, Html.envapp_environmentSelect, {"list": '', 'environment': '', 'message': ''})
-
+        return render(request, Html.envapp_environmentCreate, {"env": '', 'message': str(ex)})
 
 
 
@@ -127,30 +138,18 @@ def confirm(request):
     #     try:
     session = request.session
     sys_session = session.get('system')
-    app_session = session.get('application')
+    bp_session = session.get('blueprint')
     env_session = session.get('environment')
 
     if request.method == "GET":
 
-        return render(request, Html.envapp_confirm, {"system": sys_session, 'application': app_session, 'environment': env_session, 'message': ''})
+        return render(request, Html.envapp_confirm, {"system": sys_session, 'blueprint': bp_session, 'environment': env_session, 'message': ''})
     elif request.method == "POST":
         session = request.session
         code = FuncCode.appenv_confirm.value
         token = session.get('auth_token')
         project_id = ''
 
-        # -- application createt
-        application = ApplicationUtil.create_application(code, token, sys_session.get('id'),
-                        app_session.get('name'), app_session.get('description'), app_session.get('domain'))
-
-        # -- applicationHistory create
-        history = ApplicationHistoryUtil.create_history(code, token, application.get('id'), app_session.get('url'),
-                        app_session.get('type'), app_session.get('protocol'), app_session.get('revision'),
-                        app_session.get('pre_deploy'), app_session.get('post_deploy'), app_session.get('parameters'))
-
-        # -- application deploy
-        deploy = ApplicationUtil.deploy_application(
-            code, token, env_session.get('id'), application.get('id'))
 
         # -- session delete
         sessionDelete(session)
@@ -164,26 +163,37 @@ def confirm(request):
 #                                                           'baseImage': session.get('baseimage'), 'message': str(ex)})
 
 
+def putBlueprint(param):
+
+    blueprint = param.get('id', None)
+    if blueprint != None and blueprint != '':
+        blueprint = ast.literal_eval(blueprint)
+
+        param['id'] = str(blueprint.get('id'))
+        param['name'] = blueprint.get('name')
+
+    return param
+
 def putEnvironment(param):
 
-    environment = param.get('environment', None)
+    environment = param.get('id', None)
     if environment != None and environment != '':
         environment = ast.literal_eval(environment)
 
-        param['id'] = blueprint.get('id')
-        param['name'] = blueprint.get('name')
+        param['id'] = str(environment.get('id'))
+        param['name'] = environment.get('name')
 
     return param
 
 
 def putSystem(param):
 
-    system = param.get('system', None)
+    system = param.get('id', None)
     if system != None and system != '':
         system = ast.literal_eval(system)
 
-        param['id'] = system.get('id')
-        param['name'] = blueprint.get('name')
+        param['id'] = str(system.get('id'))
+        param['name'] = system.get('name')
 
     return param
 
@@ -210,25 +220,6 @@ def environmentPut(req):
     return environment
 
 
-def applicationPut(req):
-    if StringUtil.isEmpty(req):
-        return None
-
-    application = {
-        'name': req.get('name'),
-        'description': req.get('description'),
-        'domain': req.get('domain'),
-        'url': req.get('url'),
-        'type': req.get('type'),
-        'protocol': req.get('protocol'),
-        'revision': req.get('revision'),
-        'pre_deploy': req.get('pre_deploy'),
-        'post_deploy': req.get('post_deploy'),
-        'parameters': req.get('parameters'),
-    }
-    return application
-
-
 def sessionDelete(session):
 
     if 'system' in session:
@@ -238,4 +229,4 @@ def sessionDelete(session):
         del session['environment']
 
     if 'application' in session:
-        del session['application']
+        del session['blueprint']

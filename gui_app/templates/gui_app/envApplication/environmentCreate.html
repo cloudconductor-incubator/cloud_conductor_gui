@@ -1,5 +1,5 @@
 {% extends "gui_app/base.html" %}
-{% block title %}Environment Create{% endblock %}
+{% block title %}Application Environment{% endblock %}
 {% block headerscript %}
 {% endblock %}
 
@@ -12,11 +12,11 @@
 {% block content %}
 <div class="cc-title">Applicatioon Environment</div>
 <br>
-	<form method="post" action="{% url 'app:mkappEnvironmentCreate' %}">
+	<form method="post" action="{% url 'app:envapp_environmentCreate' %}">
 		{% include "gui_app/environment/includes/formEnvironment.html" %}
 
 		<div class="button_left">
-			<button type="button" class="btn btn-primary btn-sm" onclick="location.href='{% url 'app:mkappSystemSelect' %}'" >
+			<button type="button" class="btn btn-primary btn-sm" onclick="location.href='{% url 'app:envapp_bluprintSelect' %}'" >
 				<span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
 				 &nbsp;　back
 			</button>

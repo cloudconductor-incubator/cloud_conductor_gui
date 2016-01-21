@@ -15,7 +15,6 @@
 <br>
 	<form method="post" action="{% url 'app:mkappApplicationCreate' %}">
 		{% include "gui_app/application/includes/formApplication.html" %}
-		{% include "gui_app/makeApplication/includes/formApplicationHistory.html" %}
 
 		<div class="button_left">
 			<button type="button" class="btn btn-primary btn-sm" onclick="location.href='{% url 'app:mkappSystemSelect' %}'" >

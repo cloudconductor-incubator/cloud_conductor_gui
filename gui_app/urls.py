@@ -8,6 +8,7 @@ from .views import accountViews
 from .views import roleViews
 from .views import systemViews
 from .views import environmentViews
+from .views import assignmentViews
 from .views import applicationViews
 from .views import blueprintViews
 from .views import patternViews
@@ -35,6 +36,8 @@ urlpatterns = [
     url('^project/(?P<id>\d+)/projectAddUser/$', projectViews.projectAddUser, name="projectAddUser"),
     url('^project/(?P<id>\d+)/project/change/$', projectViews.projectChange, name="projectChange"),
 
+    url('^assignment/(?P<id>\d+)/edit/$', assignmentViews.assignmentEdit, name="assignmentEdit"),
+
     url('^cloud/list', cloudViews.cloudList, name="cloudList"),
     url('^cloud/(?P<id>\d+)/detail/', cloudViews.cloudDetail, name="cloudDetail"),
     url('^cloud/create', cloudViews.cloudCreate, name="cloudCreate"),
@@ -55,6 +58,7 @@ urlpatterns = [
     url('^environment/list', environmentViews.environmentList, name="environmentList"),
     url('^environment/(?P<id>\d+)/detail/', environmentViews.environmentDetail, name="environmentDetail"),
     url('^environment/create', environmentViews.environmentCreate, name="environmentCreate"),
+    url('^environment/ajax', environmentViews.environmentAjaxBlueprint, name="environmentAjaxBlueprint"),
     url('^environment/(?P<id>\d+)/edit/$', environmentViews.environmentEdit, name="environmentEdit"),
     url('^environment/(?P<id>\d+)/delete/', environmentViews.environmentDelete, name="environmentDelete"),
 
@@ -111,7 +115,7 @@ urlpatterns = [
 
     url('^envapp/system/select/', applicationEnvironmentViews.systemSelect, name="envapp_systemSelect"),
     url('^envapp/blueprint/select/', applicationEnvironmentViews.blueprintSelect, name="envapp_bluprintSelect"),
-    url('^envapp/environment/select/', applicationEnvironmentViews.environmentSelect, name="envapp_environmentSelect"),
+    url('^envapp/environment/create/', applicationEnvironmentViews.environmentCreate, name="envapp_environmentCreate"),
     url('^envapp/confirm/', applicationEnvironmentViews.confirm, name="envapp_confirm"),
 
     url('^appdeploy/application/select/', applicationDeployViews.applicationSelect, name="appdeployApplicationSelect"),

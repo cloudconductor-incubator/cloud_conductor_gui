@@ -103,12 +103,6 @@ def blueprintCreate(request):
 
                 return render(request, Html.blueprintCreate, {'blueprint': cpPost, 'patternSelect': patternSelect, 'message': msg})
 
-            print("post:")
-            print(p)
-
-
-            pattern_id[i]
-
 
             # -- 1.Create a blueprint, api call
             url = Url.blueprintCreate

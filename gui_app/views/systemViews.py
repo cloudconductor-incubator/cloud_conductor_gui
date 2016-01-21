@@ -116,8 +116,8 @@ def systemEdit(request, id):
 def systemDelete(request, id):
     try:
         # -- URL and data set
-        SystemUtil.get_system_delete(code, request.session.get('auth_token'), request.session.get('project_id'))
-
+        code = FuncCode.systemDelete.value
+        SystemUtil.get_system_delete(code, request.session.get('auth_token'), id)
 
         return redirect(Path.systemList)
     except Exception as ex:

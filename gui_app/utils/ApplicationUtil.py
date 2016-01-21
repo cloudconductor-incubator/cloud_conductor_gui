@@ -42,6 +42,22 @@ def get_application_list2(code, token, project_id=None):
     return list
 
 
+def get_application_detail(code, token, id):
+    if StringUtil.isEmpty(code):
+        return None
+
+    if StringUtil.isEmpty(token):
+        return None
+
+    data = {
+            'auth_token': token,
+            }
+
+    url = Url.applicationDetail(id, Url.url)
+    list = ApiUtil.requestGet(url, code, data)
+    return list
+
+
 def create_application(code, token, system_id, name, description, domain):
     # -- URL set
     url = Url.applicationCreate

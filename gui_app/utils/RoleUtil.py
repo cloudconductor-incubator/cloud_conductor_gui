@@ -20,7 +20,6 @@ def get_role_list(code, token, project_id=None, account_id=None):
     data = {
             'auth_token': token,
             'project_id': project_id,
-            'account_id': account_id,
             }
     list = ApiUtil.requestGet(url, code, data)
 
@@ -55,6 +54,53 @@ def create_role(code, token, project_id,name, description , params):
 
     return role
 
+def edit_role(code, token, id,name, description , params):
+    # -- Create a project, api call
+    url = Url.roleEdit(id,Url.url)
+    data = {
+        'auth_token': token,
+        'name': name,
+        'description': description
+    }
+
+    # -- API call, get a response
+    role = ApiUtil.requestPut(url, code, data)
+
+
+    url = Url.permissionList(id,Url.url)
+    permissions = ApiUtil.requestGet(url, code, data)
+    old_value = []
+    old_id = []
+    for permission in permissions:
+        old_value.append(permission["model"] + "-"  + permission["action"])
+        pass
+
+    i = 0
+    for param in params:
+        if '-' in param:
+            if param.split('-')[1] in ['manage','read','create','update','destroy']:
+                if param in old_value:
+                    old_value.remove(param)
+                    pass
+
+                else:
+                    url = Url.permissionCreate(role["id"], Url.url)
+                    data = {
+                        'auth_token': token,
+                        'action': param.split('-')[1],
+                        'model': param.split('-')[0],
+                    }
+                    permission = ApiUtil.requestPost(url, code, data)
+
+    for permission in permissions:
+
+        if permission["model"] + "-"  + permission["action"] in old_value:
+            url = Url.permissionDelete(id,permission["id"], Url.url)
+            data = {'auth_token': token}
+            ApiUtil.requestDelete(url, code, data)
+
+    return role
+
 
 def get_role_detail(code, token, id):
 
@@ -67,11 +113,45 @@ def get_role_detail(code, token, id):
     if StringUtil.isEmpty(id):
         return None
 
-    url = Url.roleDetail(id)
+    url = Url.roleDetail(id,Url.url)
     data = {'auth_token': token}
-    list = ApiUtil.requestGet(url, code, data)
+    role = ApiUtil.requestGet(url, code, data)
 
-    return list
+    url = Url.permissionList(id,Url.url)
+    permissions = ApiUtil.requestGet(url, code, data)
+
+    check_value = []
+    for permission in permissions:
+        check_value.append(permission["model"] + "-"  + permission["action"])
+        pass
+
+    check_items = []
+    actions =["manage","read","create","update","destroy"]
+    models = []
+    models.append({"no":"1", "name":"Project", "item_name":"project"})
+    models.append({"no":"2", "name":"Cloud", "item_name":"cloud"})
+    models.append({"no":"3", "name":"BaseImage", "item_name":"base_image"})
+    models.append({"no":"4", "name":"Blueprint", "item_name":"blueprint"})
+    models.append({"no":"5", "name":"System", "item_name":"system"})
+    models.append({"no":"6", "name":"Environment", "item_name":"environment"})
+    models.append({"no":"7", "name":"Application", "item_name":"application"})
+    models.append({"no":"8", "name":"Pattern", "item_name":"pattern"})
+    models.append({"no":"9", "name":"Account", "item_name":"account"})
+    models.append({"no":"10", "name":"Role", "item_name":"role"})
+
+    for model in models:
+        items = []
+        for action in actions:
+            if model["item_name"] + "-"  + action in check_value:
+                items.append({"item_name":model["item_name"] + "-" + action,"checked":"checked"})
+            else:
+                items.append({ "item_name":model["item_name"] + "-" +action,"checked":""})
+
+        check_items.append({"no":model["no"], "name":model["name"], "items":items})
+        pass
+
+
+    return {'role':role,'check_items':check_items}
 
 
 def get_account_role(code, token, project_id, account_id):

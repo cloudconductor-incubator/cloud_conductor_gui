@@ -69,17 +69,24 @@ def assignmentCreate(request):
 
 
 def assignmentEdit(request, id=None):
+
+
     try:
+        code = FuncCode.projectEdit.value
         if request.method == "GET":
             token = request.session['auth_token']
-            url = Url.projectDetail(id, Url.url)
+            url = Url.assignmentEdit
             data = {
-                    'auth_token': token
+                    'auth_token': token,
+                    'project_id': id,
                     }
-            p = ApiUtil.requestGet(url, FuncCode.projectEdit.value, data)
-            p.update(data)
+            assignments = ApiUtil.requestGet(url, code, data)
 
-            return render(request, Html.projectEdit, {'project': p, 'message': '', 'save': True})
+            list = RoleUtil.get_role_list(code, token, project_id=id)
+
+            return render(request, Html.assignmentEdit, {'assignments': assignments, 'message': '',
+                                                        'roleList':list,
+                                                         'save': True})
         else:
             # -- Get a value from a form
             p = request.POST
@@ -106,7 +113,7 @@ def assignmentEdit(request, id=None):
     except Exception as ex:
         log.error(FuncCode.projectEdit.value, None, ex)
 
-        return render(request, Html.projectEdit, {'project': request.POST, 'message': str(ex), 'save': True})
+        return render(request, Html.assignmentEdit, {'project': request.POST, 'message': str(ex), 'save': True})
 
 
 def assignmentDelete(request, id):

@@ -52,6 +52,47 @@ def get_history_list2(code, token, id):
     return list
 
 
+def get_new_history(code, token, id):
+    if StringUtil.isEmpty(id):
+        return None
+
+    if StringUtil.isEmpty(code):
+        return None
+
+    if StringUtil.isEmpty(token):
+        return None
+
+    apps = get_history_list(code, token, id)
+
+    if StringUtil.isEmpty(apps):
+        return None
+
+    dic = {}
+    for app in apps:
+        if int(dic.get('id', 0)) < app.get('id'):
+            dic['id'] = str(app.get('id'))
+            dic['version'] = app.get('version')
+            dic['revision'] = app.get('revision')
+        print(dic)
+    return dic
+
+
+def get_history_detail(code, token, id, his_id):
+    if StringUtil.isEmpty(code):
+        return None
+
+    if StringUtil.isEmpty(token):
+        return None
+
+    data = {
+            'auth_token': token,
+            }
+
+    url = Url.applicationHistoryDetail(id, his_id,Url.url)
+    list = ApiUtil.requestGet(url, code, data)
+    return list
+
+
 def create_history(code, token, id, url, type, protocol, revision,
                    pre_deploy, post_deploy, parameters):
 
@@ -76,7 +117,7 @@ def create_history(code, token, id, url, type, protocol, revision,
         'revision': revision,
         'pre_deploy': pre_deploy,
         'post_deploy': post_deploy,
-#         'parameters': parameters,
+        'parameters': parameters,
     }
     # -- API call, get a response
     response = ApiUtil.requestPost(url, code, data)
