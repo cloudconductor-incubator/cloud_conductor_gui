@@ -1,0 +1,58 @@
+{% extends "gui_app/base.html" %}
+{% block title %}Role management{% endblock %}
+{% block headerscript %}
+{% endblock %}
+
+{% block nav %}
+    {% include "gui_app/includes/nav_menu.html" %}
+{% endblock %}
+{% block breadcrumb %}
+	<li>Role management</li>
+{% endblock %}
+{% block content %}
+
+<form method="post" action="{% url 'app:roleEdit' 1 %}">
+<div class="cc-title" style="margin-top: 20px;">Assignment Edit</div>
+<br>
+{% if request.session.role_create or request.session.role_manage  %}
+<div>
+	<button class="btn btn-primary btn-sm" style="float:right" onclick="location.href='{% url 'app:roleCreate' %}'" type="button">
+		<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;NEW
+	</button>
+</div>
+{% endif %}
+    {% if assignments %}
+    	<table class="table table-hover">
+			<thead>
+				<tr>
+					<th></th>
+					<th>No</th>
+					<th>Account Name</th>
+					<th>Role</th>
+				</tr>
+			</thead>
+        {% for assignment in assignments %}
+            	<tr>
+            		<td><input name="{{assignment.item_name}}" id="{{assignment.item_name}}" checked type="checkbox"></td>
+					<td>{{assignment.id}}</td>
+					<td>{{ assignment.accountName }}</td>
+					<td>
+					<select class="form-control" name="role" id="role">
+				        <option value=""></option>
+				        {% for r in roleList %}
+						   <option value="{{ r.id }}" {% if  account.role == r.id %} selected="selected" {% endif %}>
+						       {{ r.name }}
+						   </option>
+						{% endfor %}
+				    </select>
+					</td>
+				</tr>
+        {% endfor %}
+        		</table>
+    {% else %}
+        There is no role.
+    {% endif %}
+</form>
+{% endblock %}
+
+{% block bodyscript %}{% endblock %}

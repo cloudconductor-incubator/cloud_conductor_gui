@@ -9,7 +9,7 @@ from ..utils.ErrorUtil import ApiError
 
 
 class Url():
-    url = 'http://52.53.234.193:8080/api/v1/'
+    url = ''
 
     token = url + 'tokens'
 

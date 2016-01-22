@@ -1,0 +1,12 @@
+<html>
+<body>
+
+{% for key1,value1 in inputs %}
+  <div class="form-group">
+    <label>{{ key1 }}</label>
+    <input type="text" value="{{ value1}}" class="form-control" name="{{ key1 }}">
+  </div>
+{% endfor %}
+</body>
+</html>
+

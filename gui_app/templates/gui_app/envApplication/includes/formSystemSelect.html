@@ -1,0 +1,11 @@
+<div class="form-group">
+   	<label><span id="req">*</span>System</label>
+	<select class="form-control" name="id" id="id">
+        <option value=""></option>
+		{% for sys in list %}
+			<option value="{'id': {{ sys.id }}, 'name': '{{ sys.name }}'}" {% if sys.id == system.id %} selected="selected" {% endif %}>
+			{{ sys.name }}
+			</option>
+		{% endfor %}
+    </select>
+</div>
