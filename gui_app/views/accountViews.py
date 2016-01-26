@@ -8,6 +8,7 @@ from ..utils import AccountUtil
 from ..utils import RoleUtil
 from ..utils import ValiUtil
 from ..utils import ApiUtil
+from ..utils import SessionUtil
 from ..utils.PathUtil import Path
 from ..utils.PathUtil import Html
 from ..utils.ApiUtil import Url
@@ -20,6 +21,11 @@ from ..logs import log
 
 def accountList(request):
     try:
+        if SessionUtil.check_login(request) == False:
+            return redirect(Path.logout)
+        if SessionUtil.check_permission(request,'account','list') == False:
+            return render_to_response(Html.error_403)
+
         code = FuncCode.accountList.value
         token = request.session.get('auth_token')
         project_id = request.session.get('project_id')
@@ -36,34 +42,39 @@ def accountList(request):
 
 def accountDetail(request, id):
     try:
+        if SessionUtil.check_login(request) == False:
+            return redirect(Path.logout)
+        if SessionUtil.check_permission(request,'account','read') == False:
+            return render_to_response(Html.error_403)
+
         # -- account DetailAPI call, get a response
         token = request.session['auth_token']
-        url = Url.accountDetail(id, Url.url)
-        print(url)
-        data = {
-                'auth_token': token
-                }
-        p = ApiUtil.requestGet(url, FuncCode.accountDetail.value,data)
+        project_id = request.session['project_id']
+        code =FuncCode.accountDetail.value
 
-        return render(request, Html.accountDetail, {'account': p, 'message': ''})
+        account = AccountUtil.get_account_detail(code, token, id)
+        role = RoleUtil.get_account_role(code, token, project_id, account.get('id'))
+        account.update({'role': role.get('name')})
+
+        return render(request, Html.accountDetail, {'account': account, 'message': ''})
     except Exception as ex:
         log.error(FuncCode.accountDetail.value, None, ex)
 
         return render(request, Html.accountDetail, {'account': '', 'message': str(ex)})
 
 def accountCreate(request):
-
     try:
+        if SessionUtil.check_login(request) == False:
+            return redirect(Path.logout)
+        if SessionUtil.check_permission(request,'account','create') == False:
+            return render_to_response(Html.error_403)
+
         token = request.session['auth_token']
         code = FuncCode.accountCreate.value
-        list = RoleUtil.get_role_list(code, token, project_id=request.session['project_id'])
 
         if request.method == "GET":
-            data = {
-                    'auth_token': token
-                    }
 
-            return render(request, Html.accountCreate, {'account': data, 'roleList': list,'message': ''})
+            return render(request, Html.accountCreate, {'account': '', 'form': '','message': ''})
         else:
             # -- Get a value from a form
             p = request.POST
@@ -73,7 +84,7 @@ def accountCreate(request):
             form.full_clean()
             if not form.is_valid():
 
-                return render(request, Html.accountCreate, {'account': p, 'message': form.errors})
+                return render(request, Html.accountCreate, {'account': p, 'form': form, 'message': ''})
             # -- AccountCreateAPI call, get a response
             response = AccountUtil.get_account_create(code, token, p['name'], p['email'], p['password'], p['repassword'], p['admin'])
 
@@ -81,11 +92,16 @@ def accountCreate(request):
     except Exception as ex:
         log.error(FuncCode.accountCreate.value, None, ex)
 
-        return render(request, Html.accountCreate, {'account': request.POST, 'message': ex})
+        return render(request, Html.accountCreate, {'account': request.POST, 'form': '', 'message': ex})
 
 
 def accountEdit(request, id):
     try:
+        if SessionUtil.check_login(request) == False:
+            return redirect(Path.logout)
+        if SessionUtil.check_permission(request,'account','update') == False:
+            return render_to_response(Html.error_403)
+
         if request.method == "GET":
             token = request.session['auth_token']
             url = Url.accountDetail(id, Url.url)
@@ -105,7 +121,7 @@ def accountEdit(request, id):
             form.full_clean()
             if not form.is_valid():
 
-                return render(request, Html.accountEdit, {'account': p, 'message': msg})
+                return render(request, Html.accountEdit, {'account': p, 'form': form, 'message': ''})
 
             # -- URL set
             url = Url.accountEdit(id, Url.url)
@@ -116,20 +132,24 @@ def accountEdit(request, id):
                     'password': p['password'],
                     'repassword': p['repassword'],
                     'admin': p['admin'],
-                    'role': p['role'],
                     }
             # -- API call, get a response
-            ApiUtil.requestPost(url, FuncCode.accountEdit.value, data)
+            ApiUtil.requestPut(url, FuncCode.accountEdit.value, data)
 
             return redirect(Path.accountList)
     except Exception as ex:
         log.error(FuncCode.accountEdit.value, None, ex)
 
-        return render(request, Html.accountEdit, {'account': request.POST, 'message': ex})
+        return render(request, Html.accountEdit, {'account': request.POST, 'form': '', 'message': ex})
 
 
 def accountDelete(request, id):
     try:
+        if SessionUtil.check_login(request) == False:
+            return redirect(Path.logout)
+        if SessionUtil.check_permission(request,'account','destroy') == False:
+            return render_to_response(Html.error_403)
+
         url = Url.accountDetail(id, Url.url)
         r = requests.get(url)
         p = json.loads(r.text)

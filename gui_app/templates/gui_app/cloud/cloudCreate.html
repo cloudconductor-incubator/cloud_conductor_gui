@@ -14,7 +14,6 @@
 <div class="cc-title">Cloud Create</div>
 <br>
 	<form method="post" action="{% url 'app:cloudCreate' %}">
-		<input id="auth_token" type="hidden" name="auth_token" value="{{ cloud.auth_token }}">
 		{% include "gui_app/cloud/includes/formCloud.html" %}
 		{{ cloudTypeList }}
 	</form>

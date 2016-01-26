@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,render_to_response
 import json
 import requests
 from django.shortcuts import redirect
@@ -10,6 +10,7 @@ from ..utils import SessionUtil
 from ..utils import ValiUtil
 from ..utils import ApiUtil
 from ..utils import PermissionUtil
+from ..utils import SessionUtil
 from ..utils.PathUtil import Path
 from ..utils.PathUtil import Html
 from ..utils.ApiUtil import Url
@@ -22,11 +23,16 @@ from ..logs import log
 
 def projectList(request):
     try:
+        if SessionUtil.check_login(request) == False:
+            return redirect(Path.logout)
+        if SessionUtil.check_permission(request,'project','list') == False:
+            return render_to_response(Html.error_403)
+
         projects = None
         # -- Get a project list, API call
         code = FuncCode.projectList.value
         token = request.session['auth_token']
-        projects = ProjectUtil.get_project_list(code, token)
+        projects = ProjectUtil.get_project_detail(code, token, request.session.get('project_id'))
 
         return render(request, Html.projectList, {'projects': projects, 'message': ''})
     except Exception as ex:
@@ -37,14 +43,18 @@ def projectList(request):
 
 def projectCreate(request):
     try:
+        if SessionUtil.check_login(request) == False:
+            return redirect(Path.logout)
+        if SessionUtil.check_permission(request,'project','create') == False:
+            return render_to_response(Html.error_403)
+
         code = FuncCode.projectCreate.value
         token = request.session['auth_token']
         s = request.session
 
         if request.method == "GET":
-            p = {'auth_token': request.session['auth_token']}
 
-            return render(request, Html.projectCreate, {'project': p, 'message': '', 'save': True})
+            return render(request, Html.projectCreate, {'project': '', 'form':'', 'message': '', 'save': True})
         else:
             # -- Get a value from a form
             msg = ''
@@ -52,8 +62,8 @@ def projectCreate(request):
             # -- Validate check
             form = projectForm(p)
             if not form.is_valid():
-                msg = ValiUtil.valiCheck(form)
-                return render(request, Html.projectCreate, {'project': p, 'message': msg, 'save': True})
+
+                return render(request, Html.projectCreate, {'project': p, 'form': form, 'message': msg, 'save': True})
 
             # -- Create a project, api call
             url = Url.projectCreate
@@ -71,11 +81,17 @@ def projectCreate(request):
     except Exception as ex:
         log.error(FuncCode.projectCreate.value, None, ex)
 
-        return render(request, Html.projectCreate, {'project': request.POST, "message": str(ex), 'save': True})
+        return render(request, Html.projectCreate, {'project': request.POST, 'form':'',
+                                                    'message': str(ex), 'save': True})
 
 
 def projectEdit(request, id):
     try:
+        if SessionUtil.check_login(request) == False:
+            return redirect(Path.logout)
+        if SessionUtil.check_permission(request,'project','update') == False:
+            return render_to_response(Html.error_403)
+
         code = FuncCode.projectEdit.value
         token = request.session['auth_token']
 
@@ -83,7 +99,7 @@ def projectEdit(request, id):
 
             p = ProjectUtil.get_project_detail(code, token, id)
 
-            return render(request, Html.projectEdit, {'project': p, 'message': '', 'save': True})
+            return render(request, Html.projectEdit, {'project': p, 'form':'', 'message': '', 'save': True})
         else:
             # -- Get a value from a form
             p = request.POST
@@ -92,8 +108,8 @@ def projectEdit(request, id):
             form = projectForm(request.POST)
             form.full_clean()
             if not form.is_valid():
-                msg = ValiUtil.valiCheck(form)
-                return render(request, Html.projectEdit, {'project': p, 'message': msg, 'save': True})
+
+                return render(request, Html.projectEdit, {'project': p, 'form': form, 'message': '', 'save': True})
 
             # -- API call, get a response
             project = ProjectUtil.edit_project(code, token, id, p.get('name'), p.get('description'))
@@ -103,11 +119,16 @@ def projectEdit(request, id):
     except Exception as ex:
         log.error(FuncCode.projectEdit.value, None, ex)
 
-        return render(request, Html.projectEdit, {'project': request.POST, 'message': str(ex), 'save': True})
+        return render(request, Html.projectEdit, {'project': request.POST, 'form':'', 'message': str(ex), 'save': True})
 
 
 def projectDetail(request, id):
     try:
+        if SessionUtil.check_login(request) == False:
+            return redirect(Path.logout)
+        if SessionUtil.check_permission(request,'project','read') == False:
+            return render_to_response(Html.error_403)
+
         code = FuncCode.projectDetail.value
         token = request.session['auth_token']
 
@@ -153,6 +174,11 @@ def projectDetail(request, id):
 
 def projectDelete(request, id):
     try:
+        if SessionUtil.check_login(request) == False:
+            return redirect(Path.logout)
+        if SessionUtil.check_permission(request,'project','destroy') == False:
+            return render_to_response(Html.error_403)
+
         # -- URL and data set
         code = FuncCode.projectDelete.value
         url = Url.projectDelete(id, Url.url)
@@ -177,11 +203,7 @@ def projectChange(request, id):
         account_id = session['account_id']
 
         #-- ProjectAPI call, get a response
-        url = Url.projectDetail(id, Url.url)
-        data = {
-                'auth_token': token
-                }
-        project = ApiUtil.requestGet(url, FuncCode.projectDetail.value,data)
+        project = ProjectUtil.get_project_detail(code, token, id)
 
         #-- RoleListAPI call, get a response
         role = RoleUtil.get_account_role(code, token, id, account_id)
@@ -194,10 +216,10 @@ def projectChange(request, id):
         if not permissions:
             raise(Error.Authentication.value)
 
-
         session['project_id'] = id
         session['project_name'] = project['name']
 
+        RoleUtil.delete_session_role(session)
         RoleUtil.add_session_role(session, role, permissions)
 
         return redirect(Path.top)

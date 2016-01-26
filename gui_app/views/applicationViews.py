@@ -12,6 +12,7 @@ from ..utils.PathUtil import Path
 from ..utils.PathUtil import Html
 from ..utils.ApiUtil import Url
 from ..utils.ErrorUtil import ApiError
+from ..utils import SessionUtil
 from ..enum import ResponseType
 from ..enum.LogType import Message
 from ..enum.FunctionCode import FuncCode
@@ -22,6 +23,11 @@ from ..logs import log
 
 def applicationList(request):
     try:
+        if SessionUtil.check_login(request) == False:
+            return redirect(Path.logout)
+        if SessionUtil.check_permission(request,'application','list') == False:
+            return render_to_response(Html.error_403)
+
         applications = None
         # -- Get a application list, API call
         url = Url.applicationList
@@ -44,6 +50,11 @@ def applicationList(request):
 
 def applicationDetail(request, id):
     try:
+        if SessionUtil.check_login(request) == False:
+            return redirect(Path.logout)
+        if SessionUtil.check_permission(request,'application','read') == False:
+            return render_to_response(Html.error_403)
+
         # -- application DetailAPI call, get a response
         token = request.session['auth_token']
         url = Url.applicationDetail(id, Url.url)
@@ -61,6 +72,11 @@ def applicationDetail(request, id):
 
 def applicationCreate(request):
     try:
+        if SessionUtil.check_login(request) == False:
+            return redirect(Path.logout)
+        if SessionUtil.check_permission(request,'application','create') == False:
+            return render_to_response(Html.error_403)
+
         token = request.session['auth_token']
         project_id = request.session['project_id']
         code = FuncCode.applicationCreate.value
@@ -95,7 +111,7 @@ def applicationCreate(request):
                     'systems': systems,
                 })
                 return render(request, Html.applicationCreate, {'app': cpPost, 'apptype': list(ApplicaionType),
-                                                                'protocol': list(ProtocolType), 'message': form.errors,
+                                                                'protocol': list(ProtocolType), 'form': form, 'message': '',
                                                                 'save': True})
 
             # -- Create a application, api call
@@ -109,11 +125,16 @@ def applicationCreate(request):
     except Exception as ex:
         log.error(FuncCode.applicationCreate.value, None, ex)
 
-        return render(request, Html.applicationCreate, {'app': request.POST, "message": str(ex), 'save': True})
+        return render(request, Html.applicationCreate, {'app': request.POST, 'form': form, "message": str(ex), 'save': True})
 
 
 def applicationEdit(request, id):
     try:
+        if SessionUtil.check_login(request) == False:
+            return redirect(Path.logout)
+        if SessionUtil.check_permission(request,'application','update') == False:
+            return render_to_response(Html.error_403)
+
         code = FuncCode.systemList.value
         token = request.session['auth_token']
         project_id = request.session['project_id']
@@ -130,15 +151,18 @@ def applicationEdit(request, id):
 
             url2 = Url.systemList
             systems = ApiUtil.requestGet(url2, code, data)
+            system.SystemUtil.get_system_list(code, token, project_id=None)
             data.update({
                 'systems': systems,
             })
             print(data)
             newhis = ApplicationHistoryUtil.get_new_history(code, token, id)
-            history = ApplicationHistoryUtil.get_history_detail(code, token, newhis.get('id'))
+            history = ApplicationHistoryUtil.get_history_detail(code, token, id, newhis.get('id'))
             print(history)
 
-            return render(request, Html.applicationEdit, {'app': data, 'history': history, 'message': '', 'save': True})
+            return render(request, Html.applicationEdit, {'app': data, 'history': history, 'form': '',
+                                                          'apptype': list(ApplicaionType),
+                                                          'protocol': list(ProtocolType), 'message': '', 'save': True})
         else:
             # -- Get a value from a form
             msg = ''
@@ -149,7 +173,9 @@ def applicationEdit(request, id):
             if not form.is_valid():
                 msg = ValiUtil.valiCheck(form)
                 print(p)
-                return render(request, Html.applicationEdit, {'app': p, 'message': msg, 'save': True})
+                return render(request, Html.applicationEdit, {'app': p, 'history': p, 'apptype': list(ApplicaionType),
+                                                            'protocol': list(ProtocolType), 'form': form,
+                                                            'message': msg, 'save': True})
 
             # -- Create a application, api call
             url = Url.applicationEdit(id, Url.url)
@@ -168,11 +194,18 @@ def applicationEdit(request, id):
     except Exception as ex:
         log.error(FuncCode.applicationEdit.value, None, ex)
 
-        return render(request, Html.applicationEdit, {'app': request.POST, "message": str(ex), 'save': True})
+        return render(request, Html.applicationEdit, {'app': request.POST, 'apptype': list(ApplicaionType),
+                                                      'protocol': list(ProtocolType), 'form': '',
+                                                      'message': str(ex), 'save': True})
 
 
 def applicationDelete(request, id):
     try:
+        if SessionUtil.check_login(request) == False:
+            return redirect(Path.logout)
+        if SessionUtil.check_permission(request,'application','destroy') == False:
+            return render_to_response(Html.error_403)
+
         # -- URL and data set
         url = Url.applicationDelete(id, Url.url)
         data = {'auth_token': request.session['auth_token']}

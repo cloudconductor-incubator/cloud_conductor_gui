@@ -1,10 +1,11 @@
 {% csrf_token %}
 {% include "gui_app/includes/message.html" %}
-	<input id="project_id" type="hidden" name="project_id" value="{{ cloud.project_id }}">
+{{ form.non_field_errors }}
 	<div class="cc-select">
 	    <div class="form-group">
 	    	<label><span id="req">*</span>Cloud name</label>
 	        <input id="name" name="name" type="text" class="form-control" value="{{ cloud.name }}">
+	        {{ form.name.errors }}
 	    </div>
 	    <div class="form-group">
 	    	<label><span id="req">*</span>Cloud type</label>
@@ -16,26 +17,32 @@
 				   </option>
 				{% endfor %}
 		    </select>
+		    {{ form.type.errors }}
 	    </div>
 	    <div class="form-group">
 	    	<label><span id="req">*</span>key</label>
 	        <input id="key" name="key" type="password" class="form-control" value="{{ cloud.key }}">
+	        {{ form.key.errors }}
 	    </div>
 	    <div class="form-group">
 	    	<label><span id="req">*</span>secret</label>
 	        <input id="secret" name="secret" type="password" class="form-control" value="{{ cloud.secret }}">
+	        {{ form.secret.errors }}
 	    </div>
 	    <div class="form-group">
 	    	<label><span id="req">*</span>entry_point</label>
 	        <input id="entry_point" name="entry_point" type="text" class="form-control" value="{{ cloud.entry_point }}">
+	        {{ form.entry_point.errors }}
 	    </div>
 	    <div class="form-group">
 	    	<label>Description</label>
 	        <textarea id="description" name="description" class="form-control">{{ cloud.description }}</textarea>
+	        {{ form.description.errors }}
 	    </div>
 	    <div class="form-group">
 	    	<label>tenant_name</label>
 	        <textarea id="tenant_name" name="tenant_name" class="form-control">{{ cloud.tenant_name }}</textarea>
+	        {{ form.tenant_name.errors }}
 	    </div>
 	    {% if save %}
    		<div class="button_center">

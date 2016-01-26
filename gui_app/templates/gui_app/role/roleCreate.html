@@ -11,10 +11,27 @@
 	<li>Role Create</li>
 {% endblock %}
 {% block content %}
-<div class="cc-title">Role Edit</div>
+<div class="cc-title">Role Create</div>
 		<form method="post" action="{% url 'app:roleCreate' %}">
 			{% include "gui_app/role/includes/formRole.html" %}
 		</form>
+
+<script type="text/javascript">
+
+function changeManage(obj,name){
+	$('input[name^=' + name + '-]:not(:first)').prop("checked",false);
+	if($(obj).is(':checked')){
+		$('input[name^=' + name + '-]:not(:first)').attr("disabled",true);
+	}else{
+		$('input[name^=' + name + '-]:not(:first)').attr("disabled",false);
+	}
+
+}
+
+
+</script>
+
+
 {% endblock %}
 
 {% block bodyscript %}{% endblock %}

@@ -12,6 +12,7 @@ from ..utils.ApiUtil import Url
 from ..utils.ErrorUtil import ApiError
 from ..utils import BlueprintUtil
 from ..utils import StringUtil
+from ..utils import SessionUtil
 from ..enum import ResponseType
 from ..enum.LogType import Message
 from ..enum.FunctionCode import FuncCode
@@ -22,6 +23,11 @@ from ..logs import log
 
 def blueprintList(request):
     try:
+        if SessionUtil.check_login(request) == False:
+            return redirect(Path.logout)
+        if SessionUtil.check_permission(request,'blueprint','list') == False:
+            return render_to_response(Html.error_403)
+
         blueprints = None
         # -- Get a blueprint list, API call
         url = Url.blueprintList
@@ -41,6 +47,11 @@ def blueprintList(request):
 
 def blueprintDetail(request, id):
     try:
+        if SessionUtil.check_login(request) == False:
+            return redirect(Path.logout)
+        if SessionUtil.check_permission(request,'blueprint','read') == False:
+            return render_to_response(Html.error_403)
+
         # -- blueprint DetailAPI call, get a response
         code = FuncCode.blueprintDetail.value
 
@@ -64,8 +75,12 @@ def blueprintDetail(request, id):
 
 def blueprintCreate(request):
     try:
+        if SessionUtil.check_login(request) == False:
+            return redirect(Path.logout)
+        if SessionUtil.check_permission(request,'blueprint','create') == False:
+            return render_to_response(Html.error_403)
+
         data = {
-            'auth_token': request.session['auth_token'],
             'project_id': request.session['project_id']
         }
         url = Url.patternList
@@ -89,7 +104,8 @@ def blueprintCreate(request):
                 'OSVersion': list(OSVersion),
             })
 
-            return render(request, Html.blueprintCreate, {'blueprint': data, 'patternSelect': patternSelect, 'message': ''})
+            return render(request, Html.blueprintCreate, {'blueprint': data, 'patternSelect': patternSelect,
+                                                          'form': '', 'message': ''})
         else:
             # -- Get a value from a form
             msg = ''
@@ -98,10 +114,10 @@ def blueprintCreate(request):
             # -- Validate check
             form = blueprintForm(p)
             if not form.is_valid():
-                msg = ValiUtil.valiCheck(form)
                 cpPost = p.copy()
 
-                return render(request, Html.blueprintCreate, {'blueprint': cpPost, 'patternSelect': patternSelect, 'message': msg})
+                return render(request, Html.blueprintCreate, {'blueprint': cpPost, 'patternSelect': patternSelect,
+                                                              'form': form, 'message': ''})
 
 
             # -- 1.Create a blueprint, api call
@@ -139,11 +155,16 @@ def blueprintCreate(request):
     except Exception as ex:
         log.error(FuncCode.blueprintCreate.value, None, ex)
 
-        return render(request, Html.blueprintCreate, {'blueprint': request.POST, "message": str(ex)})
+        return render(request, Html.blueprintCreate, {'blueprint': request.POST, 'form': '', 'message': str(ex)})
 
 
 def blueprintEdit(request, id):
     try:
+        if SessionUtil.check_login(request) == False:
+            return redirect(Path.logout)
+        if SessionUtil.check_permission(request,'blueprint','update') == False:
+            return render_to_response(Html.error_403)
+
         data = {
             'auth_token': request.session['auth_token'],
             'project_id': request.session['project_id']
@@ -175,7 +196,8 @@ def blueprintEdit(request, id):
                 url, FuncCode.blueprintCreate.value, data)
 
 
-            return render(request, Html.blueprintEdit, {'blueprint': p, 'patternSelect': patternSelect, 'message': ''})
+            return render(request, Html.blueprintEdit, {'blueprint': p, 'patternSelect': patternSelect,
+                                                        'form': '', 'message': ''})
         else:
             # -- Get a value from a form
             msg = ''
@@ -185,7 +207,8 @@ def blueprintEdit(request, id):
             form.full_clean()
             if not form.is_valid():
                 msg = ValiUtil.valiCheck(form)
-                return render(request, Html.blueprintEdit, {'blueprint': p, 'patternSelect': patternSelect, 'message': msg})
+                return render(request, Html.blueprintEdit, {'blueprint': p, 'patternSelect': patternSelect,
+                                                            'form': form, 'message': msg})
 
             # -- Create a blueprint, api call
             url = Url.blueprintEdit(id, Url.url)
@@ -203,11 +226,17 @@ def blueprintEdit(request, id):
     except Exception as ex:
         log.error(FuncCode.blueprintEdit.value, None, ex)
 
-        return render(request, Html.blueprintEdit, {'blueprint': request.POST, 'patternSelect': '', "message": str(ex)})
+        return render(request, Html.blueprintEdit, {'blueprint': request.POST, 'patternSelect': '',
+                                                    'form': '', 'message': str(ex)})
 
 
 def blueprintDelete(request, id):
     try:
+        if SessionUtil.check_login(request) == False:
+            return redirect(Path.logout)
+        if SessionUtil.check_permission(request,'blueprint','destroy') == False:
+            return render_to_response(Html.error_403)
+
         # -- URL and data set
         url = Url.blueprintDelete(id, Url.url)
         data = {'auth_token': request.session['auth_token']}

@@ -13,7 +13,7 @@
   <div class="cc-title">Cloud management</div>
 	<br>
 	{% include "gui_app/includes/message.html" %}
-	{% if request.session.project.manage or request.session.project.create %}
+	{% if request.session.cloud.manage or request.session.cloud.create  %}
     <button type="button" class="btn btn-primary btn-sm" onclick="location.href='{% url 'app:cloudCreate' %}'" style="float:right">
     	<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;　new
     </button>
@@ -34,7 +34,11 @@
 			      <tr>
 			        <td>{{ c.id }}</td>
 			        <td>
-					<a href="{% url 'app:cloudDetail' c.id %}">{{ c.name }}</a>
+			        {% if request.session.cloud.manage or request.session.cloud.update or request.session.cloud.destroy  %}
+						<a href="{% url 'app:cloudDetail' c.id %}">{{ c.name }}</a>
+					{% else %}
+						{{ c.name }}
+					{% endif %}
 			        </td>
 			        <td>{{ c.description }}</td>
 			        <td>{{ c.type }}</td>

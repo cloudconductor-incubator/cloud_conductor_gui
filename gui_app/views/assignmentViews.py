@@ -7,19 +7,24 @@ from ..forms import projectForm
 from ..utils import RoleUtil
 from ..utils import ValiUtil
 from ..utils import ApiUtil
+from ..utils import FileUtil
+from ..utils import SessionUtil
 from ..utils import PermissionUtil
 from ..utils.PathUtil import Path
 from ..utils.PathUtil import Html
 from ..utils.ApiUtil import Url
 from ..utils.ErrorUtil import ApiError
+from ..utils import SessionUtil
 from ..enum import ResponseType
 from ..enum.LogType import Message
 from ..enum.FunctionCode import FuncCode
 from ..logs import log
+from django.contrib.auth.decorators import login_required
 
 # CloudConductor add
 def assignmentList(request):
     try:
+
         projects = None
         # -- Get a project list, API call
         url = Url.projectList
@@ -35,85 +40,183 @@ def assignmentList(request):
         return render(request, Html.projectList, {"projects": '', 'message': str(ex)})
 
 
-def assignmentCreate(request):
+def assignmentAdd(request, id=None):
     try:
+        token = request.session['auth_token']
         if request.method == "GET":
-            p = {'auth_token': request.session['auth_token']}
 
-            return render(request, Html.projectCreate, {'project': p, 'message': '', 'save': True})
+
+            url = Url.accountList
+            data = {
+                    'auth_token': token,
+                    }
+            accounts = ApiUtil.requestGet(url, FuncCode.projectDetail.value,data)
+            data = {
+                    'auth_token': token,
+                    'project_id': id,
+                    }
+            accountsByProject = ApiUtil.requestGet(url, FuncCode.projectDetail.value,data)
+
+            for account in accountsByProject:
+                accounts.remove(account)
+
+
+            return render(request, Html.assignmentAdd, {'accounts': accounts,'project_id':id, 'message': '', 'save': True})
         else:
             # -- Get a value from a form
             msg = ''
             p = request.POST
             # -- Validate check
-            form = projectForm(p)
-            if not form.is_valid():
-                msg = ValiUtil.valiCheck(form)
-                return render(request, Html.projectCreate, {'project': p, 'message': msg, 'save': True})
+            #form = assignmentAddForm(p)
+            #if not form.is_valid():
+            #    msg = ValiUtil.valiCheck(form)
+            #    return render(request, Html.projectCreate, {'project': p, 'message': msg, 'save': True})
 
             # -- Create a project, api call
-            url = Url.projectCreate
-            data = {
-                'auth_token': request.session['auth_token'],
-                'name': p['name'],
-                'description': p['description']
-            }
-            # -- API call, get a response
-            ApiUtil.requestPost(url, FuncCode.projectCreate.value, data)
+            url = Url.assignmentAdd
+            for param in p:
+                if 'chk-' in param:
+                    data = {
+                        'auth_token': token,
+                        'project_id': id,
+                        'account_id': param.split('-')[1],
+                    }
+                    permission = ApiUtil.requestPost(url, FuncCode.projectDetail.value, data)
 
-            return redirect(Path.projectList)
+            return redirect(Path.assignmentEdit(id))
     except Exception as ex:
         log.error(FuncCode.projectCreate.value, None, ex)
 
-        return render(request, Html.projectCreate, {'project': request.POST, "message": str(ex), 'save': True})
+        return render(request, Html.assignmentAdd, {'accounts': None,'project_id':id, "message": str(ex), 'save': True})
 
 
 def assignmentEdit(request, id=None):
 
+    if SessionUtil.check_login(request) ==False:
+        return redirect('/ccgui/logout')
 
     try:
+        test =  FileUtil.getUrlPath()
         code = FuncCode.projectEdit.value
+        token = request.session['auth_token']
+        account_id = request.session['account_id']
         if request.method == "GET":
-            token = request.session['auth_token']
-            url = Url.assignmentEdit
+
+            url = Url.assignmentList
             data = {
                     'auth_token': token,
                     'project_id': id,
                     }
-            assignments = ApiUtil.requestGet(url, code, data)
+            assignments = ApiUtil.requestGet(url, FuncCode.projectDetail.value,data)
 
-            list = RoleUtil.get_role_list(code, token, project_id=id)
+            assignmentList = []
+            for assignment in assignments:
+                url = Url.roleList
+                data = {
+                        'auth_token': token,
+                        'account_id': assignment["account_id"],
+                        'project_id': id
+                        }
+                roleList = ApiUtil.requestGet(url, FuncCode.projectDetail.value,data)
+                role = ""
+                for item in roleList:
+                    role = item["id"]
 
-            return render(request, Html.assignmentEdit, {'assignments': assignments, 'message': '',
-                                                        'roleList':list,
+                url = Url.accountList
+                data = {
+                        'auth_token': token,
+                        }
+                accountList = ApiUtil.requestGet(url, FuncCode.projectDetail.value,data)
+                accountName = ""
+                for item in accountList:
+                    if item["id"] == assignment["account_id"]:
+                        accountName = item["name"]
+                        break
+
+                assignmentList.append({
+                                    'id':assignment["id"],
+                                    'account_id':assignment["account_id"],
+                                    'name':accountName,
+                                    'role':role,
+                                    })
+
+
+
+            url = Url.roleList
+            data = {
+                    'auth_token': token,
+                    'project_id': id
+                    }
+            roleList = ApiUtil.requestGet(url, FuncCode.projectDetail.value,data)
+
+            return render(request, Html.assignmentEdit, {'assignments': assignmentList, 'message': '',
+                                                        'roleList':roleList,
+                                                        'project_id':id,
+                                                        'account_id':account_id,
                                                          'save': True})
         else:
             # -- Get a value from a form
             p = request.POST
             msg = ''
             # -- Validate check
-            form = projectForm(request.POST)
-            form.full_clean()
-            if not form.is_valid():
-                msg = ValiUtil.valiCheck(form)
-                return render(request, Html.projectEdit, {'project': p, 'message': msg, 'save': True})
 
-            # -- URL set
-            url = Url.projectEdit(id, Url.url)
-            # -- Set the value to the form
+            url = Url.assignmentEdit
             data = {
-                    'auth_token': request.session['auth_token'],
-                    'name': p['name'],
-                    'description': p['description']
+                    'auth_token': token,
+                    'project_id': id,
                     }
-            # -- API call, get a response
-            ApiUtil.requestPost(url, FuncCode.projectEdit.value, data)
+            assignments = ApiUtil.requestGet(url, FuncCode.projectDetail.value,data)
 
-            return redirect(Path.projectList)
+            for assignment in assignments:
+                if 'chk-' + str(assignment['id']) in p:
+                    if p['sel-' + str(assignment['id'])] != p['sel_old-' + str(assignment['id'])]:
+
+                        if p['sel_old-' + str(assignment['id'])] == '':
+                            url = Url.assignmentRoleAdd(str(assignment['id']),Url.url)
+                            data = {
+                                'auth_token': token,
+                                'role_id': p['sel-' + str(assignment['id'])],
+                                }
+                            ApiUtil.requestPost(url, FuncCode.projectDetail.value,data)
+
+                        else:
+
+                            url = Url.assignmentRoleList(str(assignment['id']),Url.url)
+                            data = {
+                                'auth_token': token,
+                                }
+                            assignmentRoleList = ApiUtil.requestGet(url, FuncCode.projectDetail.value,data)
+
+                            for assignmentRole in assignmentRoleList:
+                                if p['sel_old-' + str(assignment['id'])] == str(assignmentRole["role_id"]):
+                                    url = Url.assignmentRoleDelete(str(assignment['id']),assignmentRole["id"],Url.url)
+                                    data = {'auth_token': token}
+                                    ApiUtil.requestDelete(url, FuncCode.projectDetail.value,{'auth_token': token})
+                                    break
+
+                            if p['sel-' + str(assignment['id'])] !='':
+                                url = Url.assignmentRoleAdd(str(assignment['id']),Url.url)
+                                data = {
+                                    'auth_token': token,
+                                    'role_id': p['sel-' + str(assignment['id'])],
+                                    }
+                                ApiUtil.requestPost(url, FuncCode.projectDetail.value,data)
+
+
+                else:
+                    url = Url.assignmentDelete(assignment["id"], Url.url)
+                    data = {
+                        'auth_token': token,
+                    }
+                    ApiUtil.requestDelete(url, code, data)
+
+            return redirect(Path.projectDetail(id))
     except Exception as ex:
         log.error(FuncCode.projectEdit.value, None, ex)
 
-        return render(request, Html.assignmentEdit, {'project': request.POST, 'message': str(ex), 'save': True})
+        return render(request, Html.assignmentEdit, {'project': request.POST,
+                                                     'project_id':id,
+                                                     'message': str(ex), 'save': True})
 
 
 def assignmentDelete(request, id):

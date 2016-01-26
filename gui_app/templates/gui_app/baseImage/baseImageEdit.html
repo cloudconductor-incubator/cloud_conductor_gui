@@ -12,7 +12,6 @@
 <br>
 	<form method="post" action="{% url 'app:baseImageEdit' baseImage.id %}">
 		<input id="id" type="hidden" name="id" value="{{ baseImage.id }}">
-		<input id="auth_token" type="hidden" name="auth_token" value="{{ baseImage.auth_token }}">
 		{% include "gui_app/baseImage/includes/formbaseImage.html" %}
 	</form>
 {% endblock %}

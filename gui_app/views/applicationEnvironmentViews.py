@@ -16,6 +16,7 @@ from ..utils import ApplicationUtil
 from ..utils import EnvironmentUtil
 from ..utils import BlueprintUtil
 from ..utils import ApplicationHistoryUtil
+from ..utils import SessionUtil
 from ..utils.BlueprintUtil import get_blueprint_version
 from ..utils import StringUtil
 from ..utils.PathUtil import Path
@@ -82,7 +83,7 @@ def blueprintSelect(request):
             if not form.is_valid():
 
                 return render(request, Html.envapp_bluprintSelect, {'list': list, 'blueprint': blueprint,
-                                                                        'message': form.errors})
+                                                                        'form': form})
 
             request.session['blueprint'] = blueprint
 
@@ -120,7 +121,7 @@ def environmentCreate(request):
 
                 return render(request, Html.envapp_environmentCreate, {'clouds': clouds, 'systems': systems,
                                                                        'blueprints': blueprints, 'env': param,
-                                                                       'message': form.errors})
+                                                                       'form': form})
 
             # -- Session add
             environment = environmentPut(param)

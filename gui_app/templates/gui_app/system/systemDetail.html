@@ -15,7 +15,7 @@
 <br>
 {% include "gui_app/includes/message.html" %}
 {% if system %}
-	{% if request.session.system_manage or request.session.system_update %}
+	{% if request.session.system.manage or request.session.system.update %}
 	<div class="btn_group_top">
 		<button type="button" class="btn btn-success btn-sm" onclick="location.href='{% url 'app:systemEdit' system.id %}'">
 			<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>&nbsp;　edit
@@ -54,7 +54,7 @@
 			 &nbsp;　back
 		</button>
 
-{% if request.session.system_manage or request.session.system_destroy %}
+{% if request.session.system.manage or request.session.system.destroy %}
 	<span class="delete_btn">
 		<button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#myModal">
 			<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>&nbsp;　delete

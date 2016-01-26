@@ -17,6 +17,7 @@ from ..utils.PathUtil import Path
 from ..utils.PathUtil import Html
 from ..utils.ApiUtil import Url
 from ..utils.ErrorUtil import ApiError
+from ..utils import SessionUtil
 from ..enum import ResponseType
 from ..enum.LogType import Message
 from ..enum.CloudType import CloudType
@@ -63,7 +64,7 @@ def projectCreate(request):
             form = projectForm(param)
             if not form.is_valid():
                 project = param.copy()
-                return render(request, Html.cloudregist_projectCreate, {"project": project, 'message': form.errors})
+                return render(request, Html.cloudregist_projectCreate, {"project": project, 'form': form})
 
             # -- Session add
             project = projectPut(param)
@@ -97,7 +98,7 @@ def cloudCreate(request):
             if not form.is_valid():
                 cloud = param.copy()
 
-                return render(request, Html.cloudregist_cloudCreate, {"cloud": cloud, 'cloudType': list(CloudType), 'message': form.errors})
+                return render(request, Html.cloudregist_cloudCreate, {"cloud": cloud, 'cloudType': list(CloudType), 'form': form})
 
             # -- Session add
             cloud = cloudPut(param)
@@ -130,7 +131,8 @@ def baseimageCreate(request):
             if not form.is_valid():
                 baseimage = param.copy()
 
-                return render(request, Html.cloudregist_baseimageCreate, {"baseImage": baseimage, 'osversion': list(OSVersion), 'message': form.errors})
+                return render(request, Html.cloudregist_baseimageCreate, {"baseImage": baseimage, 'osversion': list(OSVersion),
+                                                                          'form': form})
 
             baseimage = baseimagePut(request.POST)
             request.session['baseimage'] = baseimage

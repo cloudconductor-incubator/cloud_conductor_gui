@@ -55,7 +55,10 @@ def login(request):
 
             #-- ProjectListAPI call, get a response
             projects = ProjectUtil.get_project_list(code, token)
-#             projects = projects['projects']
+            project_list = ''
+            project_id = ''
+            project_name = ''
+
             print(projects)
             if projects:
                 print(1)
@@ -66,10 +69,6 @@ def login(request):
                     project_name = project.get('name')
                     print(2)
                     break
-
-            else:
-                print(3)
-                raise(Error.Authentication.value)
 
             print(4)
             #-- AccountApi call, get a response

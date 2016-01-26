@@ -13,7 +13,7 @@
 
 <div class="cc-title" style="margin-top: 20px;">Account management</div>
 <br>
-{% if request.session.account_create or request.session.account_manage  %}
+{% if request.session.account.manage or request.session.account.create %}
 <div>
 	<button class="btn btn-primary btn-sm" style="float:right" onclick="location.href='{% url 'app:accountCreate' %}'" type="button">
 		<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;NEW
@@ -36,11 +36,7 @@
             	<tr>
 					<td>{{ ac.id }}</td>
 					<td>
-					{% if request.session.project_manage or request.session.project_update or request.session.project_destroy  %}
 						<a href="{% url 'app:accountDetail' ac.id %}">{{ ac.name }}</a>
-					{% else %}
-						{{ ac.name }}
-					{% endif %}
 					</td>
 					<td>{{ ac.email }}</td>
 					<td>{{ ac.role }}</td>

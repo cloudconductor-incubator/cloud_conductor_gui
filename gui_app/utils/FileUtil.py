@@ -1,6 +1,8 @@
 import re
 from django.http import HttpResponse
 import io
+from django.conf import settings
+from django.core.files import File
 from django.http import *
 
 def download(request):
@@ -20,3 +22,14 @@ def download_file(request):
     response = HttpResponse(open('/path/to/downloadfile','rb').read(), mimetype='text/plain')
     response['Content-Disposition'] = 'filename=text.txt'
     return response
+
+
+
+def getUrlPath():
+
+    url = settings.URL_PATH
+    f = open(url, 'r')
+    line = f.readline()
+    f.close()
+
+    return line

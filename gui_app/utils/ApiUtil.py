@@ -2,6 +2,7 @@ import re
 import json
 import requests
 from ..logs import log
+from django.conf import settings
 from ..utils import StringUtil
 from ..enum.ResponseType import Response
 from ..enum.LogType import Message
@@ -9,7 +10,7 @@ from ..utils.ErrorUtil import ApiError
 
 
 class Url():
-    url = ''
+    url = settings.CLOUDCONDUCTOR_URL
 
     token = url + 'tokens'
 
@@ -18,7 +19,6 @@ class Url():
     projectEdit = lambda id, id2: id2 +  'projects/{0}'.format(id)
     projectDetail = lambda id, id2: id2 +  'projects/{0}'.format(id)
     projectDelete = lambda id, id2: id2 +  'projects/{0}'.format(id)
-    assignmentList = url + 'assignments/'
 
     cloudList = url + 'clouds'
     cloudCreate = url + 'clouds'
@@ -99,9 +99,12 @@ class Url():
     permissionDelete = lambda id, id2, id3: id3 +  'roles/{0}/permissions/{1}'.format(id, id2)
 
     assignmentEdit = url + 'assignments'
-    assignmentCreate = url + 'assignments'
-    assignmentDetail = lambda id, id2: id2 + 'assignments/{0}'.format(id)
+    assignmentList = url + 'assignments'
+    assignmentAdd = url + 'assignments'
     assignmentDelete = lambda id, id2: id2 + 'assignments/{0}'.format(id)
+    assignmentRoleList = lambda id, id2: id2 +  'assignments/{0}/roles'.format(id)
+    assignmentRoleAdd = lambda id, id2: id2 +  'assignments/{0}/roles'.format(id)
+    assignmentRoleDelete = lambda id, id2, id3: id3 +  'assignments/{0}/roles/{1}'.format(id,id2)
 
     assignmentRoleList = lambda id, id2: id2 + 'assignments/{0}/roles'.format(id)
     assignmentRoleDetail = lambda id, id2, id3: id3 + 'assignments/{0}/roles/{1}'.format(id, id2)
@@ -127,7 +130,10 @@ def requestGet(url, scid, payload):
 def requestPost(url, scid, payload): #-- change post
     print(payload)
     if payload != None:
-        r = requests.post(url, data=payload)
+        data=json.dumps(payload)
+        print(data)
+        r = requests.post(url, data=json.dumps(payload))
+#         r = requests.post(url, data=payload)
     else:
         r = requests.post(url)
     log.info(scid, r, None, Message.api_url.value)
@@ -142,7 +148,7 @@ def requestPost(url, scid, payload): #-- change post
 
 def requestPut(url, scid, payload): #-- change post
     if payload != None:
-        r = requests.put(url, data=payload)
+        r = requests.put(url, data=json.dumps(payload))
     else:
         r = requests.put(url)
     log.info(scid, r, None, Message.api_url.value)
@@ -156,7 +162,7 @@ def requestPut(url, scid, payload): #-- change post
 
 def requestDelete(url, scid, payload): #-- change post
     if payload != None:
-        r = requests.delete(url, params=payload)
+        r = requests.delete(url, data=payload)
     else:
         r = requests.delete(url)
     log.info(scid, r, None, Message.api_url.value)

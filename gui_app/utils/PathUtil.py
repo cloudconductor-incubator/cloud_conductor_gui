@@ -5,10 +5,14 @@ import requests
 
 class Path():
     top = "/ccgui/"
+    logout = "/ccgui/logout"
     projectList = "/ccgui/project/list/"
     projectCreate = "/ccgui/project/create/"
-    projectDetail = lambda id: "/ccgui/project/{0}/".format(id)
+    projectDetail = lambda id: "/ccgui/project/{0}/detail".format(id)
     projectEdit = lambda id: "/ccgui/project/{0}/edit".format(id)
+
+    assignmentEdit = lambda id: "/ccgui/assignment/{0}/edit".format(id)
+    assignmentAdd = lambda id: "/ccgui/assignment/{0}/add".format(id)
 
     cloudList = "/ccgui/cloud/list/"
     cloudCreate = "/ccgui/cloud/create/"
@@ -84,6 +88,9 @@ class Path():
 class Html():
     login = 'gui_app/login.html'
     top = "/ccgui/"
+
+    error_403 = "403.html"
+
     projectList = "gui_app/project/projectList.html"
     projectCreate = "gui_app/project/projectCreate.html"
     projectDetail = "gui_app/project/projectDetail.html"
@@ -92,6 +99,7 @@ class Html():
     addUser = "gui_app/project/projectAddUser.html"
 
     assignmentEdit = "gui_app/assignment/assignmentEdit.html"
+    assignmentAdd = "gui_app/assignment/assignmentAdd.html"
 
     cloudList = "gui_app/cloud/cloudList.html"
     cloudDetail = "gui_app/cloud/cloudDetail.html"

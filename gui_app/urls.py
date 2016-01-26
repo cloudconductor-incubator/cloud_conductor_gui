@@ -37,6 +37,7 @@ urlpatterns = [
     url('^project/(?P<id>\d+)/project/change/$', projectViews.projectChange, name="projectChange"),
 
     url('^assignment/(?P<id>\d+)/edit/$', assignmentViews.assignmentEdit, name="assignmentEdit"),
+    url('^assignment/(?P<id>\d+)/add/$', assignmentViews.assignmentAdd, name="assignmentAdd"),
 
     url('^cloud/list', cloudViews.cloudList, name="cloudList"),
     url('^cloud/(?P<id>\d+)/detail/', cloudViews.cloudDetail, name="cloudDetail"),

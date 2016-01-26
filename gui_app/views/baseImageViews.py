@@ -16,12 +16,18 @@ from ..utils import ApiUtil
 from ..utils.PathUtil import Path
 from ..utils.PathUtil import Html
 from ..utils.ApiUtil import Url
+from ..utils import SessionUtil
 from ..logs import log
 
 
 # Create your views here.
 def baseImageDetail(request, id):
     try:
+        if SessionUtil.check_login(request) == False:
+            return redirect(Path.logout)
+        if SessionUtil.check_permission(request,'baseimage','read') == False:
+            return render_to_response(Html.error_403)
+
         # -- baseImage DetailAPI call, get a response
         token = request.session['auth_token']
         url = Url.baseImageDetail(id, Url.url)
@@ -38,13 +44,20 @@ def baseImageDetail(request, id):
 
 def baseImageCreate(request, cid):
     try:
+        if SessionUtil.check_login(request) == False:
+            return redirect(Path.logout)
+        if SessionUtil.check_permission(request,'baseimage','create') == False:
+            return render_to_response(Html.error_403)
+
+        OSVersion = list(OSVersion)
+
         if request.method == "GET":
+
             p = {
-                'auth_token': request.session['auth_token'],
                 'cloud_id': cid,
             }
 
-            return render(request, Html.baseImageCreate, {'baseImage': p,'osversion': list(OSVersion), 'message': '', 'save': True})
+            return render(request, Html.baseImageCreate, {'baseImage': p,'osversion': OSVersion, 'form': '', 'message': '', 'save': True})
         else:
             # -- Get a value from a form
             msg = ''
@@ -55,7 +68,7 @@ def baseImageCreate(request, cid):
                 msg = ValiUtil.valiCheck(form)
                 cpPost = p.copy()
 
-                return render(request, Html.baseImageCreate, {'baseImage': cpPost,'osversion': list(OSVersion), 'message': form.errors, 'save': True})
+                return render(request, Html.baseImageCreate, {'baseImage': cpPost,'osversion': OSVersion, 'form': form, 'message': '', 'save': True})
 
             # -- Create a project, api call
             url = Url.baseImageCreate
@@ -73,11 +86,16 @@ def baseImageCreate(request, cid):
     except Exception as ex:
         log.error(FuncCode.baseImageCreate.value, None, ex)
 
-        return render(request, Html.baseImageCreate, {'baseImage': request.POST,'osversion': list(OSVersion), "message": str(ex), 'save': True})
+        return render(request, Html.baseImageCreate, {'baseImage': request.POST,'osversion': list(OSVersion), 'form': '', "message": str(ex), 'save': True})
 
 
 def baseImageEdit(request, id):
     try:
+        if SessionUtil.check_login(request) == False:
+            return redirect(Path.logout)
+        if SessionUtil.check_permission(request,'baseimage','update') == False:
+            return render_to_response(Html.error_403)
+
         if request.method == "GET":
             token = request.session['auth_token']
             url = Url.baseImageDetail(id, Url.url)
@@ -87,7 +105,8 @@ def baseImageEdit(request, id):
             p = ApiUtil.requestGet(url, FuncCode.baseImageEdit.value, data)
             p.update(data)
 
-            return render(request, Html.baseImageEdit, {'baseImage': p,'osversion': list(OSVersion), 'message': '', 'save': True})
+            return render(request, Html.baseImageEdit, {'baseImage': p,'osversion': list(OSVersion),
+                                                        'form': '', 'message': '', 'save': True})
         else:
             # -- Get a value from a form
             p = request.POST
@@ -98,7 +117,8 @@ def baseImageEdit(request, id):
                 msg = ValiUtil.valiCheck(form)
                 cpPost = p.copy()
 
-                return render(request, Html.baseImageEdit, {'baseImage': p,'osversion': list(OSVersion), 'message': form.errors, 'save': True})
+                return render(request, Html.baseImageEdit, {'baseImage': p,'osversion': list(OSVersion),
+                                                            'form': form, 'message': '', 'save': True})
 
             # -- URL set
             url = Url.baseImageEdit(id, Url.url)
@@ -117,11 +137,17 @@ def baseImageEdit(request, id):
     except Exception as ex:
         log.error(FuncCode.baseImageEdit.value, None, ex)
 
-        return render(request, Html.baseImageEdit, {'baseImage': request.POST,'osversion': list(OSVersion), 'message': ex, 'save': True})
+        return render(request, Html.baseImageEdit, {'baseImage': request.POST,'osversion': list(OSVersion),
+                                                    'form': '', 'message': ex, 'save': True})
 
 
 def baseImageDelete(request, id):
     try:
+        if SessionUtil.check_login(request) == False:
+            return redirect(Path.logout)
+        if SessionUtil.check_permission(request,'baseimage','destroy') == False:
+            return render_to_response(Html.error_403)
+
         data = {'auth_token': request.session['auth_token']}
         # -- Get a baseImage
         urlb = Url.baseImageDetail(id, Url.url)

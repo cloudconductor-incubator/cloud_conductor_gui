@@ -15,6 +15,22 @@
 		<form method="post" action="{% url 'app:roleEdit' role.id %}">
 			{% include "gui_app/role/includes/formRole2.html" %}
 		</form>
+
+<script type="text/javascript">
+
+function changeManage(obj,name){
+	var name = name.split('-')[0];
+	$('input[name^=' + name + '-]:not(:first)').prop("checked",false);
+	if($(obj).is(':checked')){
+		$('input[name^=' + name + '-]:not(:first)').attr("disabled",true);
+	}else{
+		$('input[name^=' + name + '-]:not(:first)').attr("disabled",false);
+	}
+
+}
+
+
+</script>
 {% endblock %}
 
 {% block bodyscript %}{% endblock %}

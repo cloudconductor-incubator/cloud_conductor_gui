@@ -17,8 +17,7 @@
 <div class="cc-title">Cloud Edit</div>
 	{% if cloud %}
 		<form method="post" action="{% url 'app:cloudEdit' cloud.id %}">
-			<input id="id" type="hidden" name="id" value="{{ cloud.id }}">
-			<input id="auth_token" type="hidden" name="auth_token" value="{{ cloud.auth_token }}">
+			<input type="hidden" id="id" name="id" value="{{ cloud.project_id }}">
 			{% include "gui_app/cloud/includes/formCloud.html" %}
 		</form>
 	{% else %}

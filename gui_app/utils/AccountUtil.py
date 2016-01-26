@@ -45,6 +45,26 @@ def get_account(code, token, email):
     return None
 
 
+def get_account_detail(code, token, id):
+    if StringUtil.isEmpty(code):
+        return None
+
+    if StringUtil.isEmpty(token):
+        return None
+
+    if StringUtil.isEmpty(id):
+        return None
+
+    data = {
+            'auth_token': token,
+            }
+
+    url = Url.accountDetail(id, Url.url)
+    account = ApiUtil.requestGet(url, code, data)
+
+    return account
+
+
 def get_account_create(code, token, name, email, password, repassword, admin):
     # -- URL set
     url = Url.accountCreate

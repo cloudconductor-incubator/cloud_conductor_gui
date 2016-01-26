@@ -325,7 +325,12 @@ section {
   background-color: #f5f5f5;
 }
 
-.error_message {
+
+.error_message{
+	color: #CD5C5C;
+}
+
+ul.errorlist li{
 	color: #CD5C5C;
 }
 
@@ -338,4 +343,9 @@ section {
 	border-bottom-width: 0px;
 	border-radius: 0px;
 	border: none;
+}
+
+.discription {
+	color: #c0c0c0;
+	font-size: 11px;
 }

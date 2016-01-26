@@ -18,9 +18,6 @@ class projectForm(forms.Form):
 
 
 class cloudForm(forms.Form):
-    auth_token = forms.CharField()
-    id = forms.IntegerField(required=False)
-    project_id = forms.CharField()
     name = forms.CharField(max_length=500)
     type = forms.CharField(max_length=500)
     key = forms.CharField(max_length=500)
@@ -55,16 +52,14 @@ class environmentSelectForm(forms.Form):
 
 
 class environmentForm(forms.Form):
-    auth_token = forms.CharField()
     id = forms.IntegerField(required=False)
-    project_id = forms.CharField(required=False)
     system_id = forms.CharField()
     blueprint_id = forms.CharField()
     version = forms.CharField(required=False)
     name = forms.CharField(max_length=500)
     description = forms.CharField(required=False, max_length=500)
-    template_parameters = forms.CharField(required=False, max_length=500)
-    user_attributes = forms.CharField(required=False, max_length=500)
+    template_parameters = forms.CharField(required=False)
+    user_attributes = forms.CharField(required=False)
     candidates_attributes_1 = forms.CharField(max_length=500)
     candidates_attributes_2 = forms.CharField(required=False, max_length=500)
     candidates_attributes_3 = forms.CharField(required=False, max_length=500)
@@ -154,7 +149,6 @@ class environmentSelectForm(forms.Form):
 
 
 class applicationForm(forms.Form):
-    auth_token = forms.CharField()
     id = forms.IntegerField(required=False)
     system_id = forms.CharField()
     name = forms.CharField(max_length=500)
@@ -183,7 +177,6 @@ class w_applicationForm(forms.Form):
 
 
 class blueprintForm(forms.Form):
-    auth_token = forms.CharField()
     id = forms.IntegerField(required=False)
     project_id = forms.CharField(required=False)
     name = forms.CharField(max_length=500)
@@ -195,14 +188,11 @@ class blueprintSelectForm(forms.Form):
 
 
 class patternForm(forms.Form):
-    auth_token = forms.CharField()
-    project_id = forms.CharField()
     url = forms.URLField(max_length=500)
     revision = forms.CharField(required=False, max_length=500)
 
 
 class accountForm(forms.Form):
-    auth_token = forms.CharField()
     email = forms.EmailField(max_length=500)
     name = forms.CharField(max_length=500)
     password = forms.CharField(max_length=500)

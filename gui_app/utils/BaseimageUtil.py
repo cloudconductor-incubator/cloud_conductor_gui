@@ -9,6 +9,21 @@ from ..enum.FunctionCode import FuncCode
 from ..logs import log
 
 
+def get_baseimege_list(code, token):
+
+    if StringUtil.isEmpty(code):
+        return None
+
+    if StringUtil.isEmpty(token):
+        return None
+
+    url = Url.baseImageList
+    data = {'auth_token': token}
+    list = ApiUtil.requestGet(url, code, data)
+
+    return list
+
+
 def create_baseimage(code, token, cloud_id, ssh_username, source_image, os_version):
 
 

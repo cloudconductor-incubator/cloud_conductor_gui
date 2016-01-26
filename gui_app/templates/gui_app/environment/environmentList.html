@@ -13,7 +13,7 @@
   <div class="cc-title">Environment management</div>
 	<br>
 	{% include "gui_app/includes/message.html" %}
-	{% if request.session.environment_manage or request.session.environment_create  %}
+	{% if request.session.environment.manage or request.session.environment.create %}
     <button type="button" class="btn btn-primary btn-sm" onclick="location.href='{% url 'app:environmentCreate' %}'" style="float:right">
     	<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;　new
     </button>
@@ -36,11 +36,7 @@
 			        <td>{{ e.id }}</td>
 			        <td >{{ e.status }}</td>
 			        <td>
-			        {% if request.session.environment_manage or request.session.environment_update or request.session.environment_destroy  %}
 			        	<a href="{% url 'app:environmentDetail' e.id %}">{{ e.name }}</a>
-					{% else %}
-						{{ e.name }}
-					{% endif %}
 			        </td>
 			        <td>{{ e.system_id }}</td>
 			        <td>{{ e.blueprint_id }}</td>
@@ -50,7 +46,7 @@
 		    </tbody>
 	  </table>
 	{% else %}
-		There is no environment.。
+		There is no environment.
 	{% endif %}
 
 {% endblock %}

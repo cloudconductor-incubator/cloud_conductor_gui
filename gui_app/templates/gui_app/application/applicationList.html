@@ -13,7 +13,7 @@
   <div class="cc-title">Application management</div>
 	<br>
 	{% include "gui_app/includes/message.html" %}
-{% if request.session.application_manage or request.session.application_create  %}
+{% if request.session.application.manage or request.session.application.create %}
     <button type="button" class="btn btn-primary btn-sm" onclick="location.href='{% url 'app:applicationCreate' %}'" style="float:right">
     	<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;　new
     </button>
@@ -37,11 +37,7 @@
 			        <td>{{ a.id }}</td>
 			        <td ></td>
 			        <td>
-			        {% if request.session.application_manage or request.session.application_update or request.session.application_destroy  %}
 						<a href="{% url 'app:applicationDetail' a.id %}">{{ a.name }}</a>
-					{% else %}
-						{{ a.name }}
-					{% endif %}
 			        </td>
 			        <td>{{ a.system_id }}</td>
 			        <td>{{ a.domain }}</td>

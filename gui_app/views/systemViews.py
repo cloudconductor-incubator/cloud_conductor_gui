@@ -7,6 +7,7 @@ from ..utils import RoleUtil
 from ..utils import ValiUtil
 from ..utils import ApiUtil
 from ..utils import SystemUtil
+from ..utils import SessionUtil
 from ..utils.PathUtil import Path
 from ..utils.PathUtil import Html
 from ..utils.ApiUtil import Url
@@ -19,6 +20,11 @@ from ..logs import log
 
 def systemList(request):
     try:
+        if SessionUtil.check_login(request) == False:
+            return redirect(Path.logout)
+        if SessionUtil.check_permission(request,'system','list') == False:
+            return render_to_response(Html.error_403)
+
         systems = None
         # -- Get a system list, API call
         url = Url.systemList
@@ -42,6 +48,11 @@ def systemList(request):
 
 def systemDetail(request, id):
     try:
+        if SessionUtil.check_login(request) == False:
+            return redirect(Path.logout)
+        if SessionUtil.check_permission(request,'system','update') == False:
+            return render_to_response(Html.error_403)
+
         # -- system DetailAPI call, get a response
         token = request.session.get('auth_token')
         code = FuncCode.systemDetail.value
@@ -56,9 +67,14 @@ def systemDetail(request, id):
 
 def systemCreate(request):
     try:
+        if SessionUtil.check_login(request) == False:
+            return redirect(Path.logout)
+        if SessionUtil.check_permission(request,'system','create') == False:
+            return render_to_response(Html.error_403)
+
         if request.method == "GET":
 
-            return render(request, Html.systemCreate, {'system': '', 'message': '', 'save': True})
+            return render(request, Html.systemCreate, {'system': '', 'form': '', 'message': '', 'save': True})
         else:
             # -- Get a value from a form
             msg = ''
@@ -67,9 +83,8 @@ def systemCreate(request):
             form = systemForm(p)
             form.full_clean()
             if not form.is_valid():
-                msg = ValiUtil.valiCheck(form)
 
-                return render(request, Html.systemCreate, {'system': p, 'message': msg, 'save': True})
+                return render(request, Html.systemCreate, {'system': p, 'form': form, 'message': '', 'save': True})
 
             code = FuncCode.systemCreate.value
 
@@ -81,11 +96,16 @@ def systemCreate(request):
         p = request.POST
         log.error(FuncCode.systemCreate.value, None, ex)
 
-        return render(request, Html.systemCreate, {'system': p, "message": str(ex), 'save': True})
+        return render(request, Html.systemCreate, {'system': p, 'form': '', "message": str(ex), 'save': True})
 
 
 def systemEdit(request, id):
     try:
+        if SessionUtil.check_login(request) == False:
+            return redirect(Path.logout)
+        if SessionUtil.check_permission(request,'system','update') == False:
+            return render_to_response(Html.error_403)
+
         code = FuncCode.systemEdit.value
         token = request.session.get('auth_token')
         if request.method == "GET":
@@ -115,6 +135,11 @@ def systemEdit(request, id):
 
 def systemDelete(request, id):
     try:
+        if SessionUtil.check_login(request) == False:
+            return redirect(Path.logout)
+        if SessionUtil.check_permission(request,'system','destroy') == False:
+            return render_to_response(Html.error_403)
+
         # -- URL and data set
         code = FuncCode.systemDelete.value
         SystemUtil.get_system_delete(code, request.session.get('auth_token'), id)

@@ -34,7 +34,11 @@
            	<tr>
 				<td>{{ projects.id }}</td>
 				<td>
-				<a href="{% url 'app:projectDetail' projects.id %}">{{ projects.name }}</a>
+					{% if request.session.project.manage or request.session.project.update or request.session.project.destroy  %}
+						<a href="{% url 'app:projectDetail' projects.id %}">{{ projects.name }}</a>
+					{% else %}
+						{{ projects.name }}
+					{% endif %}
 				</td>
 				<td>{{ projects.description }}</td>
 				<td>{{ projects.created_at }}</td>

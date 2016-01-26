@@ -1,16 +1,12 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render, redirect
 import json
-import requests
 import ast
-from collections import OrderedDict
 from ..forms import w_applicationForm
 from ..forms import w_environmentForm
 from ..forms import environmentSelectForm
 from ..forms import systemSelectForm
 from ..forms import systemForm
-from ..utils import RoleUtil
-from ..utils import ValiUtil
 from ..utils import ApiUtil
 from ..utils import SystemUtil
 from ..utils import ApplicationUtil
@@ -22,8 +18,7 @@ from ..utils.PathUtil import Path
 from ..utils.PathUtil import Html
 from ..utils.ApiUtil import Url
 from ..utils.ErrorUtil import ApiError
-from ..enum import ResponseType
-from ..enum.LogType import Message
+from ..utils import SessionUtil
 from ..enum.FunctionCode import FuncCode
 from ..enum.ApplicationType import ApplicaionType
 from ..enum.ProtocolType import ProtocolType
@@ -50,7 +45,7 @@ def systemSelect(request):
             form = environmentSelectForm(system)
             if not form.is_valid():
 
-                return render(request, Html.newapp_systemSelect, {"list": list, 'system': system, 'message': form.errors})
+                return render(request, Html.newapp_systemSelect, {"list": list, 'system': system,'form': form, 'message': form.errors})
 
             session['system'] = system
 
@@ -75,7 +70,7 @@ def systemCreate(request):
             form = systemForm(param)
             if not form.is_valid():
 
-                return render(request, Html.newapp_systemCreate, {"system": param, 'message': form.errors})
+                return render(request, Html.newapp_systemCreate, {"system": param,'form': form, 'message': ''})
 
             # -- Session add
             system = systemPut(param)
@@ -104,7 +99,7 @@ def applicationCreate(request):
             if not form.is_valid():
 
                 return render(request, Html.newapp_applicationCreate, {"application": param, 'apptype': list(ApplicaionType),
-                                                                       'protocol': list(ProtocolType), 'message': form.errors})
+                                                                       'protocol': list(ProtocolType),'form': '', 'message': form.errors})
 
             # -- Session add
             application = applicationPut(param)
@@ -137,8 +132,8 @@ def environmentSelect(request):
             form = environmentSelectForm(environment)
             if not form.is_valid():
 
-                return render(request, Html.newapp_environmentSelect, {"list": list, 'environment': environment,
-                                                                       'message': form.errors})
+                return render(request, Html.newapp_environmentSelect, {"list": list, 'environment': environment,'form': form,
+                                                                       'message': ''})
 
             request.session['environment'] = environment
 

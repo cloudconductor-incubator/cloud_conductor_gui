@@ -13,7 +13,7 @@
   <div class="cc-title">Blueprint management</div>
 	<br>
 	{% include "gui_app/includes/message.html" %}
-	{% if request.session.blueprint_manage or request.session.blueprint_create  %}
+	{% if request.session.blueprint.manage or request.session.blueprint.create %}
 	<button type="button" class="btn btn-primary btn-sm" onclick="location.href='{% url 'app:blueprintCreate' %}'" style="float:right">
     	<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;　new
     </button>
@@ -33,11 +33,7 @@
 			      <tr>
 			        <td>{{ bp.id }}</td>
 			        <td>
-			        {% if request.session.blueprint_manage or request.session.blueprint_update or request.session.blueprint_destroy  %}
 			        	<a href="{% url 'app:blueprintDetail' bp.id %}">{{ bp.name }}</a>
-					{% else %}
-						{{ bp.name }}
-					{% endif %}
 			        </td>
 			        <td>{{ bp.description }}</td>
 			        <td>{{ bp.created_at }}</td>
@@ -46,7 +42,7 @@
 		    </tbody>
 	  </table>
 	{% else %}
-		There is no cloud.。
+		There is no cloud.
 	{% endif %}
 
 {% endblock %}
