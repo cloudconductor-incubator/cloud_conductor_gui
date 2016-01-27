@@ -6,7 +6,7 @@
 	  	{% for key, value in bp.items %}
 		    <label>{{ key }}</label>
 		    <div class="discription">{{ value.Description }}</div>
-		    <input type="text" value="{{ value.Default}}" maxlength="{{ value.MaxLength }}" minlength="{{ value.MinLength }}" class="form-control" name="{{ key }}">
+		    <input type="text" value="{{ value.Default}}" maxlength="{{ value.MaxLength }}" minlength="{{ value.MinLength }}" class="form-control" name="json/{{ key }}">
 		  </div>
 	  	{% endfor %}
 {% endfor %}

@@ -62,7 +62,7 @@ class Url():
     blueprintEdit = lambda id, id2: id2 +  'blueprints/{0}'.format(id)
     blueprintDetail = lambda id, id2: id2 +  'blueprints/{0}'.format(id)
     blueprintDelete = lambda id, id2: id2 +  'blueprints/{0}'.format(id)
-    blueprintBuild = lambda id, id2: id2 +  'blueprints/{0}'.format(id)
+    blueprintBuild = lambda id, id2: id2 +  'blueprints/{0}/build'.format(id)
 
     blueprintPattrnList = lambda id, id2: id2 + 'blueprints/{0}/patterns'.format(id)
     blueprintPattrnDetail = lambda id, id2, id3: id3 + 'blueprints/{0}/patterns/{1}'.format(id, id2)

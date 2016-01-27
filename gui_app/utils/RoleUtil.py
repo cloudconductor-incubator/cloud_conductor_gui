@@ -197,13 +197,35 @@ def get_account_role(code, token, project_id, account_id):
     return role
 
 
+# def add_session_role(session, role, permissions):
+#
+#     list = []
+#     dic = {}
+#     for per in permissions:
+#
+#         if per.get('model') in list:
+#             index = list.index(per.get('model'))
+#             list.insert(index, per.get('action'))
+#         else:
+#             dic[per.get('action')]=True
+#             list.append({per.get('model'): dic})
+# #             list.append(per.get('model'){ per.get('action'):Ture})
+#
+#
+#     print(list)
+
 def add_session_role(session, role, permissions):
     session['role_id'] = role.get('id')
 
+    model_bk = ''
+
     for per in permissions:
 
-        dic = {}
+#         dic = {}
         if per.get("model") == 'project':
+            if model_bk != per.get("model"):
+                dic = {}
+
             dic['m_project'] = True
 
             if per.get("action") == 'manage':
@@ -224,6 +246,9 @@ def add_session_role(session, role, permissions):
             session['project'] = dic
 
         elif per.get("model") == 'account':
+            if model_bk != per.get("model"):
+                dic = {}
+
             dic['m_account'] = True
 
             if per.get("action") == 'manage':
@@ -244,6 +269,9 @@ def add_session_role(session, role, permissions):
             session['account'] = dic
 
         elif per.get("model") == 'role':
+            if model_bk != per.get("model"):
+                dic = {}
+
             dic['m_role'] = True
 
             if per.get("action") == 'manage':
@@ -264,6 +292,9 @@ def add_session_role(session, role, permissions):
             session['role'] = dic
 
         elif per.get("model") == 'cloud':
+            if model_bk != per.get("model"):
+                dic = {}
+
             dic['m_cloud'] = per.get("model")
 
             if per.get("action") == 'manage':
@@ -284,6 +315,9 @@ def add_session_role(session, role, permissions):
             session['cloud'] = dic
 
         elif per.get("model") == 'base_image':
+            if model_bk != per.get("model"):
+                dic = {}
+
             dic['m_baseimage'] = per.get("model")
 
             if per.get("action") == 'manage':
@@ -304,6 +338,9 @@ def add_session_role(session, role, permissions):
             session['baseimage'] = dic
 
         elif per.get("model") == 'pattern':
+            if model_bk != per.get("model"):
+                dic = {}
+
             dic['m_pattern'] = True
 
             if per.get("action") == 'manage':
@@ -324,6 +361,9 @@ def add_session_role(session, role, permissions):
             session['pattern'] = dic
 
         elif per.get("model") == 'blueprint':
+            if model_bk != per.get("model"):
+                dic = {}
+
             dic['m_blueprint'] = True
 
             if per.get("action") == 'manage':
@@ -344,6 +384,9 @@ def add_session_role(session, role, permissions):
             session['blueprint'] = dic
 
         elif per.get("model") == 'system':
+            if model_bk != per.get("model"):
+                dic = {}
+
             dic['m_system'] = per.get("model")
 
             if per.get("action") == 'manage':
@@ -364,6 +407,9 @@ def add_session_role(session, role, permissions):
             session['system'] = dic
 
         elif per.get("model") == 'environment':
+            if model_bk != per.get("model"):
+                dic = {}
+
             dic['m_environment'] = per.get("model")
 
             if per.get("action") == 'manage':
@@ -384,6 +430,9 @@ def add_session_role(session, role, permissions):
             session['environment'] = dic
 
         elif per.get("model") == 'application':
+            if model_bk != per.get("model"):
+                dic = {}
+
             dic['m_application'] = per.get("model")
 
             if per.get("action") == 'manage':
@@ -404,6 +453,9 @@ def add_session_role(session, role, permissions):
             session['application'] = dic
 
         elif per.get("model") == 'application_history':
+            if model_bk != per.get("model"):
+                dic = {}
+
             dic['m_application_history'] = per.get("model")
 
             if per.get("action") == 'manage':
@@ -424,6 +476,9 @@ def add_session_role(session, role, permissions):
             session['application_history'] = dic
 
         elif per.get("model") == 'deployment':
+            if model_bk != per.get("model"):
+                dic = {}
+
             dic['m_deployment'] = per.get("model")
 
             if per.get("action") == 'manage':

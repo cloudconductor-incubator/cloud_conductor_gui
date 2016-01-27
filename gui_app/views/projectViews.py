@@ -219,7 +219,7 @@ def projectChange(request, id):
         session['project_id'] = id
         session['project_name'] = project['name']
 
-        RoleUtil.delete_session_role(session)
+#         RoleUtil.delete_session_role(session)
         RoleUtil.add_session_role(session, role, permissions)
 
         return redirect(Path.top)

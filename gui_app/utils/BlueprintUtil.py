@@ -48,7 +48,25 @@ def get_blueprint_list2(code, token, project_id=None):
     return list
 
 
-def create_blueprint(code, token, project_id, name, description):
+def get_bluepritn_detail(code, token, id):
+
+    if StringUtil.isEmpty(token):
+        return None
+
+    if StringUtil.isEmpty(id):
+        return None
+
+    url = Url.blueprintDetail(id, Url.url)
+    data = {
+            'auth_token': token,
+            'id': id,
+            }
+    blueprint = ApiUtil.requestGet(url, code, data)
+
+    return blueprint
+
+
+def create_blueprint(code, token, project_id, form):
 
     if StringUtil.isEmpty(code):
         return None
@@ -59,19 +77,16 @@ def create_blueprint(code, token, project_id, name, description):
     if StringUtil.isEmpty(project_id):
         return None
 
-    if StringUtil.isEmpty(name):
-        return None
-
     data = {
             'auth_token': token,
             'project_id': project_id,
-            'name': name,
-            'description': description,
+            'name': form.get('name'),
+            'description': form.get('description'),
             }
     url = Url.blueprintCreate
-    list = ApiUtil.requestPost(url, code, data)
+    bp = ApiUtil.requestPost(url, code, data)
 
-    return list
+    return bp
 
 
 def edit_blueprint(code, token, id, project_id, name, description):
@@ -196,3 +211,23 @@ def get_pattern_list(code, id, token, pjid):
                 list.append(dic.copy())
 
     return list
+
+
+def create_bluepritn_build(code, token, id):
+
+    if StringUtil.isEmpty(code):
+        return None
+
+    if StringUtil.isEmpty(token):
+        return None
+
+    if StringUtil.isEmpty(id):
+        return None
+
+    url = Url.blueprintBuild(id, Url.url)
+    data = {
+            'auth_token': token,
+            }
+    blueprint = ApiUtil.requestPost(url, code, data)
+
+    return blueprint
