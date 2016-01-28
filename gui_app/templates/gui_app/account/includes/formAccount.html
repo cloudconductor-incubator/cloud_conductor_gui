@@ -23,31 +23,30 @@
 	        <input id="repassword" name="repassword" type="password" class="form-control" value="{{ account.repassword }}">
 	        {{ form.repassword.errors }}
 	    </div>
-	    <div class="form-group">
-	      <p class="control-label"><b><span id="req">*</span>Authority</b></p>
-	      <div class="radio-inline">
-	        <input type="radio" value="1" name="admin" id="admin" {% if account.admin %} checked {% endif %}>
-	          <label for="adin">Admin</label>
-	      </div>
-	      <div class="radio-inline">
-	        <input type="radio" value="0" name="admin" id="admin" {% if not account.admin %} checked {% endif %}>
-	        <label for="nomal">normal</label>
-	      </div>
-	      {{ form.admin.errors }}
-	    </div>
-	    <!--
-	    <div class="form-group">
-	    	<label><span id="req">*</span>Role</label>
-			<select class="form-control" name="role" id="role">
-		        <option value=""></option>
-		        {% for r in roleList %}
-				   <option value="{{ r.id }}" {% if  account.role == r.id %} selected="selected" {% endif %}>
-				       {{ r.name }}
-				   </option>
-				{% endfor %}
-		    </select>
-	    </div>
--->
+
+		{% if not edit or request.session.account_admin %}
+
+		    <div class="form-group">
+		      <p class="control-label"><b><span id="req">*</span>Authority</b></p>
+		      <div class="radio-inline">
+		        <input type="radio" value="1" name="admin" id="admin" {% if account.admin %} checked {% endif %}>
+		          <label for="adin">Admin</label>
+		      </div>
+		      <div class="radio-inline">
+		        <input type="radio" value="0" name="admin" id="admin" {% if not account.admin %} checked {% endif %}>
+		        <label for="nomal">normal</label>
+		      </div>
+		    </div>
+		{% else %}
+			{% if account.admin %}
+				<input id="admin" type="hidden" name="admin" value="1">
+			{% endif %}
+			{% if not account.admin %}
+				<input id="admin" type="hidden" name="admin" value="0">
+			{% endif %}
+		{% endif %}
+		{{ form.admin.errors }}
+
    		<div class="button_center">
 			<button class="btn btn-success" type="submit">
 				<span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>&nbsp;save</button>

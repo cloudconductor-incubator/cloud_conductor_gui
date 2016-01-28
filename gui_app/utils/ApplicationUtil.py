@@ -58,22 +58,96 @@ def get_application_detail(code, token, id):
     return list
 
 
-def create_application(code, token, system_id, name, description, domain):
+def create_application(code, token, form):
+
+    if StringUtil.isEmpty(token):
+        return None
+
+    if StringUtil.isEmpty(form):
+        return None
+
     # -- URL set
     url = Url.applicationCreate
-
     # -- Set the value to the form
-    data = {
-            'auth_token': token,
-            'system_id': system_id,
-            'name': name,
-            'description': description,
-            'domain': domain,
-            }
+    data = put_application(token, form)
     # -- API call, get a response
     response = ApiUtil.requestPost(url, code, data)
 
     return response
+
+
+def edit_application(code, token, id, form):
+    if StringUtil.isEmpty(id):
+        return None
+
+    if StringUtil.isEmpty(token):
+        return None
+
+    if StringUtil.isEmpty(form):
+        return None
+
+    # -- URL set
+    url = Url.applicationEdit(id, Url.url)
+
+    # -- Set the value to the form
+    data = put_application(token, form)
+    # -- API call, get a response
+    response = ApiUtil.requestPut(url, code, data)
+
+    return response
+
+
+def edit_application(code, token, id, form):
+    if StringUtil.isEmpty(id):
+        return None
+
+    if StringUtil.isEmpty(token):
+        return None
+
+    if StringUtil.isEmpty(form):
+        return None
+
+    # -- URL set
+    url = Url.applicationEdit(id, Url.url)
+
+    # -- Set the value to the form
+    data = put_application(token, form)
+    # -- API call, get a response
+    response = ApiUtil.requestPut(url, code, data)
+
+    return response
+
+
+def delete_application(code, token, id):
+    if StringUtil.isEmpty(id):
+        return None
+
+    if StringUtil.isEmpty(token):
+        return None
+
+    # -- URL set
+    url = Url.applicationDelete(id, Url.url)
+
+    # -- Set the value to the form
+    data = {'auth_token': token}
+    # -- API call, get a response
+    ApiUtil.requestDelete(url, code, data)
+
+
+def put_application(token, form):
+
+    data = {}
+    # -- Set the value to the form
+    data = {
+            'auth_token': token,
+            'system_id': form.get('system_id', ''),
+            'name': form.get('name', ''),
+            'description': form.get('description', ''),
+            'domain': form.get('domain', ''),
+            }
+
+    return data
+
 
 def deploy_application(code, token, environment_id, application_id, application_history_id=None):
     # -- URL set

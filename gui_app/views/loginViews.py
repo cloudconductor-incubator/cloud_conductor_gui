@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,render_to_response
 import json
 import requests
 from django.contrib.auth.decorators import login_required
@@ -53,11 +53,22 @@ def login(request):
             else:
                 raise(Error.Authentication.value)
 
+            #-- AccountApi call, get a response
+            account = AccountUtil.get_account(code, token, email)
+            if not account:
+                raise(Error.Authentication.value)
+
+
             #-- ProjectListAPI call, get a response
             projects = ProjectUtil.get_project_list(code, token)
             project_list = ''
             project_id = ''
             project_name = ''
+
+#             if account.get('admin'):
+#                 for pj in projects:
+#                     if RoleUtil.get_role_list(code, token, account_id=account.get('id')):
+
 
             print(projects)
             if projects:
@@ -71,10 +82,6 @@ def login(request):
                     break
 
             print(4)
-            #-- AccountApi call, get a response
-            account = AccountUtil.get_account(code, token, email)
-            if not account:
-                raise(Error.Authentication.value)
 
             #-- RoleListAPI call, get a response
             role = RoleUtil.get_account_role(code, token, project_id, account.get('id'))

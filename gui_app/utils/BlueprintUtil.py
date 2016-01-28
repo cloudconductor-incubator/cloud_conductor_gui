@@ -89,28 +89,24 @@ def create_blueprint(code, token, project_id, form):
     return bp
 
 
-def edit_blueprint(code, token, id, project_id, name, description):
-
-    if StringUtil.isEmpty(code):
-        return None
+def edit_blueprint(code, token, id, form):
 
     if StringUtil.isEmpty(token):
         return None
 
-    if StringUtil.isEmpty(project_id):
+    if StringUtil.isEmpty(id):
         return None
 
     data = {
             'auth_token': token,
-            'project_id': project_id,
-            'name': name,
-            'description': description,
+            'name': form.get('name'),
+            'description': form.get('description'),
             }
 
     url = Url.blueprintEdit(id, Url.url)
-    list = ApiUtil.requestPost(url, code, data)
+    bp = ApiUtil.requestPut(url, code, data)
 
-    return list
+    return bp
 
 
 def get_blueprint_version(code, data):

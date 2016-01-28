@@ -48,7 +48,7 @@ class Url():
     applicationHistoryList = lambda id, id2: id2 + 'applications/{0}/histories'.format(id)
     applicationHistoryDetail = lambda id, id2, id3: id3 + 'applications/{0}/histories/{1}'.format(id, id2)
     applicationHistoryCreate = lambda id, id2: id2 + 'applications/{0}/histories'.format(id)
-    applicationHistoryDetail = lambda id, id2, id3: id3 + 'applications/{0}/histories/{1}'.format(id, id2)
+    applicationHistoryEdit = lambda id, id2, id3: id3 + 'applications/{0}/histories/{1}'.format(id, id2)
     applicationHistoryDelete = lambda id, id2, id3: id3 + 'applications/{0}/histories/{1}'.format(id, id2)
 
     environmentList = url + 'environments'
@@ -147,7 +147,10 @@ def requestPost(url, scid, payload): #-- change post
         raise ApiError(log.errorMessage(r, None))
 
 def requestPut(url, scid, payload): #-- change post
+    print(payload)
     if payload != None:
+        data=json.dumps(payload)
+        print(data)
         r = requests.put(url, data=json.dumps(payload))
     else:
         r = requests.put(url)

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,render_to_response
 import json
 import requests
 from ..forms import systemForm
@@ -50,7 +50,7 @@ def systemDetail(request, id):
     try:
         if SessionUtil.check_login(request) == False:
             return redirect(Path.logout)
-        if SessionUtil.check_permission(request,'system','update') == False:
+        if SessionUtil.check_permission(request,'system','read') == False:
             return render_to_response(Html.error_403)
 
         # -- system DetailAPI call, get a response

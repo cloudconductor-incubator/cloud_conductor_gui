@@ -67,14 +67,11 @@ def get_new_history(code, token, id):
     if StringUtil.isEmpty(apps):
         return None
 
-    dic = {}
+    new_app = {}
     for app in apps:
-        if int(dic.get('id', 0)) < app.get('id'):
-            dic['id'] = str(app.get('id'))
-            dic['version'] = app.get('version')
-            dic['revision'] = app.get('revision')
-        print(dic)
-    return dic
+        if int(new_app.get('id', 0)) < app.get('id'):
+            new_app = app
+    return new_app
 
 
 def get_history_detail(code, token, id, his_id):
@@ -93,33 +90,72 @@ def get_history_detail(code, token, id, his_id):
     return list
 
 
-def create_history(code, token, id, url, type, protocol, revision,
-                   pre_deploy, post_deploy, parameters):
+def create_history(code, token, id, form):
 
     if StringUtil.isEmpty(id):
         return None
 
-    if StringUtil.isEmpty(code):
+    if StringUtil.isEmpty(token):
         return None
 
-    if StringUtil.isEmpty(token):
+    if StringUtil.isEmpty(form):
         return None
 
     # -- URL set
     url = Url.applicationHistoryCreate(id, Url.url)
 
     # -- Set the value to the form
-    data = {
-        'auth_token': token,
-        'url': url,
-        'type': type,
-        'protocol': protocol,
-        'revision': revision,
-        'pre_deploy': pre_deploy,
-        'post_deploy': post_deploy,
-        'parameters': parameters,
-    }
+    data = put_history(token, form)
+
     # -- API call, get a response
     response = ApiUtil.requestPost(url, code, data)
 
     return response
+
+
+def edit_history(code, token, id, his_id, form):
+
+    if StringUtil.isEmpty(token):
+        return None
+
+    if StringUtil.isEmpty(id):
+        return None
+
+    if StringUtil.isEmpty(his_id):
+        return None
+
+    if StringUtil.isEmpty(form):
+        return None
+
+    # -- URL set
+    url = Url.applicationHistoryEdit(id, his_id, Url.url)
+
+    # -- Set the value to the form
+    data = put_history(token, form)
+
+    # -- API call, get a response
+    response = ApiUtil.requestPut(url, code, data)
+
+    return response
+
+
+def put_history(token, form):
+    if StringUtil.isEmpty(form):
+        return None
+    data = {}
+    # -- Set the value to the form
+    data = {
+        'auth_token': token,
+        'url': form.get('url'),
+        'type': form.get('type'),
+        'protocol': form.get('protocol'),
+        'revision': form.get('revision'),
+        'pre_deploy': form.get('pre_deploy'),
+        'post_deploy': form.get('post_deploy'),
+    }
+
+    parameters = form.get('parameters')
+    if StringUtil.isNotEmpty(parameters):
+        data['parameters'] = parameters
+
+    return data

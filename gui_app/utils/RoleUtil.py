@@ -19,8 +19,13 @@ def get_role_list(code, token, project_id=None, account_id=None):
     url = Url.roleList
     data = {
         'auth_token': token,
-        'project_id': project_id,
     }
+    if StringUtil.isNotEmpty(project_id):
+#         data.update({'project_id': project_id})
+        data['project_id'] = project_id
+    elif StringUtil.isNotEmpty(project_id):
+#         data.update({'account_id': account_id})
+        data['account_id'] = account_id
     list = ApiUtil.requestGet(url, code, data)
 
     return list
@@ -214,289 +219,278 @@ def get_account_role(code, token, project_id, account_id):
 #
 #     print(list)
 
+
 def add_session_role(session, role, permissions):
     session['role_id'] = role.get('id')
 
     model_bk = ''
+    dic_project = {}
+    dic_account = {}
+    dic_role = {}
+    dic_cloud = {}
+    dic_base_image = {}
+    dic_pattern = {}
+    dic_blueprint = {}
+    dic_system = {}
+    dic_environment = {}
+    dic_application = {}
+    dic_application_history = {}
+    dic_deployment = {}
 
     for per in permissions:
 
 #         dic = {}
         if per.get("model") == 'project':
-            if model_bk != per.get("model"):
-                dic = {}
 
-            dic['m_project'] = True
+            dic_project['m_project'] = True
 
             if per.get("action") == 'manage':
-                dic['manage'] = True
+                dic_project['manage'] = True
 
             elif per.get("action") == 'read':
-                dic['read'] = True
+                dic_project['read'] = True
 
             elif per.get("action") == 'create':
-                dic['create'] = True
+                dic_project['create'] = True
 
             elif per.get("action") == 'update':
-                dic['update'] = True
+                dic_project['update'] = True
 
             elif per.get("action") == 'destroy':
-                dic['destroy'] = True
+                dic_project['destroy'] = True
 
-            session['project'] = dic
+            session['project'] = dic_project
 
         elif per.get("model") == 'account':
-            if model_bk != per.get("model"):
-                dic = {}
 
-            dic['m_account'] = True
+            dic_account['m_account'] = True
 
             if per.get("action") == 'manage':
-                dic['manage'] = True
+                dic_account['manage'] = True
 
             elif per.get("action") == 'read':
-                dic['read'] = True
+                dic_account['read'] = True
 
             elif per.get("action") == 'create':
-                dic['create'] = True
+                dic_account['create'] = True
 
             elif per.get("action") == 'update':
-                dic['update'] = True
+                dic_account['update'] = True
 
             elif per.get("action") == 'destroy':
-                dic['destroy'] = True
+                dic_account['destroy'] = True
 
-            session['account'] = dic
+            session['account'] = dic_account
 
         elif per.get("model") == 'role':
-            if model_bk != per.get("model"):
-                dic = {}
 
-            dic['m_role'] = True
+            dic_role['m_role'] = True
 
             if per.get("action") == 'manage':
-                dic['manage'] = True
+                dic_role['manage'] = True
 
             elif per.get("action") == 'read':
-                dic['read'] = True
+                dic_role['read'] = True
 
             elif per.get("action") == 'create':
-                dic['create'] = True
+                dic_role['create'] = True
 
             elif per.get("action") == 'update':
-                dic['update'] = True
+                dic_role['update'] = True
 
             elif per.get("action") == 'destroy':
-                dic['destroy'] = True
+                dic_role['destroy'] = True
 
-            session['role'] = dic
+            session['role'] = dic_role
 
         elif per.get("model") == 'cloud':
-            if model_bk != per.get("model"):
-                dic = {}
 
-            dic['m_cloud'] = per.get("model")
+            dic_cloud['m_cloud'] = per.get("model")
 
             if per.get("action") == 'manage':
-                dic['manage'] = True
+                dic_cloud['manage'] = True
 
             elif per.get("action") == 'read':
-                dic['read'] = True
+                dic_cloud['read'] = True
 
             elif per.get("action") == 'create':
-                dic['create'] = True
+                dic_cloud['create'] = True
 
             elif per.get("action") == 'update':
-                dic['update'] = True
+                dic_cloud['update'] = True
 
             elif per.get("action") == 'destroy':
-                dic['destroy'] = True
+                dic_cloud['destroy'] = True
 
-            session['cloud'] = dic
+            session['cloud'] = dic_cloud
 
         elif per.get("model") == 'base_image':
-            if model_bk != per.get("model"):
-                dic = {}
 
-            dic['m_baseimage'] = per.get("model")
+            dic_base_image['m_baseimage'] = per.get("model")
 
             if per.get("action") == 'manage':
-                dic['manage'] = True
+                dic_base_image['manage'] = True
 
             elif per.get("action") == 'read':
-                dic['read'] = True
+                dic_base_image['read'] = True
 
             elif per.get("action") == 'create':
-                dic['create'] = True
+                dic_base_image['create'] = True
 
             elif per.get("action") == 'update':
-                dic['update'] = True
+                dic_base_image['update'] = True
 
             elif per.get("action") == 'destroy':
-                dic['destroy'] = True
+                dic_base_image['destroy'] = True
 
-            session['baseimage'] = dic
+            session['baseimage'] = dic_base_image
 
         elif per.get("model") == 'pattern':
-            if model_bk != per.get("model"):
-                dic = {}
 
-            dic['m_pattern'] = True
+            dic_pattern['m_pattern'] = True
 
             if per.get("action") == 'manage':
-                dic['manage'] = True
+                dic_pattern['manage'] = True
 
             elif per.get("action") == 'read':
-                dic['read'] = True
+                dic_pattern['read'] = True
 
             elif per.get("action") == 'create':
-                dic['create'] = True
+                dic_pattern['create'] = True
 
             elif per.get("action") == 'update':
-                dic['update'] = True
+                dic_pattern['update'] = True
 
             elif per.get("action") == 'destroy':
-                dic['destroy'] = True
+                dic_pattern['destroy'] = True
 
-            session['pattern'] = dic
+            session['pattern'] = dic_pattern
 
         elif per.get("model") == 'blueprint':
-            if model_bk != per.get("model"):
-                dic = {}
 
-            dic['m_blueprint'] = True
+            dic_blueprint['m_blueprint'] = True
 
             if per.get("action") == 'manage':
-                dic['manage'] = True
+                dic_blueprint['manage'] = True
 
             elif per.get("action") == 'read':
-                dic['read'] = True
+                dic_blueprint['read'] = True
 
             elif per.get("action") == 'create':
-                dic['create'] = True
+                dic_blueprint['create'] = True
 
             elif per.get("action") == 'update':
-                dic['update'] = True
+                dic_blueprint['update'] = True
 
             elif per.get("action") == 'destroy':
-                dic['destroy'] = True
+                dic_blueprint['destroy'] = True
 
-            session['blueprint'] = dic
+            session['blueprint'] = dic_blueprint
 
         elif per.get("model") == 'system':
-            if model_bk != per.get("model"):
-                dic = {}
 
-            dic['m_system'] = per.get("model")
+            dic_system['m_system'] = per.get("model")
 
             if per.get("action") == 'manage':
-                dic['manage'] = True
+                dic_system['manage'] = True
 
             elif per.get("action") == 'read':
-                dic['read'] = True
+                dic_system['read'] = True
 
             elif per.get("action") == 'create':
-                dic['create'] = True
+                dic_system['create'] = True
 
             elif per.get("action") == 'update':
-                dic['update'] = True
+                dic_system['update'] = True
 
             elif per.get("action") == 'destroy':
-                dic['destroy'] = True
+                dic_system['destroy'] = True
 
-            session['system'] = dic
+            session['system'] = dic_system
 
         elif per.get("model") == 'environment':
-            if model_bk != per.get("model"):
-                dic = {}
 
-            dic['m_environment'] = per.get("model")
+            dic_environment['m_environment'] = per.get("model")
 
             if per.get("action") == 'manage':
-                dic['manage'] = True
+                dic_environment['manage'] = True
 
             elif per.get("action") == 'read':
-                dic['read'] = True
+                dic_environment['read'] = True
 
             elif per.get("action") == 'create':
-                dic['create'] = True
+                dic_environment['create'] = True
 
             elif per.get("action") == 'update':
-                dic['update'] = True
+                dic_environment['update'] = True
 
             elif per.get("action") == 'destroy':
-                dic['destroy'] = True
+                dic_environment['destroy'] = True
 
-            session['environment'] = dic
+            session['environment'] = dic_environment
 
         elif per.get("model") == 'application':
-            if model_bk != per.get("model"):
-                dic = {}
 
-            dic['m_application'] = per.get("model")
+            dic_application['m_application'] = per.get("model")
 
             if per.get("action") == 'manage':
-                dic['manage'] = True
+                dic_application['manage'] = True
 
             elif per.get("action") == 'read':
-                dic['read'] = True
+                dic_application['read'] = True
 
             elif per.get("action") == 'create':
-                dic['create'] = True
+                dic_application['create'] = True
 
             elif per.get("action") == 'update':
-                dic['update'] = True
+                dic_application['update'] = True
 
             elif per.get("action") == 'destroy':
-                dic['destroy'] = True
+                dic_application['destroy'] = True
 
-            session['application'] = dic
+            session['application'] = dic_application
 
         elif per.get("model") == 'application_history':
-            if model_bk != per.get("model"):
-                dic = {}
 
-            dic['m_application_history'] = per.get("model")
+            dic_application_history['m_application_history'] = per.get("model")
 
             if per.get("action") == 'manage':
-                dic['manage'] = True
+                dic_application_history['manage'] = True
 
             elif per.get("action") == 'read':
-                dic['read'] = True
+                dic_application_history['read'] = True
 
             elif per.get("action") == 'create':
-                dic['create'] = True
+                dic_application_history['create'] = True
 
             elif per.get("action") == 'update':
-                dic['update'] = True
+                dic_application_history['update'] = True
 
             elif per.get("action") == 'destroy':
-                dic['destroy'] = True
+                dic_application_history['destroy'] = True
 
-            session['application_history'] = dic
+            session['application_history'] = dic_application_history
 
         elif per.get("model") == 'deployment':
-            if model_bk != per.get("model"):
-                dic = {}
 
-            dic['m_deployment'] = per.get("model")
+            dic_deployment['m_deployment'] = per.get("model")
 
             if per.get("action") == 'manage':
-                dic['manage'] = True
+                dic_deployment['manage'] = True
 
             elif per.get("action") == 'read':
-                dic['read'] = True
+                dic_deployment['read'] = True
 
             elif per.get("action") == 'create':
-                dic['create'] = True
+                dic_deployment['create'] = True
 
             elif per.get("action") == 'update':
-                dic['update'] = True
+                dic_deployment['update'] = True
 
             elif per.get("action") == 'destroy':
-                dic['destroy'] = True
+                dic_deployment['destroy'] = True
 
-            session['deployment'] = dic
+            session['deployment'] = dic_deployment
 
         # -- wizard
 #         if w_cloud_registrarion:

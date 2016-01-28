@@ -1,41 +1,39 @@
 # -*- coding: utf-8 -*-
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, render_to_response, get_object_or_404
 import django.contrib.auth as auth
 import json
 import requests
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.http import HttpResponse
 from django.contrib import messages
 from ..forms import baseImageForm
 from ..enum import ResponseType
-from ..enum.OSVersion import OSVersion
 from ..enum.FunctionCode import FuncCode
+from ..enum.CloudType import CloudType
+from ..enum.OSVersion import OSVersion
 from ..utils import ValiUtil
 from ..utils import ApiUtil
 from ..utils.PathUtil import Path
 from ..utils.PathUtil import Html
 from ..utils.ApiUtil import Url
 from ..utils import SessionUtil
+from ..utils import BaseimageUtil
 from ..logs import log
 
 
 # Create your views here.
 def baseImageDetail(request, id):
+    code = FuncCode.baseImageDetail.value
     try:
         if SessionUtil.check_login(request) == False:
             return redirect(Path.logout)
         if SessionUtil.check_permission(request,'baseimage','read') == False:
             return render_to_response(Html.error_403)
-
+        token = request.session.get('auth_token')
         # -- baseImage DetailAPI call, get a response
-        token = request.session['auth_token']
-        url = Url.baseImageDetail(id, Url.url)
-        data = {'auth_token': token}
-        baseImage = ApiUtil.requestGet(
-            url, FuncCode.baseImageDetail.value, data)
+        baseimage = BaseimageUtil.get_baseimage_detail(code, token, id)
 
-        return render(request, Html.baseImageDetail, {'baseImage': baseImage, 'message': ''})
+        return render(request, Html.baseImageDetail, {'baseImage': baseimage, 'message': ''})
     except Exception as ex:
         log.error(FuncCode.baseImageDetail.value, None, ex)
 
@@ -43,21 +41,21 @@ def baseImageDetail(request, id):
 
 
 def baseImageCreate(request, cid):
+    code = FuncCode.baseImageCreate.value
+    osversion = list(OSVersion)
     try:
         if SessionUtil.check_login(request) == False:
             return redirect(Path.logout)
         if SessionUtil.check_permission(request,'baseimage','create') == False:
             return render_to_response(Html.error_403)
 
-        OSVersion = list(OSVersion)
-
+        token = request.session.get('auth_token')
         if request.method == "GET":
 
             p = {
                 'cloud_id': cid,
             }
-
-            return render(request, Html.baseImageCreate, {'baseImage': p,'osversion': OSVersion, 'form': '', 'message': '', 'save': True})
+            return render(request, Html.baseImageCreate, {'baseImage': p,'osversion': osversion, 'form': '', 'message': '', 'save': True})
         else:
             # -- Get a value from a form
             msg = ''
@@ -68,44 +66,33 @@ def baseImageCreate(request, cid):
                 msg = ValiUtil.valiCheck(form)
                 cpPost = p.copy()
 
-                return render(request, Html.baseImageCreate, {'baseImage': cpPost,'osversion': OSVersion, 'form': form, 'message': '', 'save': True})
+                return render(request, Html.baseImageCreate, {'baseImage': cpPost,'osversion': osversion, 'form': form, 'message': '', 'save': True})
 
             # -- Create a project, api call
-            url = Url.baseImageCreate
-            data = {
-                'auth_token': p.get('auth_token'),
-                'cloud_id': p.get('cloud_id'),
-                'ssh_username': p.get('ssh_username'),
-                'source_image': p.get('source_image'),
-                'os_version': p.get('os_version'),
-            }
-            # -- API call, get a response
-            ApiUtil.requestPost(url, FuncCode.baseImageCreate.value, data)
+            BaseimageUtil.create_baseimage(code, token, form.data)
 
             return redirect(Path.cloudDetail(cid))
     except Exception as ex:
         log.error(FuncCode.baseImageCreate.value, None, ex)
 
-        return render(request, Html.baseImageCreate, {'baseImage': request.POST,'osversion': list(OSVersion), 'form': '', "message": str(ex), 'save': True})
+        return render(request, Html.baseImageCreate, {'baseImage': request.POST,'osversion': osversion, 'form': '', "message": str(ex), 'save': True})
 
 
 def baseImageEdit(request, id):
+    osversion = list(OSVersion)
     try:
         if SessionUtil.check_login(request) == False:
             return redirect(Path.logout)
         if SessionUtil.check_permission(request,'baseimage','update') == False:
             return render_to_response(Html.error_403)
 
-        if request.method == "GET":
-            token = request.session['auth_token']
-            url = Url.baseImageDetail(id, Url.url)
-            data = {
-                'auth_token': token,
-            }
-            p = ApiUtil.requestGet(url, FuncCode.baseImageEdit.value, data)
-            p.update(data)
+        code = FuncCode.baseImageEdit.value
+        token = request.session.get('auth_token')
 
-            return render(request, Html.baseImageEdit, {'baseImage': p,'osversion': list(OSVersion),
+        if request.method == "GET":
+            baseimage = BaseimageUtil.get_baseimage_detail(code, token, id)
+
+            return render(request, Html.baseImageEdit, {'baseImage': baseimage,'osversion': osversion,
                                                         'form': '', 'message': '', 'save': True})
         else:
             # -- Get a value from a form
@@ -117,7 +104,7 @@ def baseImageEdit(request, id):
                 msg = ValiUtil.valiCheck(form)
                 cpPost = p.copy()
 
-                return render(request, Html.baseImageEdit, {'baseImage': p,'osversion': list(OSVersion),
+                return render(request, Html.baseImageEdit, {'baseImage': p,'osversion': osversion,
                                                             'form': form, 'message': '', 'save': True})
 
             # -- URL set
@@ -137,7 +124,7 @@ def baseImageEdit(request, id):
     except Exception as ex:
         log.error(FuncCode.baseImageEdit.value, None, ex)
 
-        return render(request, Html.baseImageEdit, {'baseImage': request.POST,'osversion': list(OSVersion),
+        return render(request, Html.baseImageEdit, {'baseImage': request.POST,'osversion': osversion,
                                                     'form': '', 'message': ex, 'save': True})
 
 

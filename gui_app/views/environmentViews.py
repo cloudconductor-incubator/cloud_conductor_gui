@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,render_to_response
 import json
 import html
 import requests
@@ -102,6 +102,7 @@ def environmentCreate(request):
             cpPost = p.copy()
             param = putBlueprint(cpPost)
 #             form = environment_form(cpPost)
+            inputs = createJson(param)
 
             form = environmentForm(param)
             form.full_clean()

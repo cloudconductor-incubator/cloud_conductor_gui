@@ -38,12 +38,13 @@ def check_login(request):
     else:
         return True
 
-def check_permission(request,model,action):
+
+def check_permission(request, model, action, account_id=None):
 
     permission = False
     model_action = request.session.get(model)
     if action == 'list' or action == 'read':
-        if model_action.get('manage') == True or  model_action.get('read') == True or model_action.get('create') == True or request.session.get('update') == True or model_action.get('destroy') == True:
+        if model_action.get('manage') == True or model_action.get('read') == True or model_action.get('create') == True or request.session.get('update') == True or model_action.get('destroy') == True:
             permission = True
 
     elif action == 'create':
@@ -52,14 +53,13 @@ def check_permission(request,model,action):
 
     elif action == 'update':
         if model_action.get('manage') == True or model_action.get('update') == True:
-            permission = True
+            if StringUtil.isEmpty(account_id):
+                permission = True
+            elif request.session.get('account_admin') or request.session.get('account_id') == int(account_id):
+                permission = True
 
     elif action == 'destroy':
         if model_action.get('manage') == True or model_action.get('destroy') == True:
             permission = True
 
-
     return permission
-
-
-

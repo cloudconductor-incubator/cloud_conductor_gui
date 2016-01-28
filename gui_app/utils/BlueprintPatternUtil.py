@@ -41,7 +41,7 @@ def get_blueprint_pattern_list2(code, token, id):
     list = []
     for bp in blueprints:
         dic = {}
-        dic['pattern_id'] = str(bp['pattern_id'])
+        dic['id'] = bp['pattern_id']
         dic['os_version'] = bp['os_version']
         list.append(dic)
 

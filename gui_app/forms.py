@@ -154,7 +154,7 @@ class applicationForm(forms.Form):
     name = forms.CharField(max_length=500)
     description = forms.CharField(required=False, max_length=500)
     domain = forms.CharField(required=False, max_length=500)
-    url = forms.CharField(max_length=500)
+    url = forms.URLField(max_length=500)
     type = forms.CharField(required=False, max_length=500)
     protocol = forms.CharField(max_length=500)
     revision = forms.CharField(required=False, max_length=500)
@@ -166,7 +166,7 @@ class applicationForm(forms.Form):
 class w_applicationForm(forms.Form):
     name = forms.CharField(max_length=500)
     description = forms.CharField(required=False, max_length=500)
-    domain = forms.CharField(required=False, max_length=500)
+    domain = forms.URLField(required=False, max_length=500)
     url = forms.CharField(max_length=500)
     type = forms.CharField(required=False, max_length=500)
     protocol = forms.CharField(required=False, max_length=500)

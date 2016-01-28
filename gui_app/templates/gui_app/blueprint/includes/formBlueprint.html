@@ -21,10 +21,10 @@
 					<div class="cc-checkbox-var">Pattern name : revison <span class="right">OS Version</span></div>
 			{% for pt in patterns %}
 					<div class="checkbox" style="height:40px;">
-						<label><input type="checkbox" name="pattern_id" value="{{ pt.id }}" {% if pt.id in pattern_list %}  checked="checked" {% endif %}>{{ pt.name }}:{{ pt.revision }}</label>
+						<label><input type="checkbox" name="pattern_id" value="{{ pt.id }}" {% for my in my_pattern %}{% if my.id == pt.id %} checked="checked" {% endif %}{% endfor %}>{{ pt.name }}:{{ pt.revision }}</label>
 						<select name="os_version" id="os_version" class="form-control input-sm pull-right pull_100" style="width: 100px;">
 							  {% for b in osversion %}
-							  <option value="{'id': {{ pt.id }}, 'revison': '{{ pt.revision }}', 'os_version': '{{ b.value }}'}" {% if  blueprint.os_version == b.value %} selected="selected" {% endif %}>
+							  <option value="{'id': {{ pt.id }}, 'revison': '{{ pt.revision }}', 'os_version': '{{ b.value }}'}" {% for my in my_pattern %}{% if my.id == pt.id %}{% if my.os_version == b.value %} selected="selected" {% endif %}{% endif %}{% endfor %}>
 							       {{ b.value }}
 							   </option>
 							  {% endfor %}

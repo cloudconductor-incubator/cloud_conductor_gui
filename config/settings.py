@@ -194,4 +194,4 @@ COVERAGE_REPORT_HTML_OUTPUT_DIR = '.cover'
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 NOSE_ARGS = ['--with-coverage','--with-xunit','--cover-package=gui_app\tests','--cover-xml','--cover-html',]
 
-CLOUDCONDUCTOR_URL = 'http://54.153.94.150:8080/api/v1/'
+CLOUDCONDUCTOR_URL = ''

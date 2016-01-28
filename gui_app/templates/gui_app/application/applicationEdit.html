@@ -1,6 +1,7 @@
 {% extends "gui_app/base.html" %}
 {% block title %}Application Edit{% endblock %}
 {% block headerscript %}
+<script type="text/javascript" src="/static/gui_app/js/file.js"></script>
 {% endblock %}
 
 {% block nav %}
@@ -18,6 +19,7 @@
 	{% if app %}
 		<form method="post" action="{% url 'app:applicationEdit' app.id %}">
 			<input id="id" type="hidden" name="id" value="{{ app.id }}">
+			<input id="history_id" type="hidden" name="history_id" value="{{ app.history_id }}">
 			{% include "gui_app/Application/includes/formApplication.html" %}
 		</form>
 	{% else %}

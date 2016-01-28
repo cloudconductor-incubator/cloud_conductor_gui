@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,render_to_response
 import json
 import requests
 from ..forms import blueprintForm
@@ -43,6 +43,7 @@ def blueprintList(request):
 
 def blueprintDetail(request, id):
     code = FuncCode.blueprintDetail.value
+    blueprint = ''
     pattern = ''
     try:
         if SessionUtil.check_login(request) == False:
@@ -101,7 +102,7 @@ def blueprintCreate(request):
             BlueprintPatternUtil.add_blueprint_pattern_list(code, token, blueprint.get('id'),
                                                             p.getlist('os_version'), p.getlist('pattern_id'))
 
-#           # -- 3. BlueprintBuild, api call
+            # -- 3. BlueprintBuild, api call
             BlueprintUtil.create_bluepritn_build(code, token, blueprint.get('id'))
 
             return redirect(Path.blueprintList)
@@ -127,12 +128,11 @@ def blueprintEdit(request, id):
 
         blueprint = BlueprintUtil.get_bluepritn_detail(code, token, id)
         patterns = PatternUtil.get_pattern_list(code, token, project_id)
-        pattern_list = BlueprintPatternUtil.get_blueprint_pattern_list2(code, token, id)
-        print(pattern_list)
+        my_pattern = BlueprintPatternUtil.get_blueprint_pattern_list2(code, token, id)
 
         if request.method == "GET":
 
-            return render(request, Html.blueprintEdit, {'blueprint': blueprint, 'patterns': patterns, 'pattern_list': pattern_list,
+            return render(request, Html.blueprintEdit, {'blueprint': blueprint, 'patterns': patterns, 'my_pattern': my_pattern,
                                                         'osversion': osversion, 'form': '', 'message': ''})
         else:
             # -- Get a value from a form
@@ -143,20 +143,32 @@ def blueprintEdit(request, id):
             form.full_clean()
             if not form.is_valid():
 
-                return render(request, Html.blueprintEdit, {'blueprint': p, 'patterns': patterns,
+                return render(request, Html.blueprintEdit, {'blueprint': p, 'patterns': patterns, 'my_pattern': my_pattern,
                                                             'osversion': osversion, 'form': form, 'message': ''})
 
-            # -- Create a blueprint, api call
-            url = Url.blueprintEdit(id, Url.url)
-            data = {
-                'auth_token': p['auth_token'],
-                'project_id': p['project_id'],
-                'name': p['name'],
-                'description': p['description'],
-#                 'patterns_attributes': p['patterns_attributes'],
-            }
-            # -- API call, get a response
-            ApiUtil.requestPut(url, FuncCode.blueprintEdit.value, data)
+            # -- 1.Edit a blueprint, api call
+            blueprint = BlueprintUtil.edit_blueprint(code, token, id, form.data)
+            # idがmylistに存在するかチェック
+#             reg_pattern = dic_pattern_list(pt_list, id_list)
+#             for my in my_pattern:
+#                 for reg in reg_pattern:
+#                     if  reg.get('id') == my.get('id'):
+
+
+
+            # mylistにない場合はnew_patternsに登録
+
+            # mylistにはあるがpattern_listにない場合はdelete_patternsに登録
+
+
+
+
+            # -- 2. Add a Pattern, api call
+            pattern_list = p.getlist('pattern_id')
+
+
+            # -- 3. BlueprintBuild, api call
+
 
             return redirect(Path.blueprintList)
     except Exception as ex:

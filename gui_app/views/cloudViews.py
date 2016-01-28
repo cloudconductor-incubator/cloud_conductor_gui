@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,render_to_response
 import django.contrib.auth as auth
 import json
 import requests
@@ -33,10 +33,9 @@ def cloudList(request):
 
         code = FuncCode.cloudList.value
         token = request.session['auth_token']
+        project_id = request.session['project_id']
         # -- Get a cloud list, API call
-        clouds = CloudUtil.get_cloud_list(code, token)
-        print(request.session.get('cloud'))
-        print(request.session.get('cloud').get('manage'))
+        clouds = CloudUtil.get_cloud_list(code, token, project_id)
 
         return render(request, Html.cloudList, {'cloud': clouds, 'message': ''})
     except Exception as ex:
@@ -60,7 +59,7 @@ def cloudDetail(request, id):
         cloud = CloudUtil.get_cloud_detail(code, token, id)
 
         # -- Get a baseImage list, API call
-        baseimages = BaseimageUtil.get_baseimege_list(code, token)
+        baseimages = BaseimageUtil.get_baseimege_list(code, token, id)
         return render(request, Html.cloudDetail, {'cloud': cloud, 'baseImage': baseimages, 'message': ''})
     except Exception as ex:
 

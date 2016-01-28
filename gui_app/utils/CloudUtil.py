@@ -9,7 +9,7 @@ from ..enum.FunctionCode import FuncCode
 from ..logs import log
 
 
-def get_cloud_list(code, token):
+def get_cloud_list(code, token, project_id=None):
 
     if StringUtil.isEmpty(code):
         return None
@@ -18,7 +18,10 @@ def get_cloud_list(code, token):
         return None
 
     url = Url.cloudList
-    data = {'auth_token': token}
+    data = {
+            'auth_token': token,
+            'project_id': project_id
+            }
     list = ApiUtil.requestGet(url, code, data)
 
     return list

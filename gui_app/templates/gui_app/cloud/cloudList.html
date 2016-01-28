@@ -13,7 +13,7 @@
   <div class="cc-title">Cloud management</div>
 	<br>
 	{% include "gui_app/includes/message.html" %}
-	{% if request.session.project.manage or request.session.project.create %}
+	{% if request.session.cloud.manage or request.session.cloud.create %}
     <button type="button" class="btn btn-primary btn-sm" onclick="location.href='{% url 'app:cloudCreate' %}'" style="float:right">
     	<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;　new
     </button>

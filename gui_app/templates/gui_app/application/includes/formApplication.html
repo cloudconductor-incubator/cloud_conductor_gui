@@ -11,10 +11,9 @@
 	    {% if save %}
 	    <div class="form-group">
 	    	<label><span id="req">*</span>System</label>
-	    		<input type="hidden" id="system_id" name="system_id" class="form-control" value="{{ app.system_id }}">
 			<select class="form-control" name="system_id" id="system_id">
 		        <option value=""></option>
-		        {% for s in app.systems %}
+		        {% for s in systems %}
 				   <option value="{{ s.id }}" {% if  app.system_id == s.id %} selected="selected" {% endif %}>{{ s.name }}</option>
 				{% endfor %}
 		    </select>
@@ -22,14 +21,14 @@
 	    </div>
 	    {% endif %}
 	    <div class="form-group">
-	    	<label>Description</label>
-	        <input id="description" name="description" type="text" class="form-control" value="{{ app.description }}">
-	        {{ form.description.errors }}
-	    </div>
-	    <div class="form-group">
 	    	<label>Domain</label>
 	        <input id="domain" name="domain" type="text" class="form-control" value="{{ app.domain }}">
 	        {{ form.domain.errors }}
+	    </div>
+	    <div class="form-group">
+	    	<label>Description</label>
+	        <textarea id="description" name="description" class="form-control">{{ app.description }}</textarea>
+	        {{ form.description.errors }}
 	    </div>
 	    <div class="form-group">
 	    	<label><span id="req">*</span>URL</label>
@@ -72,10 +71,11 @@
 	        {{ form.post_deploy.errors }}
 	    </div>
 	    <div class="form-group">
-	    	<label>Parameters</label>
-	        <input id="parameters" name="parameters" type="text" class="form-control" value="{{ history.parameters }}">
-	        {{ form.parameters.errors }}
-	    </div>
+			<label style="float:left;">Parameters</label>
+			<div id="user_output" class="col-md-10 error_message"></div>
+			<textarea id="parameters" name="parameters" class="form-control" cols="80" rows="20" wrap="off" onchange="json_check('parameters', 'user_output')">{{ history.parameters }}</textarea>
+			{{ form.parameters.errors }}
+		</div>
 	    {% if save %}
 	    <div class="button_center">
 			<button class="btn btn-success" type="submit"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>&nbsp;save</button>
