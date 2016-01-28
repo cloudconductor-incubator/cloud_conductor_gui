@@ -10,13 +10,11 @@
 {% endblock %}
 {% block content %}
 <div class="cc-title">Make new application</div>
-		{% if request.session.environment_manage or request.session.environment_create  %}
 		<div>
 			<button class="btn btn-primary btn-sm" style="float:right" onclick="location.href='{% url 'app:mkappEnvironmentCreate' %}'" type="button">
 				<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;　new
 			</button>
 		</div>
-		{% endif %}
 <form method="post" action="{% url 'app:mkappEnvironmentSelect' %}">
 	<div class="cc-select">
 		{% csrf_token %}

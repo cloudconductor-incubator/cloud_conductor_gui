@@ -1,44 +1,42 @@
 # -*- coding: utf-8 -*-
-from django.shortcuts import render, redirect,render_to_response
+from django.shortcuts import render, redirect, render_to_response
 import json
 import requests
 from ..forms import blueprintForm
-from ..utils import RoleUtil
-from ..utils import ValiUtil
 from ..utils import ApiUtil
 from ..utils import PatternUtil
 from ..utils import BlueprintUtil
 from ..utils import BlueprintPatternUtil
 from ..utils import SessionUtil
-from ..utils import StringUtil
 from ..utils.PathUtil import Path
 from ..utils.PathUtil import Html
 from ..utils.ApiUtil import Url
 from ..enum.FunctionCode import FuncCode
 from ..enum.OSVersion import OSVersion
 from ..logs import log
-from _ast import List
 
 
 def blueprintList(request):
     blueprints = None
     try:
-        if SessionUtil.check_login(request) == False:
+        if not SessionUtil.check_login(request):
             return redirect(Path.logout)
-        if SessionUtil.check_permission(request,'blueprint','list') == False:
+        if not SessionUtil.check_permission(request, 'blueprint', 'list'):
             return render_to_response(Html.error_403)
-
 
         # -- Get a blueprint list, API call
         project_id = request.session['project_id']
         token = request.session['auth_token']
-        blueprints = BlueprintUtil.get_blueprint_list(FuncCode.blueprintList.value, token, project_id)
+        blueprints = BlueprintUtil.get_blueprint_list(
+            FuncCode.blueprintList.value, token, project_id)
 
-        return render(request, Html.blueprintList, {'blueprints': blueprints, 'message': ''})
+        return render(request, Html.blueprintList,
+                      {'blueprints': blueprints, 'message': ''})
     except Exception as ex:
         log.error(FuncCode.blueprintList.value, None, ex)
 
-        return render(request, Html.blueprintList, {"blueprints": '', 'message': str(ex)})
+        return render(request, Html.blueprintList,
+                      {"blueprints": '', 'message': str(ex)})
 
 
 def blueprintDetail(request, id):
@@ -46,9 +44,9 @@ def blueprintDetail(request, id):
     blueprint = ''
     pattern = ''
     try:
-        if SessionUtil.check_login(request) == False:
+        if not SessionUtil.check_login(request):
             return redirect(Path.logout)
-        if SessionUtil.check_permission(request,'blueprint','read') == False:
+        if not SessionUtil.check_permission(request, 'blueprint', 'read'):
             return render_to_response(Html.error_403)
 
         token = request.session['auth_token']
@@ -58,11 +56,14 @@ def blueprintDetail(request, id):
         blueprint = BlueprintUtil.get_bluepritn_detail(code, token, id)
         pattern = BlueprintUtil.get_pattern_list(code, id, token, project_id)
 
-        return render(request, Html.blueprintDetail, {'blueprint': blueprint, 'pattern': pattern, 'message': ''})
+        return render(request, Html.blueprintDetail,
+                      {'blueprint': blueprint, 'pattern': pattern,
+                       'message': ''})
     except Exception as ex:
         log.error(FuncCode.blueprintDetail.value, None, ex)
 
-        return render(request, Html.blueprintDetail, {'blueprint': '', 'message': str(ex)})
+        return render(request, Html.blueprintDetail,
+                      {'blueprint': '', 'message': str(ex)})
 
 
 def blueprintCreate(request):
@@ -70,9 +71,9 @@ def blueprintCreate(request):
     osversion = list(OSVersion)
     patterns = ''
     try:
-        if SessionUtil.check_login(request) == False:
+        if not SessionUtil.check_login(request):
             return redirect(Path.logout)
-        if SessionUtil.check_permission(request,'blueprint','create') == False:
+        if not SessionUtil.check_permission(request, 'blueprint', 'create'):
             return render_to_response(Html.error_403)
 
         project_id = request.session['project_id']
@@ -81,8 +82,9 @@ def blueprintCreate(request):
 
         if request.method == "GET":
 
-            return render(request, Html.blueprintCreate, {'blueprint': '', 'patterns': patterns, 'osversion': osversion,
-                                                          'form': '', 'message': ''})
+            return render(request, Html.blueprintCreate,
+                          {'blueprint': '', 'patterns': patterns,
+                           'osversion': osversion, 'form': '', 'message': ''})
         else:
             # -- Get a value from a form
             msg = ''
@@ -92,25 +94,32 @@ def blueprintCreate(request):
             form = blueprintForm(p)
             if not form.is_valid():
 
-                return render(request, Html.blueprintCreate, {'blueprint': p, 'patterns': patterns,
-                                                              'osversion': osversion, 'form': form, 'message': ''})
+                return render(request, Html.blueprintCreate,
+                              {'blueprint': p, 'patterns': patterns,
+                               'osversion': osversion, 'form': form,
+                               'message': ''})
 
             # -- 1.Create a blueprint, api call
-            blueprint = BlueprintUtil.create_blueprint(code, token, project_id, form.data)
+            blueprint = BlueprintUtil.create_blueprint(
+                code, token, project_id, form.data)
 
             # -- 2. Add a Pattern, api call
-            BlueprintPatternUtil.add_blueprint_pattern_list(code, token, blueprint.get('id'),
-                                                            p.getlist('os_version'), p.getlist('pattern_id'))
+            BlueprintPatternUtil.add_blueprint_pattern_list(
+                code, token, blueprint.get('id'),
+                p.getlist('os_version'), p.getlist('pattern_id'))
 
             # -- 3. BlueprintBuild, api call
-            BlueprintUtil.create_bluepritn_build(code, token, blueprint.get('id'))
+            BlueprintUtil.create_bluepritn_build(
+                code, token, blueprint.get('id'))
 
             return redirect(Path.blueprintList)
     except Exception as ex:
         log.error(code, None, ex)
 
-        return render(request, Html.blueprintCreate, {'blueprint': request.POST, 'patterns': patterns,
-                                                      'osversion': osversion, 'form': '', 'message': str(ex)})
+        return render(request, Html.blueprintCreate,
+                      {'blueprint': request.POST, 'patterns': patterns,
+                       'osversion': osversion, 'form': '', 'message': str(ex)})
+
 
 def blueprintEdit(request, id):
     code = FuncCode.blueprintEdit.value
@@ -118,9 +127,9 @@ def blueprintEdit(request, id):
     blueprint = ''
     patterns = ''
     try:
-        if SessionUtil.check_login(request) == False:
+        if not SessionUtil.check_login(request):
             return redirect(Path.logout)
-        if SessionUtil.check_permission(request,'blueprint','update') == False:
+        if not SessionUtil.check_permission(request, 'blueprint', 'update'):
             return render_to_response(Html.error_403)
 
         project_id = request.session['project_id']
@@ -128,12 +137,15 @@ def blueprintEdit(request, id):
 
         blueprint = BlueprintUtil.get_bluepritn_detail(code, token, id)
         patterns = PatternUtil.get_pattern_list(code, token, project_id)
-        my_pattern = BlueprintPatternUtil.get_blueprint_pattern_list2(code, token, id)
+        my_pattern = BlueprintPatternUtil.get_blueprint_pattern_list2(
+            code, token, id)
 
         if request.method == "GET":
 
-            return render(request, Html.blueprintEdit, {'blueprint': blueprint, 'patterns': patterns, 'my_pattern': my_pattern,
-                                                        'osversion': osversion, 'form': '', 'message': ''})
+            return render(request, Html.blueprintEdit,
+                          {'blueprint': blueprint, 'patterns': patterns,
+                           'my_pattern': my_pattern, 'osversion': osversion,
+                           'form': '', 'message': ''})
         else:
             # -- Get a value from a form
             msg = ''
@@ -143,46 +155,44 @@ def blueprintEdit(request, id):
             form.full_clean()
             if not form.is_valid():
 
-                return render(request, Html.blueprintEdit, {'blueprint': p, 'patterns': patterns, 'my_pattern': my_pattern,
-                                                            'osversion': osversion, 'form': form, 'message': ''})
+                return render(request, Html.blueprintEdit,
+                              {'blueprint': p, 'patterns': patterns,
+                               'my_pattern': my_pattern,
+                               'osversion': osversion, 'form': form,
+                               'message': ''})
 
             # -- 1.Edit a blueprint, api call
-            blueprint = BlueprintUtil.edit_blueprint(code, token, id, form.data)
+            blueprint = BlueprintUtil.edit_blueprint(
+                code, token, id, form.data)
             # idがmylistに存在するかチェック
 #             reg_pattern = dic_pattern_list(pt_list, id_list)
 #             for my in my_pattern:
 #                 for reg in reg_pattern:
 #                     if  reg.get('id') == my.get('id'):
 
-
-
             # mylistにない場合はnew_patternsに登録
 
             # mylistにはあるがpattern_listにない場合はdelete_patternsに登録
 
-
-
-
             # -- 2. Add a Pattern, api call
             pattern_list = p.getlist('pattern_id')
 
-
             # -- 3. BlueprintBuild, api call
-
 
             return redirect(Path.blueprintList)
     except Exception as ex:
         log.error(FuncCode.blueprintEdit.value, None, ex)
 
-        return render(request, Html.blueprintEdit, {'blueprint': request.POST, 'patterns': patterns,
-                                                    'osversion': osversion, 'form': '', 'message': str(ex)})
+        return render(request, Html.blueprintEdit,
+                      {'blueprint': request.POST, 'patterns': patterns,
+                       'osversion': osversion, 'form': '', 'message': str(ex)})
 
 
 def blueprintDelete(request, id):
     try:
-        if SessionUtil.check_login(request) == False:
+        if not SessionUtil.check_login(request):
             return redirect(Path.logout)
-        if SessionUtil.check_permission(request,'blueprint','destroy') == False:
+        if not SessionUtil.check_permission(request, 'blueprint', 'destroy'):
             return render_to_response(Html.error_403)
 
         # -- URL and data set
@@ -194,4 +204,5 @@ def blueprintDelete(request, id):
     except Exception as ex:
         log.error(FuncCode.blueprintDelete.value, None, ex)
 
-        return render(request, Html.blueprintDetail, {'blueprint': '', 'message': ex})
+        return render(request, Html.blueprintDetail,
+                      {'blueprint': '', 'message': ex})

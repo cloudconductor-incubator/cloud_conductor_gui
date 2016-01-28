@@ -1,16 +1,10 @@
 # -*- coding: utf-8 -*-
-from django.shortcuts import render, redirect,render_to_response
-import django.contrib.auth as auth
+from django.shortcuts import render, redirect, render_to_response
 import json
-import requests
-from django.contrib.auth.decorators import login_required
 from ..forms import cloudForm
-from ..enum import ResponseType
-from ..enum.LogType import Message
 from ..enum.CloudType import CloudType
 from ..enum.FunctionCode import FuncCode
 from ..utils import ApiUtil
-from ..utils import ValiUtil
 from ..utils import CloudUtil
 from ..utils import BaseimageUtil
 from ..utils import SessionUtil
@@ -18,17 +12,15 @@ from ..utils.PathUtil import Path
 from ..utils.PathUtil import Html
 from ..utils.ApiUtil import Url
 from ..logs import log
-from logging import getLogger
-logger = getLogger('app')
 clouds = None
 
 
 # Create your views here.
 def cloudList(request):
     try:
-        if SessionUtil.check_login(request) == False:
+        if not SessionUtil.check_login(request):
             return redirect(Path.logout)
-        if SessionUtil.check_permission(request,'cloud','list') == False:
+        if not SessionUtil.check_permission(request, 'cloud', 'list'):
             return render_to_response(Html.error_403)
 
         code = FuncCode.cloudList.value
@@ -37,7 +29,8 @@ def cloudList(request):
         # -- Get a cloud list, API call
         clouds = CloudUtil.get_cloud_list(code, token, project_id)
 
-        return render(request, Html.cloudList, {'cloud': clouds, 'message': ''})
+        return render(request, Html.cloudList,
+                      {'cloud': clouds, 'message': ''})
     except Exception as ex:
 
         log.error(FuncCode.cloudList.value, None, ex)
@@ -48,9 +41,9 @@ def cloudDetail(request, id):
     cloud = None
     baseimages = None
     try:
-        if SessionUtil.check_login(request) == False:
+        if not SessionUtil.check_login(request):
             return redirect(Path.logout)
-        if SessionUtil.check_permission(request,'cloud','read') == False:
+        if not SessionUtil.check_permission(request, 'cloud', 'read'):
             return render_to_response(Html.error_403)
 
         code = FuncCode.cloudDetail.value
@@ -60,20 +53,23 @@ def cloudDetail(request, id):
 
         # -- Get a baseImage list, API call
         baseimages = BaseimageUtil.get_baseimege_list(code, token, id)
-        return render(request, Html.cloudDetail, {'cloud': cloud, 'baseImage': baseimages, 'message': ''})
+        return render(request, Html.cloudDetail,
+                      {'cloud': cloud, 'baseImage': baseimages,
+                       'message': ''})
     except Exception as ex:
 
         log.error(FuncCode.cloudList.value, None, ex)
-        return render(request, Html.cloudDetail, {'cloud': '', 'baseImage': '', 'message': ex})
+        return render(request, Html.cloudDetail,
+                      {'cloud': '', 'baseImage': '', 'message': ex})
 
 
 def cloudCreate(request):
     cloudType = None
     code = FuncCode.cloudList.value
     try:
-        if SessionUtil.check_login(request) == False:
+        if not SessionUtil.check_login(request):
             return redirect(Path.logout)
-        if SessionUtil.check_permission(request,'cloud','create') == False:
+        if not SessionUtil.check_permission(request, 'cloud', 'create'):
             return render_to_response(Html.error_403)
 
         token = request.session['auth_token']
@@ -82,8 +78,9 @@ def cloudCreate(request):
 
         if request.method == "GET":
 
-            return render(request, Html.cloudCreate, {'cloud': '', 'form': '', 'message':'',
-                                                      'cloudType': cloudType, 'save': True})
+            return render(request, Html.cloudCreate,
+                          {'cloud': '', 'form': '', 'message': '',
+                           'cloudType': cloudType, 'save': True})
 
         else:
             # -- Get a value from a form
@@ -93,11 +90,12 @@ def cloudCreate(request):
             form = cloudForm(p)
             if not form.is_valid():
 
-                return render(request, Html.cloudCreate, {'cloud': p, 'form': form, 'message': '',
-                                                          'cloudType': cloudType, 'save': True})
+                return render(request, Html.cloudCreate,
+                              {'cloud': p, 'form': form, 'message': '',
+                               'cloudType': cloudType, 'save': True})
 
-
-            cloud = CloudUtil.create_cloud2(code, token, project_id, form.data.copy())
+            cloud = CloudUtil.create_cloud2(
+                code, token, project_id, form.data.copy())
 
             # -- Create a cloud, api call
 #             url = Url.cloudCreate
@@ -115,23 +113,23 @@ def cloudCreate(request):
 #             # -- API call, get a response
 #             ApiUtil.requestPost(url, FuncCode.projectCreate.value, data)
 
-
             return redirect(Path.cloudList)
 
     except Exception as ex:
         log.error(FuncCode.cloudList.value, None, ex)
 
-        return render(request, Html.cloudCreate, {'cloud': request.POST, 'form': '', 'message': ex,
-                                                  'cloudType': cloudType, 'save': True})
+        return render(request, Html.cloudCreate,
+                      {'cloud': request.POST, 'form': '', 'message': ex,
+                       'cloudType': cloudType, 'save': True})
 
 
 def cloudEdit(request, id):
     cloudType = list(CloudType)
     code = FuncCode.cloudEdit.value
     try:
-        if SessionUtil.check_login(request) == False:
+        if not SessionUtil.check_login(request):
             return redirect(Path.logout)
-        if SessionUtil.check_permission(request,'cloud','update') == False:
+        if not SessionUtil.check_permission(request, 'cloud', 'update'):
             return render_to_response(Html.error_403)
 
         token = request.session['auth_token']
@@ -148,8 +146,9 @@ def cloudEdit(request, id):
             cloud = ApiUtil.requestGet(url, code, data)
             cloud.update(data)
 
-            return render(request, "gui_app/cloud/cloudEdit.html", {'cloud': cloud, 'form': '', 'message': '',
-                                                                    'cloudType': cloudType, 'save': True})
+            return render(request, "gui_app/cloud/cloudEdit.html",
+                          {'cloud': cloud, 'form': '', 'message': '',
+                           'cloudType': cloudType, 'save': True})
         elif request.method == "POST":
             # -- Get a value from a form
             p = request.POST
@@ -159,8 +158,9 @@ def cloudEdit(request, id):
             form.full_clean()
             if not form.is_valid():
 
-                return render(request, Html.cloudEdit, {'cloud': p, 'form': form, 'message': '',
-                                                        'cloudType': cloudType, 'save': True})
+                return render(request, Html.cloudEdit,
+                              {'cloud': p, 'form': form, 'message': '',
+                               'cloudType': cloudType, 'save': True})
 
             # -- URL set
             url = Url.cloudEdit(id, Url.url)
@@ -186,15 +186,16 @@ def cloudEdit(request, id):
     except Exception as ex:
         log.error(code, None, ex)
 
-        return render(request, Html.cloudEdit, {'cloud': request.POST, 'form': '', 'message': ex,
-                                                'cloudType': cloudType, 'save': True})
+        return render(request, Html.cloudEdit,
+                      {'cloud': request.POST, 'form': '', 'message': ex,
+                       'cloudType': cloudType, 'save': True})
 
 
 def cloudDelete(request, id):
     try:
-        if SessionUtil.check_login(request) == False:
+        if not SessionUtil.check_login(request):
             return redirect(Path.logout)
-        if SessionUtil.check_permission(request,'cloud','destroy') == False:
+        if not SessionUtil.check_permission(request, 'cloud', 'destroy'):
             return render_to_response(Html.error_403)
 
         # -- URL and data set

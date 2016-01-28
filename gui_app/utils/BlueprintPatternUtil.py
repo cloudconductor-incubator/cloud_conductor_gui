@@ -18,8 +18,8 @@ def get_blueprint_pattern_list(code, token, blueprint_id):
         return None
 
     data = {
-            'auth_token': token,
-            }
+        'auth_token': token,
+    }
     url = Url.blueprintPattrnList(blueprint_id, Url.url)
     list = ApiUtil.requestGet(url, code, data)
 
@@ -86,8 +86,8 @@ def add_blueprint_pattern_list(code, token, id, pt_list, id_list):
 
     pt_list = dic_pattern_list(pt_list, id_list)
     for pt in pt_list:
-        add_blueprint_pattern(
-            code, token, id, pt.get('id'), pt.get('revison'), pt.get('os_version'))
+        add_blueprint_pattern(code, token, id, pt.get('id'),
+                              pt.get('revison'), pt.get('os_version'))
 
 
 def dic_pattern_list(patterns, ids):

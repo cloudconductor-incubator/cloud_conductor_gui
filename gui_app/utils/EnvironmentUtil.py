@@ -32,27 +32,73 @@ def get_environment_list2(code, token, project_id=None):
     for env in environments:
 
         dic['id'] = str(env.get('id'))
-        dic['name'] =  env.get('name')
+        dic['name'] = env.get('name')
         list.append(dic.copy())
 
     return list
+
+
+def get_environment_detail(code, token, id):
+
+    if StringUtil.isEmpty(code):
+        return None
+
+    if StringUtil.isEmpty(token):
+        return None
+
+    if StringUtil.isEmpty(id):
+        return None
+
+    url = Url.environmentDetail(id, Url.url)
+    data = {
+        'auth_token': token,
+        'id': id,
+    }
+    project = ApiUtil.requestGet(url, code, data)
+
+    return project
+
+
+def edit_environment(code, token, id, form, temp_param):
+    # -- Create a project, api call
+    url = Url.environmentEdit(id, Url.url)
+    data = {
+        'auth_token': token,
+        'name': form.get('name'),
+        'description': form.get('description')
+    }
+
+    if form.get("user_attributes"):
+        data["user_attributes"] = form.get("user_attributes")
+
+    if temp_param:
+        print(str(temp_param).replace('\'', '\"'))
+        data["template_parameters"] = str(temp_param).replace('\'', '\"')
+
+    # -- API call, get a response
+    project = ApiUtil.requestPut(url, code, data)
+
+    return project
 
 
 def addEnvironmentParam(param):
     # candidates_attributes
     candidates_attributes = []
     dic = {
-        'cloud_id': int(param.get('candidates_attributes_1')), 'priority': 1}
+        'cloud_id': int(param.get('candidates_attributes_1')),
+        'priority': 1}
     candidates_attributes.append(dic)
 
     if param.get('candidates_attributes_2'):
         dic = {
-            'cloud_id': int(param.get('candidates_attributes_2')), 'priority': 2}
+            'cloud_id': int(param.get('candidates_attributes_2')),
+            'priority': 2}
         candidates_attributes.append(dic)
 
     if param.get('candidates_attributes_3'):
         dic = {
-            'cloud_id': int(param.get('candidates_attributes_3')), 'priority': 3}
+            'cloud_id': int(param.get('candidates_attributes_3')),
+            'priority': 3}
         candidates_attributes.append(dic)
 
     data = {

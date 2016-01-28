@@ -10,7 +10,7 @@ from ..utils.ApiUtil import Url
 
 
 def testJsonForm(request):
-#     def submitj(request):
+    #     def submitj(request):
     paramg = request.GET
     j = json.dumps(paramg)
     print(j)
@@ -33,11 +33,12 @@ def testJsonForm(request):
         </body></html>
 ''' % (pm.get('a', ''), pm.get('b', ''), pm.get('c', ''), j))
 
-#     return render(request, "gui_app/testFile/testJsonForm.html", {'file':'file upload complate' })
+# return render(request, "gui_app/testFile/testJsonForm.html",
+# {'file':'file upload complate' })
 
 
 def testJsonForm2(request):
-#     def submitj(request):
+    #     def submitj(request):
     paramg = request.GET
     j = json.dumps(paramg)
     print(j)
@@ -48,81 +49,96 @@ def testJsonForm2(request):
     template = ApiUtil.requestGet(url, 'testJsonForm2', data)
     print(template)
 
-    return render(request, "gui_app/testFile/testJsonForm.html", {'form':template })
-
+    return render(request, "gui_app/testFile/testJsonForm.html",
+                  {'form': template})
 
 
 def testUpload(request):
 
     print("testUpload")
 
-    return render(request, "gui_app/testFile/testFileupload.html", {'file':'file upload complate' })
+    return render(request, "gui_app/testFile/testFileupload.html",
+                  {'file': 'file upload complate'})
+
 
 def testFileInput1(request):
 
     print("aaaa")
 
-    return render(request, "gui_app/testFile/testFileupload3.html", {'file':'' })
+    return render(request, "gui_app/testFile/testFileupload3.html",
+                  {'file': ''})
+
 
 def testFileInput3(request):
 
     print("test3")
 
-    return render(request, "gui_app/testFile/testFileupload3.html", {'file':'' })
+    return render(request, "gui_app/testFile/testFileupload3.html",
+                  {'file': ''})
+
 
 def testFileInput4(request):
 
     print("test4")
 
-    return render(request, "gui_app/testFile/testFileupload4.html", {'file':'' })
+    return render(request, "gui_app/testFile/testFileupload4.html",
+                  {'file': ''})
 
 
 def testFileInput5(request):
 
     print("test5")
 
-    return render(request, "gui_app/testFile/testFileupload5.html", {'file':'' })
+    return render(request, "gui_app/testFile/testFileupload5.html",
+                  {'file': ''})
 
 
 def testFileInput6(request):
 
     print("test6")
 
-    return render(request, "gui_app/testFile/testFileupload6.html", {'file':'' })
+    return render(request, "gui_app/testFile/testFileupload6.html",
+                  {'file': ''})
 
 
 def testFileInput7(request):
 
     print("test7")
 
-    return render(request, "gui_app/testFile/testFileupload7.html", {'file':'' })
+    return render(request, "gui_app/testFile/testFileupload7.html",
+                  {'file': ''})
 
 
 def testFileInput8(request):
 
     print("test8")
 
-    return render(request, "gui_app/testFile/testFileupload8.html", {'file':'' })
+    return render(request, "gui_app/testFile/testFileupload8.html",
+                  {'file': ''})
+
 
 def testFileInput9(request):
 
     print("test9")
 
-    return render(request, "gui_app/testFile/testFileupload9.html", {'file':'' })
+    return render(request, "gui_app/testFile/testFileupload9.html",
+                  {'file': ''})
 
 
 def testFileInput10(request):
 
     print("test10")
 
-    return render(request, "gui_app/testFile/testFileupload10.html", {'file':'' })
+    return render(request, "gui_app/testFile/testFileupload10.html",
+                  {'file': ''})
 
 
 def testFileInput11(request):
     print("test11")
     if request.method == "GET":
 
-        return render(request, "gui_app/testFile/testFileupload11.html", {'file':'' })
+        return render(request, "gui_app/testFile/testFileupload11.html",
+                      {'file': ''})
     elif request.method == "POST":
 
         p = request.POST
@@ -134,7 +150,8 @@ def testFileInput11(request):
         some_view(request)
         print(d)
 
-        return render(request, "gui_app/testFile/testFileupload11.html", {'file':'' })
+        return render(request, "gui_app/testFile/testFileupload11.html",
+                      {'file': ''})
 
 
 def download(request):
@@ -147,12 +164,14 @@ def download(request):
     print(2)
     return response
 
+
 def download_file(request):
     print("download_file now")
 
     response = HttpResponse(content_type='text/plain')
     response['Content-Disposition'] = 'filename=text.txt'
     return response
+
 
 def download_2(request):
     print("download_2 now")
@@ -164,6 +183,7 @@ def download_2(request):
     writer.writerow(['spam', 'egg', 'bacon'])
     return response
 
+
 def some_view(request):
     print("some_view now")
     # 適切な CSV 用ヘッダとともに HttpResponse オブジェクトを生成します。
@@ -172,15 +192,17 @@ def some_view(request):
 
     writer = csv.writer(response)
     writer.writerow(['First row', 'Foo', 'Bar', 'Baz'])
-    writer.writerow(['Second row', 'A', 'B', 'C', '"Testing"', "Here's a quote"])
+    writer.writerow(
+        ['Second row', 'A', 'B', 'C', '"Testing"', "Here's a quote"])
 
     return response
+
 
 def download_3():
 
     url = sys.argv[1]
     title = sys.argv[2]
-    urllib.urlretrieve(url,"{0}".format(title))
+    urllib.urlretrieve(url, "{0}".format(title))
 
 if __name__ == "__main__":
     download()

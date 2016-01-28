@@ -8,7 +8,8 @@ class loginForm(forms.Form):
     email = forms.EmailField()
     password = forms.CharField(max_length=64, min_length=8)
     rePassword = forms.CharField(
-        max_length=500, min_length=8, widget=forms.PasswordInput, required=False)
+        max_length=500, min_length=8, widget=forms.PasswordInput,
+        required=False)
 
 
 class projectForm(forms.Form):
@@ -65,9 +66,12 @@ class environmentForm(forms.Form):
     candidates_attributes_3 = forms.CharField(required=False, max_length=500)
 
     def clean(self):
-        candidates_attributes_1 = self.cleaned_data.get('candidates_attributes_1', None)
-        candidates_attributes_2 = self.cleaned_data.get('candidates_attributes_2', None)
-        candidates_attributes_3 = self.cleaned_data.get('candidates_attributes_3', None)
+        candidates_attributes_1 = self.cleaned_data.get(
+            'candidates_attributes_1', None)
+        candidates_attributes_2 = self.cleaned_data.get(
+            'candidates_attributes_2', None)
+        candidates_attributes_3 = self.cleaned_data.get(
+            'candidates_attributes_3', None)
 
         if candidates_attributes_2:
             if candidates_attributes_1 == candidates_attributes_2:
@@ -83,6 +87,14 @@ class environmentForm(forms.Form):
         return self.cleaned_data
 
 
+class edit_environmentForm(forms.Form):
+    id = forms.IntegerField(required=False)
+    name = forms.CharField(max_length=500)
+    description = forms.CharField(required=False, max_length=500)
+    template_parameters = forms.CharField(required=False)
+    user_attributes = forms.CharField(required=False)
+
+
 class w_environmentForm(forms.Form):
     id = forms.IntegerField(required=False)
     blueprint_id = forms.CharField()
@@ -96,9 +108,12 @@ class w_environmentForm(forms.Form):
     candidates_attributes_3 = forms.CharField(required=False, max_length=500)
 
     def clean(self):
-        candidates_attributes_1 = self.cleaned_data.get('candidates_attributes_1', None)
-        candidates_attributes_2 = self.cleaned_data.get('candidates_attributes_2', None)
-        candidates_attributes_3 = self.cleaned_data.get('candidates_attributes_3', None)
+        candidates_attributes_1 = self.cleaned_data.get(
+            'candidates_attributes_1', None)
+        candidates_attributes_2 = self.cleaned_data.get(
+            'candidates_attributes_2', None)
+        candidates_attributes_3 = self.cleaned_data.get(
+            'candidates_attributes_3', None)
 
         if candidates_attributes_2:
             if candidates_attributes_1 == candidates_attributes_2:
@@ -126,9 +141,12 @@ class w_appenv_environmentForm(forms.Form):
     candidates_attributes_3 = forms.CharField(required=False, max_length=500)
 
     def clean(self):
-        candidates_attributes_1 = self.cleaned_data.get('candidates_attributes_1', None)
-        candidates_attributes_2 = self.cleaned_data.get('candidates_attributes_2', None)
-        candidates_attributes_3 = self.cleaned_data.get('candidates_attributes_3', None)
+        candidates_attributes_1 = self.cleaned_data.get(
+            'candidates_attributes_1', None)
+        candidates_attributes_2 = self.cleaned_data.get(
+            'candidates_attributes_2', None)
+        candidates_attributes_3 = self.cleaned_data.get(
+            'candidates_attributes_3', None)
 
         if candidates_attributes_2:
             if candidates_attributes_1 == candidates_attributes_2:
@@ -183,6 +201,7 @@ class blueprintForm(forms.Form):
     description = forms.CharField(required=False, max_length=500)
     patterns_attributes = forms.CharField(required=False, max_length=500)
 
+
 class blueprintSelectForm(forms.Form):
     id = forms.CharField()
 
@@ -206,7 +225,7 @@ class accountForm(forms.Form):
 
         return repassword
 
+
 class roleForm(forms.Form):
     name = forms.CharField(max_length=500)
     description = forms.CharField(required=False, max_length=500)
-

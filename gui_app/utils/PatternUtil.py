@@ -1,12 +1,6 @@
-import re
-from collections import OrderedDict
-from ..utils import RoleUtil
 from ..utils import ApiUtil
 from ..utils import StringUtil
 from ..utils.ApiUtil import Url
-from ..enum import ResponseType
-from ..enum.FunctionCode import FuncCode
-from ..logs import log
 
 
 def get_pattern_list(code, token, project_id):
@@ -22,9 +16,9 @@ def get_pattern_list(code, token, project_id):
 
     url = Url.patternList
     data = {
-            'auth_token': token,
-            'project_id': project_id
-            }
+        'auth_token': token,
+        'project_id': project_id
+    }
     list = ApiUtil.requestGet(url, code, data)
 
     return list
@@ -61,9 +55,9 @@ def get_pattern_detail(code, token, id):
 
     url = Url.patternDetail(id, Url.url)
     data = {
-            'auth_token': token,
-            'id': id,
-            }
+        'auth_token': token,
+        'id': id,
+    }
     pattern = ApiUtil.requestGet(url, code, data)
 
     return pattern

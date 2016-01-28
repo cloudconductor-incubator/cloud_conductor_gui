@@ -1,33 +1,22 @@
 # -*- coding: utf-8 -*-
-from django.shortcuts import render, redirect,render_to_response
+from django.shortcuts import render, redirect, render_to_response
 import json
 import requests
 import ast
 from collections import OrderedDict
-from ..forms import w_applicationForm
 from ..forms import w_appenv_environmentForm
-from ..forms import environmentSelectForm
 from ..forms import systemSelectForm
 from ..forms import blueprintSelectForm
-from ..forms import systemForm
 from ..utils import ApiUtil
 from ..utils import SystemUtil
-from ..utils import ApplicationUtil
 from ..utils import EnvironmentUtil
 from ..utils import BlueprintUtil
-from ..utils import ApplicationHistoryUtil
-from ..utils import SessionUtil
 from ..utils.BlueprintUtil import get_blueprint_version
 from ..utils import StringUtil
 from ..utils.PathUtil import Path
 from ..utils.PathUtil import Html
 from ..utils.ApiUtil import Url
-from ..utils.ErrorUtil import ApiError
-from ..enum import ResponseType
-from ..enum.LogType import Message
 from ..enum.FunctionCode import FuncCode
-from ..enum.ApplicationType import ApplicaionType
-from ..enum.ProtocolType import ProtocolType
 from ..logs import log
 
 
@@ -43,7 +32,8 @@ def systemSelect(request):
         if request.method == "GET":
             system = session.get('system')
 
-            return render(request, Html.envapp_systemSelect, {"list": list, 'system': system, 'message': ''})
+            return render(request, Html.envapp_systemSelect,
+                          {"list": list, 'system': system, 'message': ''})
         elif request.method == "POST":
             p = request.POST
             cpPost = p.copy()
@@ -51,7 +41,9 @@ def systemSelect(request):
             form = systemSelectForm(system)
             if not form.is_valid():
 
-                return render(request, Html.envapp_systemSelect, {"list": list, 'system': system, 'message': form.errors})
+                return render(request, Html.envapp_systemSelect,
+                              {"list": list, 'system': system,
+                               'message': form.errors})
 
             session['system'] = system
 
@@ -59,7 +51,8 @@ def systemSelect(request):
     except Exception as ex:
         log.error(FuncCode.appenv_system.value, None, ex)
 
-        return render(request, Html.envapp_systemSelect, {"system": '', 'message': str(ex)})
+        return render(request, Html.envapp_systemSelect,
+                      {"system": '', 'message': str(ex)})
 
 
 def blueprintSelect(request):
@@ -74,7 +67,9 @@ def blueprintSelect(request):
         if request.method == "GET":
             blueprint = session.get('blueprint')
 
-            return render(request, Html.envapp_bluprintSelect, {'list': list, 'blueprint': blueprint, 'message': ''})
+            return render(request, Html.envapp_bluprintSelect,
+                          {'list': list, 'blueprint': blueprint,
+                           'message': ''})
         elif request.method == "POST":
             p = request.POST
             cpPost = p.copy()
@@ -82,8 +77,9 @@ def blueprintSelect(request):
             form = blueprintSelectForm(blueprint)
             if not form.is_valid():
 
-                return render(request, Html.envapp_bluprintSelect, {'list': list, 'blueprint': blueprint,
-                                                                        'form': form})
+                return render(request, Html.envapp_bluprintSelect,
+                              {'list': list, 'blueprint': blueprint,
+                               'form': form})
 
             request.session['blueprint'] = blueprint
 
@@ -91,7 +87,8 @@ def blueprintSelect(request):
     except Exception as ex:
         log.error(FuncCode.appenv_blueprint.value, None, ex)
 
-        return render(request, Html.envapp_bluprintSelect, {'list': '', 'blueprint': '', 'message': str(ex)})
+        return render(request, Html.envapp_bluprintSelect,
+                      {'list': '', 'blueprint': '', 'message': str(ex)})
 
 
 def environmentCreate(request):
@@ -110,18 +107,20 @@ def environmentCreate(request):
         if request.method == "GET":
             environment = request.session.get('environment')
 
-            return render(request, Html.envapp_environmentCreate, {'clouds': clouds, 'systems': systems,
-                                                                   'blueprints': blueprints, 'env': environment,
-                                                                   'message': ''})
+            return render(request, Html.envapp_environmentCreate,
+                          {'clouds': clouds, 'systems': systems,
+                           'blueprints': blueprints, 'env': environment,
+                           'message': ''})
         elif request.method == "POST":
             param = request.POST
             # -- Validate check
             form = w_appenv_environmentForm(param)
             if not form.is_valid():
 
-                return render(request, Html.envapp_environmentCreate, {'clouds': clouds, 'systems': systems,
-                                                                       'blueprints': blueprints, 'env': param,
-                                                                       'form': form})
+                return render(request, Html.envapp_environmentCreate,
+                              {'clouds': clouds, 'systems': systems,
+                               'blueprints': blueprints, 'env': param,
+                               'form': form})
 
             # -- Session add
             environment = environmentPut(param)
@@ -131,8 +130,8 @@ def environmentCreate(request):
     except Exception as ex:
         log.error(FuncCode.appenv_environment.value, None, ex)
 
-        return render(request, Html.envapp_environmentCreate, {"env": '', 'message': str(ex)})
-
+        return render(request, Html.envapp_environmentCreate,
+                      {"env": '', 'message': str(ex)})
 
 
 def confirm(request):
@@ -144,13 +143,14 @@ def confirm(request):
 
     if request.method == "GET":
 
-        return render(request, Html.envapp_confirm, {"system": sys_session, 'blueprint': bp_session, 'environment': env_session, 'message': ''})
+        return render(request, Html.envapp_confirm,
+                      {"system": sys_session, 'blueprint': bp_session,
+                       'environment': env_session, 'message': ''})
     elif request.method == "POST":
         session = request.session
         code = FuncCode.appenv_confirm.value
         token = session.get('auth_token')
         project_id = ''
-
 
         # -- session delete
         sessionDelete(session)
@@ -160,14 +160,17 @@ def confirm(request):
 #         log.error(FuncCode.appenv_confirm.value, None, ex)
 #         session = request.session
 #
-#         return render(request, Html.envapp_confirm, {"project": session.get('project'),'cloud': session.get('cloud'),
-#                                                           'baseImage': session.get('baseimage'), 'message': str(ex)})
+#         return render(request, Html.envapp_confirm,
+#                       {"project": session.get('project'),
+#                        'cloud': session.get('cloud'),
+#                        'baseImage': session.get('baseimage'),
+#                        'message': str(ex)})
 
 
 def putBlueprint(param):
 
     blueprint = param.get('id', None)
-    if blueprint != None and blueprint != '':
+    if blueprint is not None and blueprint != '':
         blueprint = ast.literal_eval(blueprint)
 
         param['id'] = str(blueprint.get('id'))
@@ -175,10 +178,11 @@ def putBlueprint(param):
 
     return param
 
+
 def putEnvironment(param):
 
     environment = param.get('id', None)
-    if environment != None and environment != '':
+    if environment is not None and environment != '':
         environment = ast.literal_eval(environment)
 
         param['id'] = str(environment.get('id'))
@@ -190,7 +194,7 @@ def putEnvironment(param):
 def putSystem(param):
 
     system = param.get('id', None)
-    if system != None and system != '':
+    if system is not None and system != '':
         system = ast.literal_eval(system)
 
         param['id'] = str(system.get('id'))

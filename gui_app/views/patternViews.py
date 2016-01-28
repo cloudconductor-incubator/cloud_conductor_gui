@@ -1,28 +1,22 @@
 # -*- coding: utf-8 -*-
-from django.shortcuts import render, redirect,render_to_response
+from django.shortcuts import render, redirect, render_to_response
 import json
-import requests
 from collections import OrderedDict
 from ..forms import patternForm
-from ..utils import RoleUtil
-from ..utils import ValiUtil
 from ..utils import ApiUtil
 from ..utils import SessionUtil
 from ..utils.PathUtil import Path
 from ..utils.PathUtil import Html
 from ..utils.ApiUtil import Url
-from ..utils.ErrorUtil import ApiError
-from ..enum import ResponseType
-from ..enum.LogType import Message
 from ..enum.FunctionCode import FuncCode
 from ..logs import log
 
 
 def patternList(request):
     try:
-        if SessionUtil.check_login(request) == False:
+        if not SessionUtil.check_login(request):
             return redirect(Path.logout)
-        if SessionUtil.check_permission(request,'pattern','list') == False:
+        if not SessionUtil.check_permission(request, 'pattern', 'list'):
             return render_to_response(Html.error_403)
 
         patterns = None
@@ -31,24 +25,26 @@ def patternList(request):
         print(url)
 
         data = {
-                'auth_token': request.session['auth_token'],
-                'project_id': request.session['project_id']
-                }
+            'auth_token': request.session['auth_token'],
+            'project_id': request.session['project_id']
+        }
         patterns = ApiUtil.requestGet(url, FuncCode.patternList.value, data)
 #         patterns = patterns['lists']
 
-        return render(request, Html.patternList, {'patterns': patterns, 'message': ''})
+        return render(request, Html.patternList,
+                      {'patterns': patterns, 'message': ''})
     except Exception as ex:
         log.error(FuncCode.patternList.value, None, ex)
 
-        return render(request, Html.patternList, {"patterns": '', 'message': str(ex)})
+        return render(request, Html.patternList,
+                      {"patterns": '', 'message': str(ex)})
 
 
 def patternDetail(request, id):
     try:
-        if SessionUtil.check_login(request) == False:
+        if not SessionUtil.check_login(request):
             return redirect(Path.logout)
-        if SessionUtil.check_permission(request,'pattern','read') == False:
+        if not SessionUtil.check_permission(request, 'pattern', 'read'):
             return render_to_response(Html.error_403)
 
         # -- pattern DetailAPI call, get a response
@@ -59,18 +55,20 @@ def patternDetail(request, id):
         }
         p = ApiUtil.requestGet(url, FuncCode.patternDetail.value, data)
 
-        return render(request, Html.patternDetail, {'pattern': p, 'message': ''})
+        return render(request, Html.patternDetail,
+                      {'pattern': p, 'message': ''})
     except Exception as ex:
         log.error(FuncCode.patternDetail.value, None, ex)
 
-        return render(request, Html.patternDetail, {'pattern': '', 'message': str(ex)})
+        return render(request, Html.patternDetail,
+                      {'pattern': '', 'message': str(ex)})
 
 
 def patternCreate(request):
     try:
-        if SessionUtil.check_login(request) == False:
+        if not SessionUtil.check_login(request):
             return redirect(Path.logout)
-        if SessionUtil.check_permission(request,'pattern','create') == False:
+        if not SessionUtil.check_permission(request, 'pattern', 'create'):
             return render_to_response(Html.error_403)
 
         if request.method == "GET":
@@ -81,7 +79,8 @@ def patternCreate(request):
                 'project_id': request.session['project_id']
             }
 
-            return render(request, Html.patternCreate, {'pattern': p, 'form': '', 'message': ''})
+            return render(request, Html.patternCreate,
+                          {'pattern': p, 'form': '', 'message': ''})
         else:
             # -- Get a value from a form
             msg = ''
@@ -91,8 +90,9 @@ def patternCreate(request):
             form = patternForm(p)
             form.full_clean()
             if not form.is_valid():
-                msg = ValiUtil.valiCheck(form)
-                return render(request, Html.patternCreate, {'pattern': p, 'form': form, 'message': ''})
+
+                return render(request, Html.patternCreate,
+                              {'pattern': p, 'form': form, 'message': ''})
 
             # -- Create a pattern, api call
             url = Url.patternCreate
@@ -109,14 +109,16 @@ def patternCreate(request):
     except Exception as ex:
         log.error(FuncCode.patternCreate.value, None, ex)
 
-        return render(request, Html.patternCreate, {'pattern': request.POST, 'form': '', "message": str(ex)})
+        return render(request, Html.patternCreate,
+                      {'pattern': request.POST, 'form': '',
+                       "message": str(ex)})
 
 
 def patternEdit(request, id):
     try:
-        if SessionUtil.check_login(request) == False:
+        if not SessionUtil.check_login(request):
             return redirect(Path.logout)
-        if SessionUtil.check_permission(request,'pattern','update') == False:
+        if not SessionUtil.check_permission(request, 'pattern', 'update'):
             return render_to_response(Html.error_403)
 
         if request.method == "GET":
@@ -132,7 +134,8 @@ def patternEdit(request, id):
 
             print(p)
 
-            return render(request, Html.patternEdit, {'pattern': p, 'form': '', 'message': ''})
+            return render(request, Html.patternEdit,
+                          {'pattern': p, 'form': '', 'message': ''})
         else:
             # -- Get a value from a form
             msg = ''
@@ -142,7 +145,8 @@ def patternEdit(request, id):
             form.full_clean()
             if not form.is_valid():
 
-                return render(request, Html.patternEdit, {'pattern': p, 'form': form, 'message': ''})
+                return render(request, Html.patternEdit,
+                              {'pattern': p, 'form': form, 'message': ''})
 
             # -- Create a pattern, api call
             url = Url.patternEdit(id, Url.url)
@@ -159,14 +163,16 @@ def patternEdit(request, id):
     except Exception as ex:
         log.error(FuncCode.patternEdit.value, None, ex)
 
-        return render(request, Html.patternEdit, {'pattern': request.POST, 'form': '', 'message': str(ex)})
+        return render(request, Html.patternEdit,
+                      {'pattern': request.POST, 'form': '',
+                       'message': str(ex)})
 
 
 def patternDelete(request, id):
     try:
-        if SessionUtil.check_login(request) == False:
+        if not SessionUtil.check_login(request):
             return redirect(Path.logout)
-        if SessionUtil.check_permission(request,'pattern','destroy') == False:
+        if not SessionUtil.check_permission(request, 'pattern', 'destroy'):
             return render_to_response(Html.error_403)
 
         # -- URL and data set
@@ -178,4 +184,5 @@ def patternDelete(request, id):
     except Exception as ex:
         log.error(FuncCode.patternDelete.value, None, ex)
 
-        return render(request, Html.patternDetail, {'pattern': '', 'message': ex})
+        return render(request, Html.patternDetail, {'pattern': '',
+                                                    'message': ex})

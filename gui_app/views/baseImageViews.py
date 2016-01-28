@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.shortcuts import render, redirect, render_to_response, get_object_or_404
+from django.shortcuts import render, redirect, render_to_response
 import django.contrib.auth as auth
 import json
 import requests
@@ -25,28 +25,30 @@ from ..logs import log
 def baseImageDetail(request, id):
     code = FuncCode.baseImageDetail.value
     try:
-        if SessionUtil.check_login(request) == False:
+        if not SessionUtil.check_login(request):
             return redirect(Path.logout)
-        if SessionUtil.check_permission(request,'baseimage','read') == False:
+        if not SessionUtil.check_permission(request, 'baseimage', 'read'):
             return render_to_response(Html.error_403)
         token = request.session.get('auth_token')
         # -- baseImage DetailAPI call, get a response
         baseimage = BaseimageUtil.get_baseimage_detail(code, token, id)
 
-        return render(request, Html.baseImageDetail, {'baseImage': baseimage, 'message': ''})
+        return render(request, Html.baseImageDetail,
+                      {'baseImage': baseimage, 'message': ''})
     except Exception as ex:
         log.error(FuncCode.baseImageDetail.value, None, ex)
 
-        return render(request, Html.baseImageDetail, {'baseImage': '', 'message': str(ex)})
+        return render(request, Html.baseImageDetail,
+                      {'baseImage': '', 'message': str(ex)})
 
 
 def baseImageCreate(request, cid):
     code = FuncCode.baseImageCreate.value
     osversion = list(OSVersion)
     try:
-        if SessionUtil.check_login(request) == False:
+        if not SessionUtil.check_login(request):
             return redirect(Path.logout)
-        if SessionUtil.check_permission(request,'baseimage','create') == False:
+        if not SessionUtil.check_permission(request, 'baseimage', 'create'):
             return render_to_response(Html.error_403)
 
         token = request.session.get('auth_token')
@@ -55,7 +57,9 @@ def baseImageCreate(request, cid):
             p = {
                 'cloud_id': cid,
             }
-            return render(request, Html.baseImageCreate, {'baseImage': p,'osversion': osversion, 'form': '', 'message': '', 'save': True})
+            return render(request, Html.baseImageCreate,
+                          {'baseImage': p, 'osversion': osversion,
+                           'form': '', 'message': '', 'save': True})
         else:
             # -- Get a value from a form
             msg = ''
@@ -66,7 +70,9 @@ def baseImageCreate(request, cid):
                 msg = ValiUtil.valiCheck(form)
                 cpPost = p.copy()
 
-                return render(request, Html.baseImageCreate, {'baseImage': cpPost,'osversion': osversion, 'form': form, 'message': '', 'save': True})
+                return render(request, Html.baseImageCreate,
+                              {'baseImage': cpPost, 'osversion': osversion,
+                               'form': form, 'message': '', 'save': True})
 
             # -- Create a project, api call
             BaseimageUtil.create_baseimage(code, token, form.data)
@@ -75,15 +81,17 @@ def baseImageCreate(request, cid):
     except Exception as ex:
         log.error(FuncCode.baseImageCreate.value, None, ex)
 
-        return render(request, Html.baseImageCreate, {'baseImage': request.POST,'osversion': osversion, 'form': '', "message": str(ex), 'save': True})
+        return render(request, Html.baseImageCreate,
+                      {'baseImage': request.POST, 'osversion': osversion,
+                       'form': '', "message": str(ex), 'save': True})
 
 
 def baseImageEdit(request, id):
     osversion = list(OSVersion)
     try:
-        if SessionUtil.check_login(request) == False:
+        if not SessionUtil.check_login(request):
             return redirect(Path.logout)
-        if SessionUtil.check_permission(request,'baseimage','update') == False:
+        if not SessionUtil.check_permission(request, 'baseimage', 'update'):
             return render_to_response(Html.error_403)
 
         code = FuncCode.baseImageEdit.value
@@ -92,8 +100,9 @@ def baseImageEdit(request, id):
         if request.method == "GET":
             baseimage = BaseimageUtil.get_baseimage_detail(code, token, id)
 
-            return render(request, Html.baseImageEdit, {'baseImage': baseimage,'osversion': osversion,
-                                                        'form': '', 'message': '', 'save': True})
+            return render(request, Html.baseImageEdit,
+                          {'baseImage': baseimage, 'osversion': osversion,
+                           'form': '', 'message': '', 'save': True})
         else:
             # -- Get a value from a form
             p = request.POST
@@ -104,8 +113,9 @@ def baseImageEdit(request, id):
                 msg = ValiUtil.valiCheck(form)
                 cpPost = p.copy()
 
-                return render(request, Html.baseImageEdit, {'baseImage': p,'osversion': osversion,
-                                                            'form': form, 'message': '', 'save': True})
+                return render(request, Html.baseImageEdit,
+                              {'baseImage': p, 'osversion': osversion,
+                               'form': form, 'message': '', 'save': True})
 
             # -- URL set
             url = Url.baseImageEdit(id, Url.url)
@@ -124,15 +134,16 @@ def baseImageEdit(request, id):
     except Exception as ex:
         log.error(FuncCode.baseImageEdit.value, None, ex)
 
-        return render(request, Html.baseImageEdit, {'baseImage': request.POST,'osversion': osversion,
-                                                    'form': '', 'message': ex, 'save': True})
+        return render(request, Html.baseImageEdit,
+                      {'baseImage': request.POST, 'osversion': osversion,
+                       'form': '', 'message': ex, 'save': True})
 
 
 def baseImageDelete(request, id):
     try:
-        if SessionUtil.check_login(request) == False:
+        if not SessionUtil.check_login(request):
             return redirect(Path.logout)
-        if SessionUtil.check_permission(request,'baseimage','destroy') == False:
+        if not SessionUtil.check_permission(request, 'baseimage', 'destroy'):
             return render_to_response(Html.error_403)
 
         data = {'auth_token': request.session['auth_token']}
@@ -148,4 +159,5 @@ def baseImageDelete(request, id):
     except Exception as ex:
         log.error(FuncCode.baseImageDelete.value, None, ex)
 
-        return render(request, Html.baseImageDetail, {'baseImage': '', 'message': ex})
+        return render(request, Html.baseImageDetail,
+                      {'baseImage': '', 'message': ex})

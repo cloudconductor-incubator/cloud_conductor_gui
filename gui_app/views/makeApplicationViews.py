@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
-from django.shortcuts import render, redirect,render_to_response
+from django.shortcuts import render, redirect
 import json
 import ast
 from ..forms import w_applicationForm
 from ..forms import w_environmentForm
 from ..forms import environmentSelectForm
-from ..forms import systemSelectForm
 from ..forms import systemForm
 from ..utils import ApiUtil
 from ..utils import SystemUtil
@@ -17,7 +16,6 @@ from ..utils import StringUtil
 from ..utils.PathUtil import Path
 from ..utils.PathUtil import Html
 from ..utils.ApiUtil import Url
-from ..utils.ErrorUtil import ApiError
 from ..utils import SessionUtil
 from ..enum.FunctionCode import FuncCode
 from ..enum.ApplicationType import ApplicaionType
@@ -37,7 +35,8 @@ def systemSelect(request):
         if request.method == "GET":
             system = session.get('system')
 
-            return render(request, Html.newapp_systemSelect, {"list": list, 'system': system, 'message': ''})
+            return render(request, Html.newapp_systemSelect,
+                          {"list": list, 'system': system, 'message': ''})
         elif request.method == "POST":
             p = request.POST
             cpPost = p.copy()
@@ -45,7 +44,9 @@ def systemSelect(request):
             form = environmentSelectForm(system)
             if not form.is_valid():
 
-                return render(request, Html.newapp_systemSelect, {"list": list, 'system': system,'form': form, 'message': form.errors})
+                return render(request, Html.newapp_systemSelect,
+                              {"list": list, 'system': system, 'form': form,
+                               'message': form.errors})
 
             session['system'] = system
 
@@ -53,7 +54,8 @@ def systemSelect(request):
     except Exception as ex:
         log.error(FuncCode.newapp_system.value, None, ex)
 
-        return render(request, Html.newapp_systemSelect, {"system": '', 'message': str(ex)})
+        return render(request, Html.newapp_systemSelect,
+                      {"system": '', 'message': str(ex)})
 
 
 def systemCreate(request):
@@ -62,7 +64,8 @@ def systemCreate(request):
         if request.method == "GET":
             system = request.session.get('system')
 
-            return render(request, Html.newapp_systemCreate, {"system": system, 'message': ''})
+            return render(request, Html.newapp_systemCreate,
+                          {"system": system, 'message': ''})
         elif request.method == "POST":
             param = request.POST
 
@@ -70,7 +73,8 @@ def systemCreate(request):
             form = systemForm(param)
             if not form.is_valid():
 
-                return render(request, Html.newapp_systemCreate, {"system": param,'form': form, 'message': ''})
+                return render(request, Html.newapp_systemCreate,
+                              {"system": param, 'form': form, 'message': ''})
 
             # -- Session add
             system = systemPut(param)
@@ -80,7 +84,8 @@ def systemCreate(request):
     except Exception as ex:
         log.error(FuncCode.newapp_system.value, None, ex)
 
-        return render(request, Html.newapp_systemCreate, {"application": '', 'message': str(ex)})
+        return render(request, Html.newapp_systemCreate,
+                      {"application": '', 'message': str(ex)})
 
 
 def applicationCreate(request):
@@ -89,8 +94,9 @@ def applicationCreate(request):
         if request.method == "GET":
             application = request.session.get('application')
 
-            return render(request, Html.newapp_applicationCreate, {"app": application, 'apptype': list(ApplicaionType),
-                                                                   'protocol': list(ProtocolType), 'message': ''})
+            return render(request, Html.newapp_applicationCreate,
+                          {"app": application, 'apptype': list(ApplicaionType),
+                           'protocol': list(ProtocolType), 'message': ''})
         elif request.method == "POST":
             param = request.POST
 
@@ -98,8 +104,11 @@ def applicationCreate(request):
             form = w_applicationForm(param)
             if not form.is_valid():
 
-                return render(request, Html.newapp_applicationCreate, {"application": param, 'apptype': list(ApplicaionType),
-                                                                       'protocol': list(ProtocolType),'form': '', 'message': form.errors})
+                return render(request, Html.newapp_applicationCreate,
+                              {"application": param,
+                               'apptype': list(ApplicaionType),
+                               'protocol': list(ProtocolType), 'form': '',
+                               'message': form.errors})
 
             # -- Session add
             application = applicationPut(param)
@@ -109,8 +118,9 @@ def applicationCreate(request):
     except Exception as ex:
         log.error(FuncCode.newapp_application.value, None, ex)
 
-        return render(request, Html.newapp_applicationCreate, {"application": '', 'apptype': list(ApplicaionType),
-                                                               'protocol': list(ProtocolType), 'message': str(ex)})
+        return render(request, Html.newapp_applicationCreate,
+                      {"application": '', 'apptype': list(ApplicaionType),
+                       'protocol': list(ProtocolType), 'message': str(ex)})
 
 
 def environmentSelect(request):
@@ -124,7 +134,9 @@ def environmentSelect(request):
         if request.method == "GET":
             environment = session.get('environment')
 
-            return render(request, Html.newapp_environmentSelect, {"list": list, 'environment': environment, 'message': ''})
+            return render(request, Html.newapp_environmentSelect,
+                          {"list": list, 'environment': environment,
+                           'message': ''})
         elif request.method == "POST":
             p = request.POST
             cpPost = p.copy()
@@ -132,8 +144,9 @@ def environmentSelect(request):
             form = environmentSelectForm(environment)
             if not form.is_valid():
 
-                return render(request, Html.newapp_environmentSelect, {"list": list, 'environment': environment,'form': form,
-                                                                       'message': ''})
+                return render(request, Html.newapp_environmentSelect,
+                              {"list": list, 'environment': environment,
+                               'form': form, 'message': ''})
 
             request.session['environment'] = environment
 
@@ -141,7 +154,8 @@ def environmentSelect(request):
     except Exception as ex:
         log.error(FuncCode.newapp_environment.value, None, ex)
 
-        return render(request, Html.newapp_environmentSelect, {"list": '', 'environment': '', 'message': ''})
+        return render(request, Html.newapp_environmentSelect,
+                      {"list": '', 'environment': '', 'message': ''})
 
 
 def environmentCreate(request):
@@ -160,18 +174,20 @@ def environmentCreate(request):
         if request.method == "GET":
             environment = request.session.get('environment')
 
-            return render(request, Html.newapp_environmentCreate, {'clouds': clouds, 'systems': systems,
-                                                                   'blueprints': blueprints, 'env': environment,
-                                                                   'message': ''})
+            return render(request, Html.newapp_environmentCreate,
+                          {'clouds': clouds, 'systems': systems,
+                           'blueprints': blueprints, 'env': environment,
+                           'message': ''})
         elif request.method == "POST":
             param = request.POST
             # -- Validate check
             form = w_environmentForm(param)
             if not form.is_valid():
 
-                return render(request, Html.newapp_environmentCreate, {'clouds': clouds, 'systems': systems,
-                                                                       'blueprints': blueprints, 'env': param,
-                                                                       'message': form.errors})
+                return render(request, Html.newapp_environmentCreate,
+                              {'clouds': clouds, 'systems': systems,
+                               'blueprints': blueprints, 'env': param,
+                               'message': form.errors})
 
             # -- Session add
             application = applicationPut(param)
@@ -181,7 +197,8 @@ def environmentCreate(request):
     except Exception as ex:
         log.error(FuncCode.newapp_environment.value, None, ex)
 
-        return render(request, Html.newapp_environmentCreate, {"env": '', 'message': str(ex)})
+        return render(request, Html.newapp_environmentCreate,
+                      {"env": '', 'message': str(ex)})
 
 
 def confirm(request):
@@ -193,7 +210,9 @@ def confirm(request):
 
     if request.method == "GET":
 
-        return render(request, Html.newapp_confirm, {"system": sys_session, 'application': app_session, 'environment': env_session, 'message': ''})
+        return render(request, Html.newapp_confirm,
+                      {"system": sys_session, 'application': app_session,
+                       'environment': env_session, 'message': ''})
     elif request.method == "POST":
         session = request.session
         code = FuncCode.newapp_confirm.value
@@ -201,13 +220,19 @@ def confirm(request):
         project_id = ''
 
         # -- application createt
-        application = ApplicationUtil.create_application(code, token, sys_session.get('id'),
-                        app_session.get('name'), app_session.get('description'), app_session.get('domain'))
+        application = ApplicationUtil.create_application(
+                      code, token, sys_session.get('id'),
+                      app_session.get('name'), app_session.get('description'),
+                      app_session.get('domain'))
 
         # -- applicationHistory create
-        history = ApplicationHistoryUtil.create_history(code, token, application.get('id'), app_session.get('url'),
-                        app_session.get('type'), app_session.get('protocol'), app_session.get('revision'),
-                        app_session.get('pre_deploy'), app_session.get('post_deploy'), app_session.get('parameters'))
+        history = ApplicationHistoryUtil.create_history(
+                  code, token, application.get('id'),
+                  app_session.get('url'), app_session.get('type'),
+                  app_session.get('protocol'), app_session.get('revision'),
+                  app_session.get('pre_deploy'),
+                  app_session.get('post_deploy'),
+                  app_session.get('parameters'))
 
         # -- application deploy
         deploy = ApplicationUtil.deploy_application(
@@ -221,14 +246,17 @@ def confirm(request):
 #         log.error(FuncCode.newapp_confirm.value, None, ex)
 #         session = request.session
 #
-#         return render(request, Html.newapp_confirm, {"project": session.get('project'),'cloud': session.get('cloud'),
-#                                                           'baseImage': session.get('baseimage'), 'message': str(ex)})
+#         return render(request, Html.newapp_confirm,
+#                       {"project": session.get('project'),
+#                        'cloud': session.get('cloud'),
+#                        'baseImage': session.get('baseimage'),
+#                        'message': str(ex)})
 
 
 def putEnvironment(param):
 
     environment = param.get('environment', None)
-    if environment != None and environment != '':
+    if environment is not None and environment != '':
         environment = ast.literal_eval(environment)
 
         param['id'] = blueprint.get('id')
@@ -240,7 +268,7 @@ def putEnvironment(param):
 def putSystem(param):
 
     system = param.get('id', None)
-    if system != None and system != '':
+    if system is not None and system != '':
         system = ast.literal_eval(system)
 
         param['id'] = system.get('id')

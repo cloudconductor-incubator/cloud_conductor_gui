@@ -21,9 +21,26 @@ def get_blueprint_history_list(code, token, blueprint_id, version):
         return None
 
     data = {
-            'auth_token': token,
-            }
+        'auth_token': token,
+    }
     url = Url.blueprintHistoriesParameters(blueprint_id, version, Url.url)
     list = ApiUtil.requestGet(url, code, data)
 
     return list
+
+
+def get_blueprint_history_detail(code, token, id, his_id):
+    if StringUtil.isEmpty(code):
+        return None
+
+    if StringUtil.isEmpty(token):
+        return None
+
+    data = {
+        'auth_token': token,
+    }
+
+    url = Url.blueprintHistoriesDetail(id, his_id, Url.url)
+    history = ApiUtil.requestGet(url, code, data)
+
+    return history

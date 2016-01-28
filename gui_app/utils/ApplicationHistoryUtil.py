@@ -82,10 +82,10 @@ def get_history_detail(code, token, id, his_id):
         return None
 
     data = {
-            'auth_token': token,
-            }
+        'auth_token': token,
+    }
 
-    url = Url.applicationHistoryDetail(id, his_id,Url.url)
+    url = Url.applicationHistoryDetail(id, his_id, Url.url)
     list = ApiUtil.requestGet(url, code, data)
     return list
 

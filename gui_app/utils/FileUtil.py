@@ -5,6 +5,7 @@ from django.conf import settings
 from django.core.files import File
 from django.http import *
 
+
 def download(request):
 
     print("fileUtil now")
@@ -19,10 +20,10 @@ def download(request):
 
 def download_file(request):
     print("fileUtil now")
-    response = HttpResponse(open('/path/to/downloadfile','rb').read(), mimetype='text/plain')
+    response = HttpResponse(
+        open('/path/to/downloadfile', 'rb').read(), mimetype='text/plain')
     response['Content-Disposition'] = 'filename=text.txt'
     return response
-
 
 
 def getUrlPath():

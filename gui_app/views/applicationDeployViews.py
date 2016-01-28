@@ -1,28 +1,13 @@
 # -*- coding: utf-8 -*-
-from django.shortcuts import render, redirect,render_to_response
-import json
-import requests
+from django.shortcuts import render, redirect, render_to_response
 import ast
 from collections import OrderedDict
-from ..forms import w_applicationForm
-from ..forms import w_environmentForm
-from ..forms import systemForm
-from ..utils import RoleUtil
-from ..utils import ValiUtil
-from ..utils import ApiUtil
 from ..utils import ApplicationUtil
 from ..utils import EnvironmentUtil
-from ..utils.BlueprintUtil import get_blueprint_version
 from ..utils import StringUtil
 from ..utils.PathUtil import Path
 from ..utils.PathUtil import Html
 from ..utils.ApiUtil import Url
-from ..utils.ErrorUtil import ApiError
-from ..utils import SessionUtil
-from ..enum import ResponseType
-from ..enum.LogType import Message
-from ..enum.CloudType import CloudType
-from ..enum.OSVersion import OSVersion
 from ..enum.FunctionCode import FuncCode
 from ..logs import log
 
@@ -34,13 +19,16 @@ def applicationSelect(request):
         token = session.get('auth_token')
         project_id = session.get('project_id')
 
-        list = ApplicationUtil.get_application_list2(code, token, project_id=None)
+        list = ApplicationUtil.get_application_list2(
+            code, token, project_id=None)
         print(list)
 
         if request.method == "GET":
             application = request.session.get('application')
             print(application)
-            return render(request, Html.appdeploy_applicationSelect, {'list': list, 'application': application, 'message': ''})
+            return render(request, Html.appdeploy_applicationSelect,
+                          {'list': list, 'application': application,
+                           'message': ''})
         elif request.method == "POST":
             param = request.POST
 
@@ -52,7 +40,8 @@ def applicationSelect(request):
     except Exception as ex:
         log.error(FuncCode.appDep_application.value, None, ex)
 
-        return render(request, Html.appdeploy_applicationSelect, {'application': '', 'message': str(ex)})
+        return render(request, Html.appdeploy_applicationSelect,
+                      {'application': '', 'message': str(ex)})
 
 
 def environmentSelect(request):
@@ -65,9 +54,12 @@ def environmentSelect(request):
             token = session['auth_token']
             project_id = session['project_id']
 
-            list = EnvironmentUtil.get_environment_list2(code, token, project_id)
+            list = EnvironmentUtil.get_environment_list2(
+                code, token, project_id)
 
-            return render(request, Html.appdeploy_environmentSelect, {"list": list, 'environment': environment, 'message': ''})
+            return render(request, Html.appdeploy_environmentSelect,
+                          {"list": list, 'environment': environment,
+                           'message': ''})
         elif request.method == "POST":
             param = request.POST
 
@@ -78,8 +70,8 @@ def environmentSelect(request):
     except Exception as ex:
         log.error(FuncCode.appDep_environment.value, None, ex)
 
-        return render(request, Html.appdeploy_environmentSelect, {"list": '', 'environment': '', 'message': str(ex)})
-
+        return render(request, Html.appdeploy_environmentSelect,
+                      {"list": '', 'environment': '', 'message': str(ex)})
 
 
 def confirm(request):
@@ -91,7 +83,9 @@ def confirm(request):
 
         if request.method == "GET":
 
-            return render(request, Html.appdeploy_confirm, {'application': app_session, 'environment': env_session, 'message': ''})
+            return render(request, Html.appdeploy_confirm,
+                          {'application': app_session,
+                           'environment': env_session, 'message': ''})
         elif request.method == "POST":
             session = request.session
             code = FuncCode.newapp_confirm.value
@@ -100,7 +94,6 @@ def confirm(request):
 
             env_id = env_session.get('id')
             app_id = app_session.get('id')
-
 
             # -- environment create
 
@@ -115,8 +108,10 @@ def confirm(request):
         log.error(FuncCode.newapp_confirm.value, None, ex)
         session = request.session
 
-        return render(request, Html.appdeploy_confirm, {"application": session.get('application'),
-                                                        'environment': session.get('environment'), 'message': str(ex)})
+        return render(request, Html.appdeploy_confirm,
+                      {"application": session.get('application'),
+                       'environment': session.get('environment'),
+                       'message': str(ex)})
 
 
 def environmentPut(req):
@@ -156,7 +151,9 @@ def applicationPut(req):
 def putBlueprint(param):
 
     blueprint = param.get('blueprint', None)
-    if blueprint != None and blueprint != '':
+#    if blueprint != None and blueprint != '':
+#        blueprint = ast.literal_eval(blueprint)
+    if not (blueprint is None) and not (blueprint == ''):
         blueprint = ast.literal_eval(blueprint)
 
         param['blueprint_id'] = blueprint.get('id')

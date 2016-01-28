@@ -1,12 +1,8 @@
-import re
 from collections import OrderedDict
-from ..utils import RoleUtil
 from ..utils import ApiUtil
+from ..utils import RoleUtil
 from ..utils import StringUtil
 from ..utils.ApiUtil import Url
-from ..enum import ResponseType
-from ..enum.FunctionCode import FuncCode
-from ..logs import log
 
 
 def get_project_list(code, token):
@@ -60,6 +56,27 @@ def get_project_list3(code, token):
         return None
 
 
+def get_project_list_admin(code, token, account_id):
+
+    project_list = []
+
+    if StringUtil.isEmpty(account_id):
+        return None
+
+    projects = get_project_list(code, token)
+
+    if StringUtil.isEmpty(projects):
+        return None
+
+    for pj in projects:
+        role_pj = RoleUtil.get_account_role(code, token,
+                                            pj.get('id'), account_id)
+        if role_pj:
+            project_list.append(pj)
+
+    return project_list
+
+
 def get_project_detail(code, token, id):
 
     if StringUtil.isEmpty(code):
@@ -73,9 +90,9 @@ def get_project_detail(code, token, id):
 
     url = Url.projectDetail(id, Url.url)
     data = {
-            'auth_token': token,
-            'id': id,
-            }
+        'auth_token': token,
+        'id': id,
+    }
     project = ApiUtil.requestGet(url, code, data)
 
     return project

@@ -19,9 +19,9 @@ def get_baseimege_list(code, token, id=None):
 
     url = Url.baseImageList
     data = {
-            'auth_token': token,
-            'cloud_id': id
-            }
+        'auth_token': token,
+        'cloud_id': id
+    }
     list = ApiUtil.requestGet(url, code, data)
 
     return list
@@ -58,9 +58,9 @@ def get_baseimage_detail(code, token, id):
 
     url = Url.baseImageDetail(id, Url.url)
     data = {
-            'auth_token': token,
-            'id': id,
-            }
+        'auth_token': token,
+        'id': id,
+    }
     project = ApiUtil.requestGet(url, code, data)
 
     return project
@@ -72,11 +72,11 @@ def put_baseimage(token, form):
     # -- Set the value to the form
 
     data = {
-            'auth_token': token,
-            'cloud_id': form.get('cloud_id', ''),
-            'ssh_username': form.get('ssh_username', ''),
-            'source_image': form.get('source_image', ''),
-            'os_version': form.get('os_version', ''),
-            }
+        'auth_token': token,
+        'cloud_id': form.get('cloud_id', ''),
+        'ssh_username': form.get('ssh_username', ''),
+        'source_image': form.get('source_image', ''),
+        'os_version': form.get('os_version', ''),
+    }
 
     return data

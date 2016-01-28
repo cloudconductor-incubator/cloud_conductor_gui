@@ -1,12 +1,7 @@
 from enum import Enum
 
-class Response(Enum):
-#     OK = 200
-#     Created = 200
-#     Unauthorized = 200
-#     Bad_Request = 200
-#     No_Content = 200
 
+class Response(Enum):
     OK = 200
     Created = 201
     Accepted = 202

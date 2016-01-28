@@ -21,9 +21,9 @@ def get_blueprint_list(code, token, project_id=None):
         return None
 
     data = {
-            'auth_token': token,
-            'project_id': project_id,
-            }
+        'auth_token': token,
+        'project_id': project_id,
+    }
     url = Url.blueprintList
     list = ApiUtil.requestGet(url, code, data)
 
@@ -58,9 +58,9 @@ def get_bluepritn_detail(code, token, id):
 
     url = Url.blueprintDetail(id, Url.url)
     data = {
-            'auth_token': token,
-            'id': id,
-            }
+        'auth_token': token,
+        'id': id,
+    }
     blueprint = ApiUtil.requestGet(url, code, data)
 
     return blueprint
@@ -78,11 +78,11 @@ def create_blueprint(code, token, project_id, form):
         return None
 
     data = {
-            'auth_token': token,
-            'project_id': project_id,
-            'name': form.get('name'),
-            'description': form.get('description'),
-            }
+        'auth_token': token,
+        'project_id': project_id,
+        'name': form.get('name'),
+        'description': form.get('description'),
+    }
     url = Url.blueprintCreate
     bp = ApiUtil.requestPost(url, code, data)
 
@@ -98,10 +98,10 @@ def edit_blueprint(code, token, id, form):
         return None
 
     data = {
-            'auth_token': token,
-            'name': form.get('name'),
-            'description': form.get('description'),
-            }
+        'auth_token': token,
+        'name': form.get('name'),
+        'description': form.get('description'),
+    }
 
     url = Url.blueprintEdit(id, Url.url)
     bp = ApiUtil.requestPut(url, code, data)
@@ -111,14 +111,14 @@ def edit_blueprint(code, token, id, form):
 
 def get_blueprint_version(code, data):
 
-    if code == None or data == None:
+    if code is None or data is None:
         return None
 
     # Get a Blueprint List
     url = Url.blueprintList
     blueprints = ApiUtil.requestGet(url, code, data)
 
-    if blueprints == None:
+    if blueprints is None:
         return None
 
     # Create a custom blueprint list
@@ -130,7 +130,7 @@ def get_blueprint_version(code, data):
         url = Url.blueprintHistoriesList(bpid, Url.url)
         histories = ApiUtil.requestGet(url, code, data)
 
-        if histories == None:
+        if histories is None:
             break
 
         for history in histories:
@@ -155,8 +155,8 @@ def get_blueprint_pattern_list(code, id, token):
         return None
 
     data = {
-            'auth_token': token,
-        }
+        'auth_token': token,
+    }
 
     url = Url.blueprintPattrnList(id, Url.url)
     list = ApiUtil.requestGet(url, code, data)
@@ -179,9 +179,9 @@ def get_pattern_list(code, id, token, pjid):
         return None
 
     data = {
-            'auth_token': token,
-            'project_id': pjid,
-        }
+        'auth_token': token,
+        'project_id': pjid,
+    }
 
     bpptternList = get_blueprint_pattern_list(code, id, token)
     if StringUtil.isEmpty(bpptternList):
@@ -194,14 +194,14 @@ def get_pattern_list(code, id, token, pjid):
 
     dic = {}
     list = []
-    for bpt in bpptternList :
+    for bpt in bpptternList:
 
         for pt in patternList:
 
             if pt.get('id') == bpt.get('pattern_id'):
 
                 dic['id'] = pt.get('id')
-                dic['name'] =  pt.get('name')
+                dic['name'] = pt.get('name')
                 dic['revision'] = pt.get('revision')
                 dic['protocol'] = pt.get('protocol')
                 list.append(dic.copy())
@@ -222,8 +222,8 @@ def create_bluepritn_build(code, token, id):
 
     url = Url.blueprintBuild(id, Url.url)
     data = {
-            'auth_token': token,
-            }
+        'auth_token': token,
+    }
     blueprint = ApiUtil.requestPost(url, code, data)
 
     return blueprint

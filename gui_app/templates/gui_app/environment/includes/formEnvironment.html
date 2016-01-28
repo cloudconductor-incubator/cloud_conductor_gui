@@ -23,7 +23,7 @@ $(function(){
 			value="{{ env.name }}">
 			{{ form.name.errors }}
 	</div>
-
+	{% if create %}
 	<div class="form-group">
 		<label><span id="req">*</span>System</label> <select
 			class="form-control" name="system_id" id="system_id">
@@ -36,8 +36,10 @@ $(function(){
 		</select>
 		{{ form.system_id.errors }}
 	</div>
+	{% endif %}
 
-<div class="form-group">
+	{% if create %}
+	<div class="form-group">
 		<label><span id="req">*</span>Cloud priority</label>
 		<div class="input-group">
 			<span id="sizing-addon2" class="input-group-addon">1.</span>
@@ -91,6 +93,7 @@ $(function(){
 			{% endfor %}
 		</select>
 	</div>
+	{% endif %}
 
 	<div class="form-group">
 		<label>template_parameters</label>

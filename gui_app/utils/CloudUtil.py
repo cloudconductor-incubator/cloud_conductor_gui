@@ -19,9 +19,9 @@ def get_cloud_list(code, token, project_id=None):
 
     url = Url.cloudList
     data = {
-            'auth_token': token,
-            'project_id': project_id
-            }
+        'auth_token': token,
+        'project_id': project_id
+    }
     list = ApiUtil.requestGet(url, code, data)
 
     return list
@@ -40,16 +40,15 @@ def get_cloud_detail(code, token, id):
 
     url = Url.cloudDetail(id, Url.url)
     data = {
-            'auth_token': token,
-            'id': id,
-            }
+        'auth_token': token,
+        'id': id,
+    }
     project = ApiUtil.requestGet(url, code, data)
 
     return project
 
 
 def create_cloud2(code, token, project_id, form):
-
 
     # -- Create a cloud, api call
     url = Url.cloudCreate
@@ -64,8 +63,8 @@ def create_cloud2(code, token, project_id, form):
     return cloud
 
 
-def create_cloud(code, token, project_id, name, type, key, secret, entry_point, tenant_name, description):
-
+def create_cloud(code, token, project_id, name, type, key, secret,
+                 entry_point, tenant_name, description):
 
     # -- Create a cloud, api call
     url = Url.cloudCreate

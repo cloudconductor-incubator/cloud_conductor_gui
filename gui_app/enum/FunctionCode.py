@@ -1,14 +1,15 @@
 from enum import Enum
 
+
 class FuncCode(Enum):
     login = 'GO010'
     top = 'GO020'
     projectChange = 'GO030'
     projectList = 'GM1110'
-    projectDetail ='GM1150'
-    projectCreate ='GM1120'
-    projectEdit ='GM1130'
-    projectDelete ='GM1140'
+    projectDetail = 'GM1150'
+    projectCreate = 'GM1120'
+    projectEdit = 'GM1130'
+    projectDelete = 'GM1140'
 
     cloudList = 'GM1210'
     cloudDetail = 'GM1250'
@@ -82,5 +83,3 @@ class FuncCode(Enum):
     appDep_application = 'GW350-1'
     appDep_environment = 'GW350-2'
     appDep_confirm = 'GW350-3'
-
-

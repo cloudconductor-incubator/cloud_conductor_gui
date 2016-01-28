@@ -12,18 +12,15 @@ from ..utils import SessionUtil
 from ..utils.PathUtil import Path
 from ..utils.PathUtil import Html
 from ..utils.ApiUtil import Url
-from ..utils.ErrorUtil import ApiError
-from ..enum import ResponseType
-from ..enum.LogType import Message
 from ..enum.FunctionCode import FuncCode
 from ..logs import log
 
 
 def accountList(request):
     try:
-        if SessionUtil.check_login(request) == False:
+        if not SessionUtil.check_login(request):
             return redirect(Path.logout)
-        if SessionUtil.check_permission(request, 'account', 'list') == False:
+        if not SessionUtil.check_permission(request, 'account', 'list'):
             return render_to_response(Html.error_403)
 
         code = FuncCode.accountList.value
@@ -33,18 +30,21 @@ def accountList(request):
         # -- Get a  list, API call
         accounts = AccountUtil.get_account_list(code, token, project_id)
 
-        return render(request, Html.accountList, {'accounts': accounts, 'message': ''})
+        return render(request, Html.accountList,
+                      {'accounts': accounts, 'message': ''})
+
     except Exception as ex:
         log.error(FuncCode.accountList.value, None, ex)
 
-        return render(request, Html.accountList, {"accounts": '', 'message': str(ex)})
+        return render(request, Html.accountList,
+                      {"accounts": '', 'message': str(ex)})
 
 
 def accountDetail(request, id):
     try:
-        if SessionUtil.check_login(request) == False:
+        if not SessionUtil.check_login(request):
             return redirect(Path.logout)
-        if SessionUtil.check_permission(request, 'account', 'read') == False:
+        if not SessionUtil.check_permission(request, 'account', 'read'):
             return render_to_response(Html.error_403)
 
         # -- account DetailAPI call, get a response
@@ -57,18 +57,21 @@ def accountDetail(request, id):
             code, token, project_id, account.get('id'))
         account.update({'role': role.get('name')})
 
-        return render(request, Html.accountDetail, {'account': account, 'message': ''})
+        return render(request, Html.accountDetail,
+                      {'account': account, 'message': ''})
+
     except Exception as ex:
         log.error(FuncCode.accountDetail.value, None, ex)
 
-        return render(request, Html.accountDetail, {'account': '', 'message': str(ex)})
+        return render(request, Html.accountDetail,
+                      {'account': '', 'message': str(ex)})
 
 
 def accountCreate(request):
     try:
-        if SessionUtil.check_login(request) == False:
+        if not SessionUtil.check_login(request):
             return redirect(Path.logout)
-        if SessionUtil.check_permission(request, 'account', 'create') == False:
+        if not SessionUtil.check_permission(request, 'account', 'create'):
             return render_to_response(Html.error_403)
 
         token = request.session['auth_token']
@@ -76,7 +79,8 @@ def accountCreate(request):
 
         if request.method == "GET":
 
-            return render(request, Html.accountCreate, {'account': '', 'form': '', 'message': ''})
+            return render(request, Html.accountCreate,
+                          {'account': '', 'form': '', 'message': ''})
         else:
             # -- Get a value from a form
             p = request.POST
@@ -86,23 +90,29 @@ def accountCreate(request):
             form.full_clean()
             if not form.is_valid():
 
-                return render(request, Html.accountCreate, {'account': p, 'form': form, 'message': ''})
+                return render(request, Html.accountCreate,
+                              {'account': p, 'form': form, 'message': ''})
             # -- AccountCreateAPI call, get a response
             response = AccountUtil.get_account_create(
-                code, token, p['name'], p['email'], p['password'], p['repassword'], p['admin'])
+                code, token, p['name'], p['email'],
+                p['password'], p['repassword'], p['admin'])
 
             return redirect(Path.accountList)
+
     except Exception as ex:
         log.error(FuncCode.accountCreate.value, None, ex)
 
-        return render(request, Html.accountCreate, {'account': request.POST, 'form': '', 'message': str(ex)})
+        return render(request, Html.accountCreate,
+                      {'account': request.POST, 'form': '',
+                       'message': str(ex)})
 
 
 def accountEdit(request, id):
     try:
-        if SessionUtil.check_login(request) == False:
+        if not SessionUtil.check_login(request):
             return redirect(Path.logout)
-        if SessionUtil.check_permission(request, 'account', 'update', id) == False:
+
+        if not SessionUtil.check_permission(request, 'account', 'update', id):
             return render_to_response(Html.error_403)
 
         if request.method == "GET":
@@ -114,7 +124,9 @@ def accountEdit(request, id):
             p = ApiUtil.requestGet(url, FuncCode.accountEdit.value, data)
             p.update(data)
 
-            return render(request, Html.accountEdit, {'account': p, 'message': '', 'edit': True})
+            return render(request, Html.accountEdit,
+                          {'account': p, 'message': '', 'edit': True})
+
         else:
             # -- Get a value from a form
             p = request.POST
@@ -124,7 +136,9 @@ def accountEdit(request, id):
             form.full_clean()
             if not form.is_valid():
 
-                return render(request, Html.accountEdit, {'account': p, 'form': form, 'message': '', 'edit': True})
+                return render(request, Html.accountEdit,
+                              {'account': p, 'form': form,
+                               'message': '', 'edit': True})
 
             # -- URL set
             url = Url.accountEdit(id, Url.url)
@@ -144,14 +158,16 @@ def accountEdit(request, id):
     except Exception as ex:
         log.error(FuncCode.accountEdit.value, None, ex)
 
-        return render(request, Html.accountEdit, {'account': request.POST, 'form': '', 'message': str(ex), 'edit': True})
+        return render(request, Html.accountEdit,
+                      {'account': request.POST, 'form': '',
+                       'message': str(ex), 'edit': True})
 
 
 def accountDelete(request, id):
     try:
-        if SessionUtil.check_login(request) == False:
+        if not SessionUtil.check_login(request):
             return redirect(Path.logout)
-        if SessionUtil.check_permission(request, 'account', 'destroy') == False:
+        if not SessionUtil.check_permission(request, 'account', 'destroy'):
             return render_to_response(Html.error_403)
 
         url = Url.accountDetail(id, Url.url)
@@ -162,4 +178,5 @@ def accountDelete(request, id):
     except Exception as ex:
         log.error(FuncCode.accountDetail.value, None, ex)
 
-        return render(request, Html.accountDelete, {'account': '', 'message': str(ex)})
+        return render(request, Html.accountDelete,
+                      {'account': '', 'message': str(ex)})

@@ -1,19 +1,16 @@
 # -*- coding: utf-8 -*-
-from django.shortcuts import render, redirect,render_to_response
+from django.shortcuts import render, redirect, render_to_response
 import json
-import html
-import requests
 import ast
-from collections import OrderedDict
 from ..forms import environmentForm
-from ..utils import ValiUtil
+from ..forms import edit_environmentForm
 from ..utils import ApiUtil
 from ..utils import BlueprintHistoryUtil
+from ..utils import EnvironmentUtil
 from ..utils import SessionUtil
 from ..utils.PathUtil import Path
 from ..utils.PathUtil import Html
 from ..utils.ApiUtil import Url
-from ..utils.ErrorUtil import ApiError
 from ..utils.BlueprintUtil import get_blueprint_version
 from ..enum.FunctionCode import FuncCode
 from ..logs import log
@@ -22,9 +19,9 @@ PATRITION = '/'
 
 def environmentList(request):
     try:
-        if SessionUtil.check_login(request) == False:
+        if not SessionUtil.check_login(request):
             return redirect(Path.logout)
-        if SessionUtil.check_permission(request,'environment','list') == False:
+        if not SessionUtil.check_permission(request, 'environment', 'list'):
             return render_to_response(Html.error_403)
 
         envs = None
@@ -38,18 +35,20 @@ def environmentList(request):
         }
         envs = ApiUtil.requestGet(url, FuncCode.environmentList.value, data)
 
-        return render(request, Html.environmentList, {'envs': envs, 'message': ''})
+        return render(request, Html.environmentList,
+                      {'envs': envs, 'message': ''})
     except Exception as ex:
         log.error(FuncCode.environmentList.value, None, ex)
 
-        return render(request, Html.environmentList, {"environment": '', 'message': str(ex)})
+        return render(request, Html.environmentList,
+                      {"environment": '', 'message': str(ex)})
 
 
 def environmentDetail(request, id):
     try:
-        if SessionUtil.check_login(request) == False:
+        if not SessionUtil.check_login(request):
             return redirect(Path.logout)
-        if SessionUtil.check_permission(request,'environment','read') == False:
+        if not SessionUtil.check_permission(request, 'environment', 'read'):
             return render_to_response(Html.error_403)
 
         # -- environment DetailAPI call, get a response
@@ -60,11 +59,13 @@ def environmentDetail(request, id):
         }
         p = ApiUtil.requestGet(url, FuncCode.environmentDetail.value, data)
 
-        return render(request, Html.environmentDetail, {'env': p, 'message': ''})
+        return render(request, Html.environmentDetail,
+                      {'env': p, 'message': ''})
     except Exception as ex:
         log.error(FuncCode.environmentDetail.value, None, ex)
 
-        return render(request, Html.environmentDetail, {'env': '', 'message': str(ex)})
+        return render(request, Html.environmentDetail,
+                      {'env': '', 'message': str(ex)})
 
 
 def environmentCreate(request):
@@ -72,9 +73,9 @@ def environmentCreate(request):
     systems = None
     blueprints = None
     try:
-        if SessionUtil.check_login(request) == False:
+        if not SessionUtil.check_login(request):
             return redirect(Path.logout)
-        if SessionUtil.check_permission(request,'environment','create') == False:
+        if not SessionUtil.check_permission(request, 'environment', 'create'):
             return render_to_response(Html.error_403)
 
         p = request.POST
@@ -92,8 +93,10 @@ def environmentCreate(request):
 
         if request.method == "GET":
 
-            return render(request, Html.environmentCreate, {'env': data, 'clouds': clouds, 'systems': systems,
-                                                            'blueprints': blueprints, 'message': '', 'save': True})
+            return render(request, Html.environmentCreate,
+                          {'env': data, 'clouds': clouds, 'systems': systems,
+                           'blueprints': blueprints, 'message': '',
+                           'create': True, 'save': True})
         else:
             # -- Get a value from a form
             msg = ''
@@ -107,11 +110,12 @@ def environmentCreate(request):
             form = environmentForm(param)
             form.full_clean()
             if not form.is_valid():
-                msg = ValiUtil.valiCheck(form)
 
-                return render(request, Html.environmentCreate, {'env': cpPost, 'clouds': clouds, 'systems': systems,
-                                                                'blueprints': blueprints, 'form': form,
-                                                                'message': '', 'save': True})
+                return render(request, Html.environmentCreate,
+                              {'env': cpPost, 'clouds': clouds,
+                               'systems': systems, 'blueprints': blueprints,
+                               'form': form, 'message': '', 'create': True,
+                               'save': True})
             # -- add
             inputs = createJson(param)
 #             env = addEnvironmentParam(cpPost, inputs)
@@ -120,24 +124,28 @@ def environmentCreate(request):
             url = Url.environmentCreate
             # -- API call, get a response
             a = ApiUtil.requestPost(
-                url, FuncCode.environmentCreate.value, addEnvironmentParam(cpPost, inputs))
+                url, FuncCode.environmentCreate.value,
+                addEnvironmentParam(cpPost, inputs, request.session))
 
             return redirect(Path.environmentList)
     except Exception as ex:
         log.error(FuncCode.environmentCreate.value, None, ex)
 
-        return render(request, Html.environmentCreate, {'env': request.POST, 'clouds': clouds, 'systems': systems,
-                                                        'blueprints': blueprints, 'form': '', 'message': str(ex), 'save': True})
+        return render(request, Html.environmentCreate,
+                      {'env': request.POST, 'clouds': clouds,
+                       'systems': systems, 'blueprints': blueprints, 'form': '',
+                       'message': str(ex), 'create': True, 'save': True})
 
 
 def environmentEdit(request, id):
     try:
-        if SessionUtil.check_login(request) == False:
+        if not SessionUtil.check_login(request):
             return redirect(Path.logout)
-        if SessionUtil.check_permission(request,'environment','update') == False:
+        if not SessionUtil.check_permission(request, 'environment', 'update'):
             return render_to_response(Html.error_403)
 
         code = FuncCode.environmentEdit.value
+        token = request.session['auth_token']
         data = {
             'auth_token': request.session['auth_token'],
             'project_id': request.session['project_id']
@@ -147,57 +155,48 @@ def environmentEdit(request, id):
         p = ApiUtil.requestGet(url, code, data)
         p.update(data)
 
-        clouds = ApiUtil.requestGet(Url.cloudList, code, data)
-        systems = ApiUtil.requestGet(Url.systemList, code, data)
-        blueprints = get_blueprint_version(code, data)
+        env = EnvironmentUtil.get_environment_detail(code, token, id)
+#         bphistory = BlueprintHistoryUtil.get_blueprint_history_list(
+#             code, token, bp['blueprint_id'], bp['version'])
+#         blueprints = get_blueprint_version(code, data)
+
+#         temp_param = BlueprintHistoryUtil.get_blueprint_history_detail(
+#                             code, token, id, env.get('blueprint_history_id'))
 
         if request.method == "GET":
-            p.update({
-                'clouds': clouds,
-                'systems': systems,
-                'blueprints': blueprints,
-            })
 
-            return render(request, Html.environmentEdit, {'env': data, 'clouds': clouds, 'systems': systems,
-                                                          'blueprints': blueprints, 'form': '', 'message': '', 'save': True})
+            return render(request, Html.environmentEdit,
+                          {'env': env, 'form': '', 'message': '', 'save': True})
         else:
             # -- Get a value from a form
             msg = ''
             p = request.POST
             cpPost = p.copy()
             # -- Validate check
-            form = environment_form(cpPost)
+            form = edit_environmentForm(cpPost)
             if not form.is_valid():
-                msg = ValiUtil.valiCheck(form)
-                cpPost.update({
-                    'clouds': clouds,
-                    'systems': systems,
-                    'blueprints': blueprints,
-                })
 
-                return render(request, Html.environmentEdit, {'env': cpPost, 'clouds': clouds, 'systems': systems,
-                                                              'blueprints': blueprints, 'form': form,
-                                                              'message': '', 'save': True})
+                return render(request, Html.environmentEdit,
+                              {'env': cpPost,  'form': form, 'message': '',
+                                'save': True})
 
             # -- Create a environment, api call
-            url = Url.environmentEdit(id, Url.url)
-            data = addEnvironmentParam(p)
-            # -- API call, get a response
-            ApiUtil.requestPut(url, code, data)
+            environment = EnvironmentUtil.edit_environment(
+                                    code, token, id, form.data, temp_param=None)
 
             return redirect(Path.environmentList)
     except Exception as ex:
         log.error(code, None, ex)
 
-        return render(request, Html.environmentEdit, {'env': request.POST, 'clouds': '', 'systems': '',
-                                                      'blueprints': '', 'message': str(ex), 'save': True})
+        return render(request, Html.environmentEdit,
+                      {'env': request.POST, 'message': str(ex), 'save': True})
 
 
 def environmentDelete(request, id):
     try:
-        if SessionUtil.check_login(request) == False:
+        if not SessionUtil.check_login(request):
             return redirect(Path.logout)
-        if SessionUtil.check_permission(request,'environment','destroy') == False:
+        if not SessionUtil.check_permission(request, 'environment', 'destroy'):
             return render_to_response(Html.error_403)
 
         # -- URL and data set
@@ -209,7 +208,8 @@ def environmentDelete(request, id):
     except Exception as ex:
         log.error(FuncCode.environmentDelete.value, None, ex)
 
-        return render(request, Html.environmentDetail, {'env': '', 'message': ex})
+        return render(request, Html.environmentDetail,
+                      {'env': '', 'message': ex})
 
 
 def createForm(js, keyParent):
@@ -245,7 +245,8 @@ def environmentAjaxBlueprint(request):
         key = param.keys()
         value = param.values()
 
-        return render(request, Html.environmentAjaxBlueprint, {'name': key,'blueprints': value })
+        return render(request, Html.environmentAjaxBlueprint,
+                      {'name': key, 'blueprints': value})
 
     except Exception as ex:
         log.error(code, None, ex)
@@ -265,7 +266,8 @@ def environmentAjaxBlueprint(request):
 #
 #         ff = createForm2(param, 'json')
 #
-#         return render(request, Html.environmentAjaxBlueprint, {'blueprint': param, 'inputs': ff})
+#         return render(request, Html.environmentAjaxBlueprint,
+#                       {'blueprint': param, 'inputs': ff})
 #
 #     except Exception as ex:
 #         log.error(code, None, ex)
@@ -295,7 +297,7 @@ def environmentAjaxBlueprint(request):
 def putBlueprint(param):
 
     blueprint = param.get('blueprint', None)
-    if blueprint != None and blueprint != '':
+    if blueprint is not None and blueprint != '':
         blueprint = ast.literal_eval(blueprint)
 
         param['blueprint_id'] = blueprint.get('id')
@@ -316,6 +318,7 @@ def putMap(jmap, key, val):
     else:
         jmap[key] = val
 
+
 def createJson(prm):
     ''' HTTP parameter to DICT  '''
     pmap = {}
@@ -327,7 +330,7 @@ def createJson(prm):
     return pmap
 
 
-def addEnvironmentParam(param, temp_param):
+def addEnvironmentParam(param, temp_param, session):
     # candidates_attributes
     print(param)
     candidates_attributes = []
@@ -347,8 +350,8 @@ def addEnvironmentParam(param, temp_param):
 
     print(candidates_attributes)
     data = {
-        "auth_token": param.get("auth_token"),
-        "project_id": param.get("project_id"),
+        "auth_token": session.get("auth_token"),
+        "project_id": session.get("project_id"),
         "system_id": param.get("system_id"),
         "blueprint_id": str(param.get("blueprint_id")),
         "version": str(param.get("version")),

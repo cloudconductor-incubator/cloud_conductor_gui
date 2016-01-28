@@ -8,6 +8,7 @@ from ..enum import ResponseType
 from ..enum.FunctionCode import FuncCode
 from ..logs import log
 
+
 def get_application_list(code, token, project_id=None):
     if StringUtil.isEmpty(code):
         return None
@@ -16,9 +17,9 @@ def get_application_list(code, token, project_id=None):
         return None
 
     data = {
-            'auth_token': token,
-            'project_id': project_id,
-            }
+        'auth_token': token,
+        'project_id': project_id,
+    }
 
     url = Url.applicationList
     list = ApiUtil.requestGet(url, code, data)
@@ -50,8 +51,8 @@ def get_application_detail(code, token, id):
         return None
 
     data = {
-            'auth_token': token,
-            }
+        'auth_token': token,
+    }
 
     url = Url.applicationDetail(id, Url.url)
     list = ApiUtil.requestGet(url, code, data)
@@ -139,28 +140,28 @@ def put_application(token, form):
     data = {}
     # -- Set the value to the form
     data = {
-            'auth_token': token,
-            'system_id': form.get('system_id', ''),
-            'name': form.get('name', ''),
-            'description': form.get('description', ''),
-            'domain': form.get('domain', ''),
-            }
+        'auth_token': token,
+        'system_id': form.get('system_id', ''),
+        'name': form.get('name', ''),
+        'description': form.get('description', ''),
+        'domain': form.get('domain', ''),
+    }
 
     return data
 
 
-def deploy_application(code, token, environment_id, application_id, application_history_id=None):
+def deploy_application(code, token, environment_id, application_id,
+                       application_history_id=None):
     # -- URL set
     url = Url.applicationDeploy(application_id, Url.url)
 
     # -- Set the value to the form
     data = {
-            'auth_token': token,
-            'environment_id': environment_id,
-            'application_history_id': application_history_id,
-            }
+        'auth_token': token,
+        'environment_id': environment_id,
+        'application_history_id': application_history_id,
+    }
     # -- API call, get a response
     response = ApiUtil.requestPost(url, code, data)
 
     return response
-

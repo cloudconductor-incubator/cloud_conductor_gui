@@ -1,11 +1,7 @@
-import re
 from collections import OrderedDict
 from ..utils import ApiUtil
 from ..utils import StringUtil
 from ..utils.ApiUtil import Url
-from ..enum import ResponseType
-from ..enum.FunctionCode import FuncCode
-from ..logs import log
 
 
 def get_role_list(code, token, project_id=None, account_id=None):
@@ -21,10 +17,10 @@ def get_role_list(code, token, project_id=None, account_id=None):
         'auth_token': token,
     }
     if StringUtil.isNotEmpty(project_id):
-#         data.update({'project_id': project_id})
+        #         data.update({'project_id': project_id})
         data['project_id'] = project_id
     elif StringUtil.isNotEmpty(project_id):
-#         data.update({'account_id': account_id})
+        #         data.update({'account_id': account_id})
         data['account_id'] = account_id
     list = ApiUtil.requestGet(url, code, data)
 
@@ -45,7 +41,8 @@ def create_role(code, token, project_id, name, description, params):
 
     for param in params:
         if '-' in param:
-            if param.split('-')[1] in ['manage', 'create', 'update', 'destroy']:
+            if param.split('-')[1] in \
+               ['manage', 'create', 'update', 'destroy']:
                 url = Url.permissionCreate(role["id"], Url.url)
                 data = {
                     'auth_token': token,
@@ -53,7 +50,7 @@ def create_role(code, token, project_id, name, description, params):
                     'model': param.split('-')[0],
                 }
                 permission = ApiUtil.requestPost(url, code, data)
-        #ApiUtil.requestPost(url, code, data)
+        # ApiUtil.requestPost(url, code, data)
 
     return role
 
@@ -81,7 +78,8 @@ def edit_role(code, token, id, name, description, params):
     i = 0
     for param in params:
         if '-' in param:
-            if param.split('-')[1] in ['manage', 'read', 'create', 'update', 'destroy']:
+            if param.split('-')[1] in \
+               ['manage', 'read', 'create', 'update', 'destroy']:
                 if param in old_value:
                     old_value.remove(param)
                     pass
@@ -132,31 +130,43 @@ def get_role_detail(code, token, id):
     actions = ["manage", "read", "create", "update", "destroy"]
     models = []
     models.append({"no": "1", "name": "Project", "item_name": "project"})
-    models.append({"no": "2", "name": "Assignment", "item_name": "assignment"})
+    models.append({"no": "2", "name": "Assignment",
+                   "item_name": "assignment"})
     models.append({"no": "3", "name": "Cloud", "item_name": "cloud"})
-    models.append({"no": "4", "name": "BaseImage", "item_name": "base_image"})
+    models.append({"no": "4", "name": "BaseImage",
+                   "item_name": "base_image"})
     models.append({"no": "5", "name": "System", "item_name": "system"})
-    models.append({"no": "6", "name": "Environment", "item_name": "environment"})
-    models.append({"no": "7", "name": "Application", "item_name": "application"})
-    models.append({"no": "8", "name": "Application History", "item_name": "application_history"})
-    models.append({"no": "9", "name": "Deployment", "item_name": "deployment"})
-    models.append({"no": "10", "name": "Blueprint", "item_name": "blueprint"})
-    models.append({"no": "11", "name": "Blueprint Pattern", "item_name": "blueprint_pattern"})
-    models.append({"no": "12", "name": "Blueprint History", "item_name": "blueprint_history"})
+    models.append({"no": "6", "name": "Environment",
+                   "item_name": "environment"})
+    models.append({"no": "7", "name": "Application",
+                   "item_name": "application"})
+    models.append({"no": "8", "name": "Application History",
+                   "item_name": "application_history"})
+    models.append({"no": "9", "name": "Deployment",
+                   "item_name": "deployment"})
+    models.append({"no": "10", "name": "Blueprint",
+                   "item_name": "blueprint"})
+    models.append({"no": "11", "name": "Blueprint Pattern",
+                   "item_name": "blueprint_pattern"})
+    models.append({"no": "12", "name": "Blueprint History",
+                   "item_name": "blueprint_history"})
     models.append({"no": "13", "name": "Pattern", "item_name": "pattern"})
     models.append({"no": "14", "name": "Account", "item_name": "account"})
     models.append({"no": "15", "name": "Role", "item_name": "role"})
-    models.append({"no": "16", "name": "Permission", "item_name": "permission"})
+    models.append(
+        {"no": "16", "name": "Permission", "item_name": "permission"})
 
     for model in models:
         items = []
         for action in actions:
             if model["item_name"] + "-" + action in check_value:
                 items.append(
-                    {"item_name": model["item_name"] + "-" + action, "checked": "checked"})
+                    {"item_name": model["item_name"] + "-" + action,
+                     "checked": "checked"})
             else:
                 items.append(
-                    {"item_name": model["item_name"] + "-" + action, "checked": ""})
+                    {"item_name": model["item_name"] + "-" + action,
+                     "checked": ""})
 
         check_items.append(
             {"no": model["no"], "name": model["name"], "items": items})
@@ -239,7 +249,7 @@ def add_session_role(session, role, permissions):
 
     for per in permissions:
 
-#         dic = {}
+        #         dic = {}
         if per.get("model") == 'project':
 
             dic_project['m_project'] = True
@@ -503,27 +513,38 @@ def add_session_role(session, role, permissions):
 
 
 def delete_session_role(session):
+    if 'project' in session:
+        del session['project']
 
-    session['project'] = ''
+    if 'account' in session:
+        del session['account']
 
-    session['account'] = ''
+    if 'role' in session:
+        del session['role']
 
-    session['role'] = ''
+    if 'cloud' in session:
+        del session['cloud']
 
-    session['cloud'] = ''
+    if 'baseimage' in session:
+        del session['baseimage']
 
-    session['baseimage'] = ''
+    if 'pattern' in session:
+        del session['pattern']
 
-    session['pattern'] = ''
+    if 'blueprint' in session:
+        del session['blueprint']
 
-    session['blueprint'] = ''
+    if 'system' in session:
+        del session['system']
 
-    session['system'] = ''
+    if 'environment' in session:
+        del session['environment']
 
-    session['environment'] = ''
+    if 'application' in session:
+        del session['application']
 
-    session['application'] = ''
+    if 'application_history' in session:
+        del session['application_history']
 
-    session['application_history'] = ''
-
-    session['deployment'] = ''
+    if 'deployment' in session:
+        del session['deployment']
