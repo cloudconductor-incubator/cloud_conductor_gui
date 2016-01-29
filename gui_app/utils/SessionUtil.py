@@ -47,7 +47,7 @@ def check_permission(request, model, action, account_id=None):
         if model_action.get('manage') is True or \
            model_action.get('read') is True or \
            model_action.get('create') is True or \
-           request.session.get('update') is True or \
+           model_action.get('update') is True or \
            model_action.get('destroy') is True:
             permission = True
 

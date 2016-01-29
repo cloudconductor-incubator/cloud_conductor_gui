@@ -82,7 +82,7 @@ def cloudCreate(request):
                 'project_id': request.session['project_id'],
             }
 
-            cloud = request.session.get('cloud')
+            cloud = request.session.get('w_cl_select')
             if StringUtil.isNotEmpty(cloud):
                 param.update(cloud)
 
@@ -103,7 +103,7 @@ def cloudCreate(request):
 
             # -- Session add
             cloud = cloudPut(param)
-            request.session['cloud'] = cloud
+            request.session['w_cl_select'] = cloud
 
             return redirect(Path.cloudregist_baseimageCreate)
     except Exception as ex:
@@ -121,7 +121,7 @@ def baseimageCreate(request):
                 'auth_token': request.session['auth_token']
             }
 
-            baseimage = request.session.get('baseimage')
+            baseimage = request.session.get('w_bi_create')
             if StringUtil.isNotEmpty(baseimage):
                 param.update(baseimage)
 
@@ -141,7 +141,7 @@ def baseimageCreate(request):
                                'osversion': list(OSVersion), 'form': form})
 
             baseimage = baseimagePut(request.POST)
-            request.session['baseimage'] = baseimage
+            request.session['w_bi_create'] = baseimage
 
             return redirect(Path.cloudregist_confirm)
     except Exception as ex:
@@ -153,52 +153,30 @@ def baseimageCreate(request):
 
 
 def confirm(request):
+    cl_session = ''
+    bi_session = ''
     try:
         session = request.session
-        pj_session = session.get('project')
-        cl_session = session.get('cloud')
-        bi_session = session.get('baseimage')
+        cl_session = session.get('w_cl_select')
+        bi_session = session.get('w_bi_create')
 
         if request.method == "GET":
 
             return render(request, Html.cloudregist_confirm,
-                          {"project": pj_session, 'cloud': cl_session,
-                           'baseImage': bi_session, 'message': ''})
+                          {'cloud': cl_session, 'baseImage': bi_session,
+                           'message': ''})
         elif request.method == "POST":
             session = request.session
             code = FuncCode.cloudReg_confirm.value
             token = session.get('auth_token')
-            project_id = ''
+            project_id = request.session.get('project_id')
 
-            print(pj_session)
-
-            # -- project Create
-            if pj_session:
-                project = ProjectUtil.create_project(
-                          code, token, pj_session.get('name'),
-                          pj_session.get('description'))
-                project_id = project.get('id')
-            else:
-                project_id = session.get('project_id')
-
-            print(project_id)
             # -- cloud Create
-            cloud = CloudUtil.create_cloud(
-                    code, token, project_id,
-                    cl_session.get('name'), cl_session.get('type'),
-                    cl_session.get('key'), cl_session.get('secret'),
-                    cl_session.get('entry_point'),
-                    cl_session.get('tenant_name'),
-                    cl_session.get('description'))
+            cloud = CloudUtil.create_cloud2(code, token, project_id, cl_session)
 
             # -- baseimage Create
-            print(cloud)
-            print(cloud.get('id'))
-            baseimage = BaseimageUtil.create_baseimage(
-                        code, token, cloud.get('id'),
-                        bi_session.get('ssh_username'),
-                        bi_session.get('source_image'),
-                        bi_session.get('os_version'))
+            bi_session['cloud_id'] = cloud.get('id')
+            baseimage = BaseimageUtil.create_baseimage(code, token, bi_session)
 
             # -- session delete
             sessionDelete(session)
@@ -209,9 +187,7 @@ def confirm(request):
         session = request.session
 
         return render(request, Html.cloudregist_confirm,
-                      {"project": session.get('project'),
-                       'cloud': session.get('cloud'),
-                       'baseImage': session.get('baseimage'),
+                      {'cloud': cl_session, 'baseImage': bi_session,
                        'message': str(ex)})
 
 
@@ -255,16 +231,8 @@ def baseimagePut(req):
 
 
 def sessionDelete(session):
-    if 'project' in session:
-        del session['project']
+    if 'w_cl_select' in session:
+        del session['w_cl_select']
 
-    if 'cloud' in session:
-        del session['cloud']
-
-    if 'baseimage' in session:
-        del session['baseimage']
-
-
-def sessionProjectDelete(session):
-    if 'project' in session:
-        del session['project']
+    if 'w_bi_create' in session:
+        del session['w_bi_create']

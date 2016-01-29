@@ -33,7 +33,7 @@ def systemSelect(request):
         list = SystemUtil.get_system_list2(code, token, id)
 
         if request.method == "GET":
-            system = session.get('system')
+            system = session.get('w_sys_select')
 
             return render(request, Html.newapp_systemSelect,
                           {"list": list, 'system': system, 'message': ''})
@@ -48,7 +48,7 @@ def systemSelect(request):
                               {"list": list, 'system': system, 'form': form,
                                'message': form.errors})
 
-            session['system'] = system
+            session['w_sys_select'] = system
 
             return redirect(Path.newapp_applicationCreate)
     except Exception as ex:
@@ -62,7 +62,7 @@ def systemCreate(request):
     try:
         code = FuncCode.newapp_system.value
         if request.method == "GET":
-            system = request.session.get('system')
+            system = request.session.get('w_sys_create')
 
             return render(request, Html.newapp_systemCreate,
                           {"system": system, 'message': ''})
@@ -78,7 +78,7 @@ def systemCreate(request):
 
             # -- Session add
             system = systemPut(param)
-            request.session['system'] = system
+            request.session['w_sys_create'] = system
 
             return redirect(Path.newapp_applicationCreate)
     except Exception as ex:
@@ -92,7 +92,7 @@ def applicationCreate(request):
     try:
         code = FuncCode.newapp_application.value
         if request.method == "GET":
-            application = request.session.get('application')
+            application = request.session.get('w_app_create')
 
             return render(request, Html.newapp_applicationCreate,
                           {"app": application, 'apptype': list(ApplicaionType),
@@ -112,7 +112,7 @@ def applicationCreate(request):
 
             # -- Session add
             application = applicationPut(param)
-            request.session['application'] = application
+            request.session['w_app_create'] = application
 
             return redirect(Path.newapp_environmentSelect)
     except Exception as ex:
@@ -132,7 +132,7 @@ def environmentSelect(request):
         list = EnvironmentUtil.get_environment_list2(code, token, project_id)
 
         if request.method == "GET":
-            environment = session.get('environment')
+            environment = session.get('w_env_select')
 
             return render(request, Html.newapp_environmentSelect,
                           {"list": list, 'environment': environment,
@@ -148,7 +148,7 @@ def environmentSelect(request):
                               {"list": list, 'environment': environment,
                                'form': form, 'message': ''})
 
-            request.session['environment'] = environment
+            request.session['w_env_select'] = environment
 
             return redirect(Path.newapp_confirm)
     except Exception as ex:
@@ -172,7 +172,7 @@ def environmentCreate(request):
         blueprints = get_blueprint_version(code, data)
 
         if request.method == "GET":
-            environment = request.session.get('environment')
+            environment = request.session.get('w_env_create')
 
             return render(request, Html.newapp_environmentCreate,
                           {'clouds': clouds, 'systems': systems,
@@ -191,7 +191,7 @@ def environmentCreate(request):
 
             # -- Session add
             application = applicationPut(param)
-            request.session['environment'] = environment
+            request.session['w_env_create'] = environment
 
             return redirect(Path.newapp_environmentCreate)
     except Exception as ex:
@@ -202,55 +202,51 @@ def environmentCreate(request):
 
 
 def confirm(request):
-    #     try:
-    session = request.session
-    sys_session = session.get('system')
-    app_session = session.get('application')
-    env_session = session.get('environment')
+    sys_session = None
+    app_session = None
+    env_session = None
+    try:
+        session = request.session
+        sys_session = session.get('w_sys_select')
+        app_session = session.get('w_app_create')
+        env_session = session.get('w_env_select')
 
-    if request.method == "GET":
+        if request.method == "GET":
+
+            return render(request, Html.newapp_confirm,
+                          {'system': sys_session, 'application': app_session,
+                           'environment': env_session, 'message': ''})
+        elif request.method == "POST":
+            session = request.session
+            code = FuncCode.newapp_confirm.value
+            token = session.get('auth_token')
+            project_id = ''
+
+            # -- application createt
+            app_session['system_id'] = sys_session.get('id')
+            application = ApplicationUtil.create_application(
+                code, token, app_session)
+
+            # -- applicationHistory create
+            app_id = application.get('id')
+            history = ApplicationHistoryUtil.create_history(code, token,
+                                        application.get('id'), app_session)
+
+            # -- application deploy
+            deploy = ApplicationUtil.deploy_application(code, token,
+                            env_session.get('id'), app_id, history.get('id'))
+
+            # -- session delete
+            sessionDelete(session)
+
+            return redirect(Path.top)
+    except Exception as ex:
+        log.error(FuncCode.newapp_confirm.value, None, ex)
+        session = request.session
 
         return render(request, Html.newapp_confirm,
-                      {"system": sys_session, 'application': app_session,
-                       'environment': env_session, 'message': ''})
-    elif request.method == "POST":
-        session = request.session
-        code = FuncCode.newapp_confirm.value
-        token = session.get('auth_token')
-        project_id = ''
-
-        # -- application createt
-        application = ApplicationUtil.create_application(
-                      code, token, sys_session.get('id'),
-                      app_session.get('name'), app_session.get('description'),
-                      app_session.get('domain'))
-
-        # -- applicationHistory create
-        history = ApplicationHistoryUtil.create_history(
-                  code, token, application.get('id'),
-                  app_session.get('url'), app_session.get('type'),
-                  app_session.get('protocol'), app_session.get('revision'),
-                  app_session.get('pre_deploy'),
-                  app_session.get('post_deploy'),
-                  app_session.get('parameters'))
-
-        # -- application deploy
-        deploy = ApplicationUtil.deploy_application(
-            code, token, env_session.get('id'), application.get('id'))
-
-        # -- session delete
-        sessionDelete(session)
-
-        return redirect(Path.top)
-#     except Exception as ex:
-#         log.error(FuncCode.newapp_confirm.value, None, ex)
-#         session = request.session
-#
-#         return render(request, Html.newapp_confirm,
-#                       {"project": session.get('project'),
-#                        'cloud': session.get('cloud'),
-#                        'baseImage': session.get('baseimage'),
-#                        'message': str(ex)})
+                      {'system': sys_session, 'application': app_session,
+                       'environment': env_session, 'message': str(ex)})
 
 
 def putEnvironment(param):
@@ -320,11 +316,11 @@ def applicationPut(req):
 
 def sessionDelete(session):
 
-    if 'system' in session:
-        del session['system']
+    if 'w_sys_select' in session:
+        del session['w_sys_select']
 
-    if 'environment' in session:
-        del session['environment']
+    if 'w_env_select' in session:
+        del session['w_env_select']
 
-    if 'application' in session:
-        del session['application']
+    if 'w_app_create' in session:
+        del session['w_app_create']

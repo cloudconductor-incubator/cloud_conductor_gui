@@ -18,7 +18,7 @@
 	{% if pattern %}
 		<form method="post" action="{% url 'app:patternEdit' pattern.id %}">
 			<input id="id" type="hidden" name="id" value="{{ pattern.id }}">
-			{% include "gui_app/Pattern/includes/formPattern.html" %}
+			{% include "gui_app/pattern/includes/formPattern.html" %}
 		</form>
 	{% else %}
 		This is no Pattern.

@@ -183,6 +183,9 @@ def get_account_role(code, token, project_id, account_id):
     if StringUtil.isEmpty(token):
         return None
 
+    if StringUtil.isEmpty(project_id):
+        return None
+
     if StringUtil.isEmpty(account_id):
         return None
 

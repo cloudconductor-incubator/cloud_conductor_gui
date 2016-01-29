@@ -20,7 +20,7 @@ def get_system_list(code, token, project_id=None):
 
 def get_system_list2(code, token, project_id=None):
 
-    systems = get_system_list(code, token, project_id=None)
+    systems = get_system_list(code, token, project_id)
 
     dic = {}
     list = []

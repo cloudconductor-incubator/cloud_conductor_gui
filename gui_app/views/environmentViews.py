@@ -133,8 +133,9 @@ def environmentCreate(request):
 
         return render(request, Html.environmentCreate,
                       {'env': request.POST, 'clouds': clouds,
-                       'systems': systems, 'blueprints': blueprints, 'form': '',
-                       'message': str(ex), 'create': True, 'save': True})
+                       'systems': systems, 'blueprints': blueprints,
+                       'form': '', 'message': str(ex), 'create': True,
+                       'save': True})
 
 
 def environmentEdit(request, id):
@@ -165,8 +166,8 @@ def environmentEdit(request, id):
 
         if request.method == "GET":
 
-            return render(request, Html.environmentEdit,
-                          {'env': env, 'form': '', 'message': '', 'save': True})
+            return render(request, Html.environmentEdit, {'env': env,
+                                                          'form': '', 'message': '', 'save': True})
         else:
             # -- Get a value from a form
             msg = ''
@@ -178,11 +179,11 @@ def environmentEdit(request, id):
 
                 return render(request, Html.environmentEdit,
                               {'env': cpPost,  'form': form, 'message': '',
-                                'save': True})
+                               'save': True})
 
             # -- Create a environment, api call
             environment = EnvironmentUtil.edit_environment(
-                                    code, token, id, form.data, temp_param=None)
+                code, token, id, form.data, temp_param=None)
 
             return redirect(Path.environmentList)
     except Exception as ex:
@@ -246,12 +247,35 @@ def environmentAjaxBlueprint(request):
         value = param.values()
 
         return render(request, Html.environmentAjaxBlueprint,
-                      {'name': key, 'blueprints': value})
+                      {'name': key, 'blueprints': param})
 
     except Exception as ex:
         log.error(code, None, ex)
 
         return render(request, Html.environmentAjaxBlueprint, {})
+
+
+# def environmentAjaxBlueprint(request):
+#     try:
+#         p = request.GET
+#         bp = putBlueprint(p.copy())
+#
+#         code = FuncCode.environmentCreate.value
+#         token = request.session['auth_token']
+#         param = BlueprintHistoryUtil.get_blueprint_history_list(
+#             code, token, bp['blueprint_id'], bp['version'])
+#
+#         ff = createForm(param, 'json')
+#         key = param.keys()
+#         value = param.values()
+#
+#         return render(request, Html.environmentAjaxBlueprint,
+#                       {'name': key, 'blueprints': value})
+#
+#     except Exception as ex:
+#         log.error(code, None, ex)
+#
+#         return render(request, Html.environmentAjaxBlueprint, {})
 
 
 # def environmentAjaxBlueprint2(request):
@@ -365,6 +389,7 @@ def addEnvironmentParam(param, temp_param, session):
 
     print(str(temp_param).replace('\'', '\"'))
     if temp_param:
-        data["template_parameters"] = str(temp_param).replace('\'', '\"')
+        tp = str(temp_param).replace('\'', '\"')
+        data["template_parameters"] = tp.replace(' ', '')
 
     return data

@@ -25,7 +25,7 @@ def get_environment_list(code, token, project_id=None):
 
 def get_environment_list2(code, token, project_id=None):
 
-    environments = get_environment_list(code, token, project_id=None)
+    environments = get_environment_list(code, token, project_id)
 
     dic = {}
     list = []

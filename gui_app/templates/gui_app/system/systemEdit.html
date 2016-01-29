@@ -18,7 +18,7 @@
 	{% if system %}
 		<form method="post" action="{% url 'app:systemEdit' system.id %}">
 			<input id="id" type="hidden" name="id" value="{{ system.id }}">
-			{% include "gui_app/System/includes/formSystem.html" %}
+			{% include "gui_app/system/includes/formSystem.html" %}
 		</form>
 	{% else %}
 		This is no System.

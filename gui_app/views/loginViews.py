@@ -61,6 +61,8 @@ def login(request):
                 project_list = ProjectUtil.get_project_list(code, token)
 
             project = StringUtil.list_to_record(project_list)
+            if not project:
+                raise(Error.Authentication.value)
 
             # -- RoleListAPI call, get a response
             role = RoleUtil.get_account_role(

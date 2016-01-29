@@ -27,7 +27,6 @@
 				{% for env in list %}
 					<option value="{{ env.id }}" {% ifequal env.id environment.id%} selected="selected"{% endifequal %}>
 					{{ env.name }}
-					<input id="name" type="hidden" name="name" value="{{ env.name }}"></option>
 				{% endfor %}
 		    </select>
 	    </div>

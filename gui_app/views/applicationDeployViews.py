@@ -24,7 +24,7 @@ def applicationSelect(request):
         print(list)
 
         if request.method == "GET":
-            application = request.session.get('application')
+            application = request.session.get('w_app_select')
             print(application)
             return render(request, Html.appdeploy_applicationSelect,
                           {'list': list, 'application': application,
@@ -34,7 +34,7 @@ def applicationSelect(request):
 
             # -- Session add
             application = applicationPut(param)
-            request.session['application'] = application
+            request.session['w_app_select'] = application
 
             return redirect(Path.appdeploy_environmentSelect)
     except Exception as ex:
@@ -48,7 +48,7 @@ def environmentSelect(request):
     try:
         code = FuncCode.appDep_environment.value
         session = request.session
-        environment = session.get('environment')
+        environment = session.get('w_env_select')
 
         if request.method == "GET":
             token = session['auth_token']
@@ -64,7 +64,7 @@ def environmentSelect(request):
             param = request.POST
 
             environment = environmentPut(param)
-            request.session['environment'] = environment
+            request.session['w_env_select'] = environment
 
             return redirect(Path.appdeploy_confirm)
     except Exception as ex:
@@ -78,8 +78,8 @@ def confirm(request):
     try:
         code = FuncCode.appDep_confirm.value
         session = request.session
-        app_session = session.get('application')
-        env_session = session.get('environment')
+        app_session = session.get('w_app_select')
+        env_session = session.get('w_env_select')
 
         if request.method == "GET":
 
@@ -164,8 +164,8 @@ def putBlueprint(param):
 
 def sessionDelete(session):
 
-    if 'environment' in session:
-        del session['environment']
+    if 'w_env_select' in session:
+        del session['w_env_select']
 
-    if 'application' in session:
-        del session['application']
+    if 'w_app_select' in session:
+        del session['w_app_select']

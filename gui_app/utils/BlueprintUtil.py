@@ -4,8 +4,7 @@ from ..utils import RoleUtil
 from ..utils import ApiUtil
 from ..utils import StringUtil
 from ..utils.ApiUtil import Url
-from ..enum import ResponseType
-from ..enum.FunctionCode import FuncCode
+from ..enum.StatusCode import Environment
 from ..logs import log
 
 
@@ -130,15 +129,15 @@ def get_blueprint_version(code, data):
         url = Url.blueprintHistoriesList(bpid, Url.url)
         histories = ApiUtil.requestGet(url, code, data)
 
-        if histories is None:
-            break
+        if histories is not None:
 
-        for history in histories:
-
-            dic['id'] = bpid
-            dic['name'] = bp.get('name')
-            dic['version'] = history.get('version')
-            list.append(dic.copy())
+            for history in histories:
+                # if history.get('status') ==
+                # Environment.CREATE_COMPLETE.value:
+                dic['id'] = bpid
+                dic['name'] = bp.get('name')
+                dic['version'] = history.get('version')
+                list.append(dic.copy())
 
     return list
 
