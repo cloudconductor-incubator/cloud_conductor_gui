@@ -4,6 +4,7 @@ import json
 from ..forms import projectForm
 from ..utils import RoleUtil
 from ..utils import ProjectUtil
+from ..utils import AccountUtil
 from ..utils import ApiUtil
 from ..utils import PermissionUtil
 from ..utils import SessionUtil
@@ -132,6 +133,7 @@ def projectEdit(request, id):
 
 
 def projectDetail(request, id):
+    accountList = None
     try:
         if not SessionUtil.check_login(request):
             return redirect(Path.logout)
@@ -145,34 +147,7 @@ def projectDetail(request, id):
         p = ProjectUtil.get_project_detail(code, token, id)
 
         # -- AccountAPI call, get a response
-        url2 = Url.accountList
-        data = {
-            'auth_token': token,
-            'project_id': id,
-        }
-        accounts = ApiUtil.requestGet(url2, FuncCode.projectDetail.value,
-                                      data)
-
-        accountList = []
-        for account in accounts:
-            url2 = Url.roleList
-            data = {
-                'auth_token': token,
-                'project_id': id,
-                'account_id': account["id"]
-            }
-            assignments = ApiUtil.requestGet(
-                url2, FuncCode.projectDetail.value, data)
-            role = ""
-            for assignment in assignments:
-                role = assignment["name"]
-
-            accountList.append({'id': account["id"],
-                                'name': account["name"],
-                                'role': role,
-                                'admin': account["admin"],
-                                'email': account["email"],
-                                })
+        accountList = AccountUtil.get_assginment_account(code, token, id)
 
         return render(request, Html.projectDetail,
                       {'project': p, 'accounts': accountList, 'message': ''})
@@ -192,11 +167,12 @@ def projectDelete(request, id):
 
         # -- URL and data set
         code = FuncCode.projectDelete.value
-        url = Url.projectDelete(id, Url.url)
         session = request.session
         token = session['auth_token']
-        data = {'auth_token': token}
-        ApiUtil.requestDelete(url, code, data)
+        p = ProjectUtil.get_project_detail(code, token, id)
+
+        ProjectUtil.delete_project(code, token, id)
+
         SessionUtil.edit_project_session(code, token, session, id)
 
         return redirect(Path.projectList)

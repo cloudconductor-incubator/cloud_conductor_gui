@@ -6,6 +6,7 @@ from ..utils import StringUtil
 from ..utils.ApiUtil import Url
 from ..enum import ResponseType
 from ..enum.FunctionCode import FuncCode
+from ..enum.StatusCode import Environment
 from ..logs import log
 
 
@@ -30,10 +31,10 @@ def get_environment_list2(code, token, project_id=None):
     dic = {}
     list = []
     for env in environments:
-
-        dic['id'] = str(env.get('id'))
-        dic['name'] = env.get('name')
-        list.append(dic.copy())
+        if env.get('status') == Environment.CREATE_COMPLETE.value:
+            dic['id'] = str(env.get('id'))
+            dic['name'] = env.get('name')
+            list.append(dic.copy())
 
     return list
 
@@ -54,9 +55,9 @@ def get_environment_detail(code, token, id):
         'auth_token': token,
         'id': id,
     }
-    project = ApiUtil.requestGet(url, code, data)
+    environment = ApiUtil.requestGet(url, code, data)
 
-    return project
+    return StringUtil.deleteNullDict(environment)
 
 
 def edit_environment(code, token, id, form, temp_param):
@@ -76,7 +77,7 @@ def edit_environment(code, token, id, form, temp_param):
         data["template_parameters"] = str(temp_param).replace('\'', '\"')
 
     # -- API call, get a response
-    project = ApiUtil.requestPut(url, code, data)
+    project = ApiUtil.requestPut(url, code, StringUtil.deleteNullDict(data))
 
     return project
 

@@ -50,34 +50,43 @@ def get_system_detail(code, token, id):
     }
     system = ApiUtil.requestGet(url, code, data)
 
-    return system
+    return StringUtil.deleteNullDict(system)
 
 
-def create_system(code, token, project_id, name, description, domain):
+def create_system(code, token, project_id, form):
     # -- Create a system, api call
     url = Url.systemCreate
-    data = {
-        'auth_token': token,
-        'project_id': project_id,
-        'name': name,
-        'description': description,
-        'domain': domain,
-    }
+    form = StringUtil.deleteNullDict(form)
+
+    form['auth_token'] = token
+    form['project_id'] = project_id
+
+    data = form
+
     # -- API call, get a response
     system = ApiUtil.requestPost(url, code, data)
 
     return system
 
 
-def edit_system(code, token, id, name, description, domain):
+def put_system(token, project_id, form):
+
+    data = {
+            'auth_token': token,
+            'project_id': project_id,
+            'name': form.get('name'),
+            'description': form.get('description'),
+            'domain': form.get('domain'),
+    }
+
+
+def edit_system(code, token, id, form):
     # -- Create a system, api call
     url = Url.systemEdit(id, Url.url)
-    data = {
-        'auth_token': token,
-        'name': name,
-        'description': description,
-        'domain': domain,
-    }
+
+    data = StringUtil.deleteNullDict(form)
+    data['auth_token'] = token
+
     # -- API call, get a response
     system = ApiUtil.requestPut(url, code, data)
 

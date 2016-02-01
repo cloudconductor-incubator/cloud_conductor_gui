@@ -44,12 +44,12 @@ def login(request):
             if tokens:
                 token = tokens.get('auth_token')
             else:
-                raise(Error.Authentication.value)
+                raise Exception(Error.Authentication.value)
 
             # -- AccountApi call, get a response
             account = AccountUtil.get_account(code, token, email)
             if not account:
-                raise(Error.Authentication.value)
+                raise Exception(Error.Authentication.value)
 
             # -- ProjectListAPI call, get a response
             project_list = ''
@@ -62,22 +62,20 @@ def login(request):
 
             project = StringUtil.list_to_record(project_list)
             if not project:
-                raise(Error.Authentication.value)
+                raise Exception(Error.NoAssginment.value)
 
             # -- RoleListAPI call, get a response
             role = RoleUtil.get_account_role(
                 code, token, project.get('id'), account.get('id'))
-            print(role)
             if not role:
-                raise(Error.Authentication.value)
+                raise Exception(Error.NoRole.value)
+
             # -- PermissionListAPI call, get a response
-            print(role.get('id'))
-            print(5)
             permissions = PermissionUtil.get_permission_list(
                 code, token, role.get('id'))
 
             if not permissions:
-                raise(Error.Authentication.value)
+                raise Exception(Error.Authentication.value)
 
             # -- Add to session
             addLoginSession(token, account, project_list, project,

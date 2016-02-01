@@ -88,7 +88,7 @@ def cloudCreate(request):
 
             return render(request, Html.cloudregist_cloudCreate,
                           {"cloud": param, 'cloudType': list(CloudType),
-                           'message': ''})
+                           'message': '', 'create': True})
         elif request.method == "POST":
             param = request.POST
 
@@ -99,7 +99,7 @@ def cloudCreate(request):
 
                 return render(request, Html.cloudregist_cloudCreate,
                               {"cloud": cloud, 'cloudType': list(CloudType),
-                               'form': form})
+                               'form': form, 'create': True})
 
             # -- Session add
             cloud = cloudPut(param)
@@ -111,7 +111,7 @@ def cloudCreate(request):
 
         return render(request, Html.cloudregist_cloudCreate,
                       {"cloud": request.POST, 'cloudType': list(CloudType),
-                       'message': str(ex)})
+                       'message': str(ex), 'create': True})
 
 
 def baseimageCreate(request):
@@ -172,7 +172,8 @@ def confirm(request):
             project_id = request.session.get('project_id')
 
             # -- cloud Create
-            cloud = CloudUtil.create_cloud2(code, token, project_id, cl_session)
+            cloud = CloudUtil.create_cloud2(code, token,
+                                            project_id, cl_session)
 
             # -- baseimage Create
             bi_session['cloud_id'] = cloud.get('id')

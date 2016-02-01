@@ -11,7 +11,7 @@
 {% block content %}
 <div class="cc-title">Make new application</div>
 		<div>
-			<button class="btn btn-primary btn-sm" style="float:right" onclick="location.href='{% url 'app:mkappEnvironmentCreate' %}'" type="button">
+			<button class="btn btn-primary btn-sm" style="float:right" data-toggle="modal" data-target="#myModal" type="button">
 				<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;　new
 			</button>
 		</div>
@@ -20,17 +20,7 @@
 		{% csrf_token %}
 		{% include "gui_app/includes/message.html" %}
 		<h3>Environment select</h3>
-		<div class="form-group">
-	    	<label><span id="req">*</span>Environment</label>
-			<select class="form-control" name="id" id="id">
-		        <option value=""></option>
-				{% for env in list %}
-					<option value="{{ env.id }}" {% ifequal env.id environment.id%} selected="selected"{% endifequal %}>
-					{{ env.name }}
-				{% endfor %}
-		    </select>
-	    </div>
-	    	<div class="cc-desc" id="contents-reload"> Display the contents </div>
+		{% include "gui_app/applicationDeploy/includes/formEnvironmentSelect.html" %}
 		<div class="button_left">
 			<button type="button" class="btn btn-primary btn-sm" onclick="location.href='{% url 'app:mkappApplicationCreate' %}'" >
 				<span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
@@ -44,6 +34,30 @@
 		</div>
 	</div>
 </form>
+
+<!-- Button trigger modal -->
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Wizard is terminated.</h4>
+      </div>
+      <div class="modal-body">
+        {{ wizard_code }}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" onclick="location.href='{% url 'app:blueprintCreate' %}'">
+        	<span class="glyphicon glyphicon glyphicon-ok" aria-hidden="true"></span>
+		</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">
+			<span class="glyphicon glyphicon glyphicon-share-alt" aria-hidden="true"></span>
+		</button>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
 
 {% block bodyscript %}{% endblock %}

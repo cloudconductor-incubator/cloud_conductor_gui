@@ -17,6 +17,20 @@
 		{% include "gui_app/cloud/includes/formCloud.html" %}
 		{{ cloudTypeList }}
 	</form>
+
+<script type="text/javascript">
+
+$("[name=type]").change(function (){
+
+	$("#tenant").show();
+	if($(this).val() == 'aws'){
+		$("[name=tenant_name]").val("");
+		$("#tenant").hide();
+	}
+});
+
+
+</script>
 {% endblock %}
 
 {% block bodyscript %}{% endblock %}

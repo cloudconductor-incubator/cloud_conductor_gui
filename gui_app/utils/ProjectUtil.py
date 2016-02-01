@@ -95,7 +95,7 @@ def get_project_detail(code, token, id):
     }
     project = ApiUtil.requestGet(url, code, data)
 
-    return project
+    return StringUtil.deleteNullDict(project)
 
 
 def create_project(code, token, name, description):
@@ -106,6 +106,7 @@ def create_project(code, token, name, description):
         'name': name,
         'description': description
     }
+    data = StringUtil.deleteNullDict(data)
     # -- API call, get a response
     project = ApiUtil.requestPost(url, code, data)
 
@@ -120,7 +121,20 @@ def edit_project(code, token, id, name, description):
         'name': name,
         'description': description
     }
+    data = StringUtil.deleteNullDict(data)
     # -- API call, get a response
     project = ApiUtil.requestPut(url, code, data)
 
     return project
+
+
+def delete_project(code, token, id):
+    if StringUtil.isEmpty(id):
+        return None
+
+    if StringUtil.isEmpty(token):
+        return None
+
+    url = Url.projectDelete(id, Url.url)
+    data = {'auth_token': token}
+    ApiUtil.requestDelete(url, code, data)

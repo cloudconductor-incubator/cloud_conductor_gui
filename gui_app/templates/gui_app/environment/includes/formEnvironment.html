@@ -6,7 +6,7 @@ $(function(){
   $("#blueprint").change(function () {
     //alert($(this).val());
     var param = {blueprint:$(this).val()};
-    if ($(this).val() == '' || param == null) {
+    if ($(this).val() === '' || param === null) {
     	$('#template_parameters-div').html('');
     } else {
 	    $.get('ajax', param, function(data) {
@@ -81,9 +81,7 @@ $(function(){
 	</div>
 
 	<div class="form-group">
-		<label><span id="req">*</span>Blueprint&nbsp;:&nbsp;version</label> <input
-			id="a" type="hidden" name="a" value="{{ env.blueprint_id }}">
-		<input id="a" type="hidden" name="a" value="{{ env.version }}">
+		<label><span id="req">*</span>Blueprint&nbsp;:&nbsp;version</label>
 		<select class="form-control" name="blueprint" id="blueprint">
 			<option value=""></option>
 			{% for b in blueprints %}

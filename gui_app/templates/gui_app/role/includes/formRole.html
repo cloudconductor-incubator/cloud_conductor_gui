@@ -40,7 +40,7 @@
 					</td>
 					<td>
 						<div class="checkbox-inline">
-							<input name="{{item.item_name}}-{{item.r}}" id="{{item.item_name}}-{{item.r}}" type="checkbox">
+							<input name="{{item.item_name}}-{{item.r}}" id="{{item.item_name}}-{{item.r}}" type="checkbox" {% if  item.read == True %} checked="checked"  onclick="return false" {% endif %}>
 						</div>
 					</td>
 					<td>

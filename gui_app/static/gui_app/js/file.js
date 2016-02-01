@@ -15,7 +15,7 @@ function read (ele, id, mid) {
         target.innerHTML = "OK Json format.";  // Output a message.
     };
     fr.readAsText(file);  // Loading files
-};
+}
 
 function json_check (id, mid){
 	target = document.getElementById(mid);
@@ -26,7 +26,7 @@ function json_check (id, mid){
 		target.innerHTML = "NG Json format";
 	}
 	return ;
-};
+}
 
 var isJson = function(arg){
     arg = (typeof(arg) == "function") ? arg() : arg;

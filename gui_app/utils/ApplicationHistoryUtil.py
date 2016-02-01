@@ -87,7 +87,7 @@ def get_history_detail(code, token, id, his_id):
 
     url = Url.applicationHistoryDetail(id, his_id, Url.url)
     list = ApiUtil.requestGet(url, code, data)
-    return list
+    return StringUtil.deleteNullDict(list)
 
 
 def create_history(code, token, id, form):
@@ -108,7 +108,7 @@ def create_history(code, token, id, form):
     data = put_history(token, form)
 
     # -- API call, get a response
-    response = ApiUtil.requestPost(url, code, data)
+    response = ApiUtil.requestPost(url, code, StringUtil.deleteNullDict(data))
 
     return response
 
@@ -134,7 +134,7 @@ def edit_history(code, token, id, his_id, form):
     data = put_history(token, form)
 
     # -- API call, get a response
-    response = ApiUtil.requestPut(url, code, data)
+    response = ApiUtil.requestPut(url, code, StringUtil.deleteNullDict(data))
 
     return response
 

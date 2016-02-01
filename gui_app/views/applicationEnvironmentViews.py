@@ -17,6 +17,7 @@ from ..utils.PathUtil import Path
 from ..utils.PathUtil import Html
 from ..utils.ApiUtil import Url
 from ..enum.FunctionCode import FuncCode
+from ..enum.MessageCode import Info
 from ..logs import log
 
 
@@ -33,7 +34,8 @@ def systemSelect(request):
             system = session.get('w_sys_select')
 
             return render(request, Html.envapp_systemSelect,
-                          {"list": list, 'system': system, 'message': ''})
+                          {"list": list, 'system': system, 'message': '',
+                           'wizard_code': Info.WizardSystem.value})
         elif request.method == "POST":
             p = request.POST
             cpPost = p.copy()
@@ -43,7 +45,8 @@ def systemSelect(request):
 
                 return render(request, Html.envapp_systemSelect,
                               {"list": list, 'system': system,
-                               'message': form.errors})
+                               'message': form.errors,
+                               'wizard_code': Info.WizardSystem.value})
 
             session['w_sys_select'] = system
 
@@ -52,7 +55,8 @@ def systemSelect(request):
         log.error(FuncCode.appenv_system.value, None, ex)
 
         return render(request, Html.envapp_systemSelect,
-                      {"system": '', 'message': str(ex)})
+                      {"system": '', 'message': str(ex),
+                       'wizard_code': Info.WizardSystem.value})
 
 
 def blueprintSelect(request):
@@ -69,7 +73,8 @@ def blueprintSelect(request):
 
             return render(request, Html.envapp_bluprintSelect,
                           {'list': list, 'blueprint': blueprint,
-                           'message': ''})
+                           'message': '',
+                           'wizard_code': Info.WizardSystem.value})
         elif request.method == "POST":
             p = request.POST
             cpPost = p.copy()
@@ -79,7 +84,8 @@ def blueprintSelect(request):
 
                 return render(request, Html.envapp_bluprintSelect,
                               {'list': list, 'blueprint': blueprint,
-                               'form': form})
+                               'form': form,
+                               'wizard_code': Info.WizardSystem.value})
 
             request.session['w_bp_select'] = blueprint
 
@@ -88,7 +94,8 @@ def blueprintSelect(request):
         log.error(FuncCode.appenv_blueprint.value, None, ex)
 
         return render(request, Html.envapp_bluprintSelect,
-                      {'list': '', 'blueprint': '', 'message': str(ex)})
+                      {'list': '', 'blueprint': '', 'message': str(ex),
+                       'wizard_code': Info.WizardSystem.value})
 
 
 def environmentCreate(request):
@@ -126,7 +133,7 @@ def environmentCreate(request):
             environment = environmentPut(param)
             request.session['w_env_create'] = environment
 
-            return redirect(Path.envapp_environmentCreate)
+            return redirect(Path.envapp_confirm)
     except Exception as ex:
         log.error(FuncCode.appenv_environment.value, None, ex)
 
@@ -163,9 +170,8 @@ def confirm(request):
         session = request.session
 
         return render(request, Html.envapp_confirm,
-                      {"project": session.get('project'),
-                       'cloud': session.get('cloud'),
-                       'baseImage': session.get('baseimage'),
+                      {'system': sys_session, 'blueprint': bp_session,
+                       'environment': env_session,
                        'message': str(ex)})
 
 

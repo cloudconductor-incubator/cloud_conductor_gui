@@ -42,6 +42,9 @@
 									disabled="disabled"
 								{% endif %}
 							{% endif %}
+							{% if subitem.item_name = 'project-read' or subitem.item_name = 'environment-read' or subitem.item_name = 'role-read' %}
+								onclick="return false"
+							{% endif %}
 							type="checkbox">
 						</div>
 					</td>

@@ -42,7 +42,7 @@ def create_role(code, token, project_id, name, description, params):
     for param in params:
         if '-' in param:
             if param.split('-')[1] in \
-               ['manage', 'create', 'update', 'destroy']:
+               ['manage', 'read', 'create', 'update', 'destroy']:
                 url = Url.permissionCreate(role["id"], Url.url)
                 data = {
                     'auth_token': token,

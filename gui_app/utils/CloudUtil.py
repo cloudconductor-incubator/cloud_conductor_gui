@@ -43,9 +43,10 @@ def get_cloud_detail(code, token, id):
         'auth_token': token,
         'id': id,
     }
-    project = ApiUtil.requestGet(url, code, data)
+    cloud = ApiUtil.requestGet(url, code, data)
+    del cloud['secret']
 
-    return project
+    return StringUtil.deleteNullDict(cloud)
 
 
 def create_cloud2(code, token, project_id, form):
@@ -58,7 +59,7 @@ def create_cloud2(code, token, project_id, form):
     }
     form.update(data)
     # -- API call, get a response
-    cloud = ApiUtil.requestPost(url, code, form)
+    cloud = ApiUtil.requestPost(url, code, StringUtil.deleteNullDict(form))
 
     return cloud
 
@@ -80,6 +81,43 @@ def create_cloud(code, token, project_id, name, type, key, secret,
         'description': description
     }
     # -- API call, get a response
-    cloud = ApiUtil.requestPost(url, code, data)
+    cloud = ApiUtil.requestPost(url, code, StringUtil.deleteNullDict(data))
 
     return cloud
+
+
+def edit_cloud(code, token, id, form):
+    if StringUtil.isEmpty(id):
+        return None
+
+    if StringUtil.isEmpty(token):
+        return None
+
+    if StringUtil.isEmpty(form):
+        return None
+
+    # -- URL set
+    url = Url.cloudEdit(id, Url.url)
+
+    # -- Set the value to the form
+    data = {
+        'auth_token': token,
+    }
+
+    form.update(data)
+    # -- API call, get a response
+    response = ApiUtil.requestPut(url, code, StringUtil.deleteNullDict(data))
+
+    return response
+
+
+def delete_cloud(code, token, id):
+    if StringUtil.isEmpty(id):
+        return None
+
+    if StringUtil.isEmpty(token):
+        return None
+
+    url = Url.cloudDelete(id, Url.url)
+    data = {'auth_token': token}
+    ApiUtil.requestDelete(url, code, data)

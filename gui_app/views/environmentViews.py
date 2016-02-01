@@ -5,6 +5,7 @@ import ast
 from ..forms import environmentForm
 from ..forms import edit_environmentForm
 from ..utils import ApiUtil
+from ..utils import StringUtil
 from ..utils import BlueprintHistoryUtil
 from ..utils import EnvironmentUtil
 from ..utils import SessionUtil
@@ -119,13 +120,12 @@ def environmentCreate(request):
             # -- add
             inputs = createJson(param)
 #             env = addEnvironmentParam(cpPost, inputs)
-
+            env = addEnvironmentParam(cpPost, inputs, request.session)
             # -- Create a environment, api call
             url = Url.environmentCreate
             # -- API call, get a response
-            a = ApiUtil.requestPost(
-                url, FuncCode.environmentCreate.value,
-                addEnvironmentParam(cpPost, inputs, request.session))
+            a = ApiUtil.requestPost(url, FuncCode.environmentCreate.value,
+                                    StringUtil.deleteNullDict(env))
 
             return redirect(Path.environmentList)
     except Exception as ex:
@@ -166,8 +166,9 @@ def environmentEdit(request, id):
 
         if request.method == "GET":
 
-            return render(request, Html.environmentEdit, {'env': env,
-                                                          'form': '', 'message': '', 'save': True})
+            return render(request, Html.environmentEdit,
+                          {'env': env, 'form': '', 'message': '',
+                           'save': True})
         else:
             # -- Get a value from a form
             msg = ''
@@ -178,7 +179,7 @@ def environmentEdit(request, id):
             if not form.is_valid():
 
                 return render(request, Html.environmentEdit,
-                              {'env': cpPost,  'form': form, 'message': '',
+                              {'env': cpPost, 'form': form, 'message': '',
                                'save': True})
 
             # -- Create a environment, api call

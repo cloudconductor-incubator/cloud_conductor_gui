@@ -96,12 +96,9 @@ def systemCreate(request):
                                'save': True})
 
             code = FuncCode.systemCreate.value
-
             SystemUtil.create_system(code, request.session.get('auth_token'),
                                      request.session.get('project_id'),
-                                     p.get('name'),
-                                     p.get('description'),
-                                     p.get('domain'))
+                                     form.data)
 
             return redirect(Path.systemList)
     except Exception as ex:
@@ -141,9 +138,12 @@ def systemEdit(request, id):
                                'message': '', 'save': True})
 
             # -- Edit a system, api call
-            SystemUtil.edit_system(
-                code, token, id, p.get('name'), p.get('description'),
-                p.get('domain'))
+            SystemUtil.edit_system(code, request.session.get('auth_token'),
+                                   id, form.data)
+
+#             SystemUtil.edit_system(
+#                 code, token, id, p.get('name'), p.get('description'),
+#                 p.get('domain'))
 
             return redirect(Path.systemList)
     except Exception as ex:

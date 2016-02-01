@@ -20,6 +20,7 @@ from ..utils import SessionUtil
 from ..enum.FunctionCode import FuncCode
 from ..enum.ApplicationType import ApplicaionType
 from ..enum.ProtocolType import ProtocolType
+from ..enum.MessageCode import Info
 from ..logs import log
 
 
@@ -36,7 +37,8 @@ def systemSelect(request):
             system = session.get('w_sys_select')
 
             return render(request, Html.newapp_systemSelect,
-                          {"list": list, 'system': system, 'message': ''})
+                          {"list": list, 'system': system, 'message': '',
+                           'wizard_code': Info.WizardSystem.value})
         elif request.method == "POST":
             p = request.POST
             cpPost = p.copy()
@@ -46,7 +48,8 @@ def systemSelect(request):
 
                 return render(request, Html.newapp_systemSelect,
                               {"list": list, 'system': system, 'form': form,
-                               'message': form.errors})
+                               'message': '',
+                               'wizard_code': Info.WizardSystem.value})
 
             session['w_sys_select'] = system
 
@@ -55,7 +58,8 @@ def systemSelect(request):
         log.error(FuncCode.newapp_system.value, None, ex)
 
         return render(request, Html.newapp_systemSelect,
-                      {"system": '', 'message': str(ex)})
+                      {"system": '', 'message': str(ex),
+                       'wizard_code': Info.WizardSystem.value})
 
 
 def systemCreate(request):
@@ -136,7 +140,8 @@ def environmentSelect(request):
 
             return render(request, Html.newapp_environmentSelect,
                           {"list": list, 'environment': environment,
-                           'message': ''})
+                           'message': '',
+                           'wizard_code': Info.WizardSystem.value})
         elif request.method == "POST":
             p = request.POST
             cpPost = p.copy()
@@ -146,7 +151,8 @@ def environmentSelect(request):
 
                 return render(request, Html.newapp_environmentSelect,
                               {"list": list, 'environment': environment,
-                               'form': form, 'message': ''})
+                               'form': form, 'message': '',
+                               'wizard_code': Info.WizardSystem.value})
 
             request.session['w_env_select'] = environment
 
@@ -155,7 +161,8 @@ def environmentSelect(request):
         log.error(FuncCode.newapp_environment.value, None, ex)
 
         return render(request, Html.newapp_environmentSelect,
-                      {"list": '', 'environment': '', 'message': ''})
+                      {"list": '', 'environment': '', 'message': '',
+                       'wizard_code': Info.WizardSystem.value})
 
 
 def environmentCreate(request):
@@ -229,12 +236,13 @@ def confirm(request):
 
             # -- applicationHistory create
             app_id = application.get('id')
-            history = ApplicationHistoryUtil.create_history(code, token,
-                                        application.get('id'), app_session)
+            history = ApplicationHistoryUtil.create_history(
+                    code, token, application.get('id'), app_session)
 
             # -- application deploy
-            deploy = ApplicationUtil.deploy_application(code, token,
-                            env_session.get('id'), app_id, history.get('id'))
+            deploy = ApplicationUtil.deploy_application(
+                    code, token, env_session.get('id'),
+                    app_id, history.get('id'))
 
             # -- session delete
             sessionDelete(session)

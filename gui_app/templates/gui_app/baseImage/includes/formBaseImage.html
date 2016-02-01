@@ -24,12 +24,13 @@
 	    <div class="form-group">
 	    	<label><span id="req">*</span>source_image</label>
 	        <input id="{{ form.os_version.errors }}" name="source_image" type="text" class="form-control" value="{{ baseImage.source_image }}">
-	        {{ form.os_version.errors }}
+	        {{ form.source_image.errors }}
 	    </div>
 	    <div class="form-group">
 	    	<label><span id="req">*</span>ssh_username</label>
 	        <input id="ssh_username" name="ssh_username" type="text" class="form-control" value="{{ baseImage.ssh_username }}">
 	    </div>
+	    	{{ form.ssh_username.errors }}
 
 	    {% if save %}
    		<div class="button_center">

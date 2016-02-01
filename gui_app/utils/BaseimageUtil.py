@@ -61,9 +61,9 @@ def get_baseimage_detail(code, token, id):
         'auth_token': token,
         'id': id,
     }
-    project = ApiUtil.requestGet(url, code, data)
+    baseimage = ApiUtil.requestGet(url, code, data)
 
-    return project
+    return StringUtil.deleteNullDict(baseimage)
 
 
 def put_baseimage(token, form):

@@ -61,7 +61,7 @@ def roleCreate(request):
     check_items = []
     check_items.append({"no": "1", "name": "Project", "m": "manage",
                         "r": "read", "c": "create", "u": "update",
-                        "d": "destroy", "item_name": "project"})
+                        "d": "destroy", "item_name": "project", "read": True})
     check_items.append({"no": "2", "name": "Assignment", "m": "manage",
                         "r": "read", "c": "create", "u": "update",
                         "d": "destroy", "item_name": "assignment"})
@@ -76,7 +76,8 @@ def roleCreate(request):
                         "d": "destroy", "item_name": "system"})
     check_items.append({"no": "6", "name": "Environment", "m": "manage",
                         "r": "read", "c": "create", "u": "update",
-                        "d": "destroy", "item_name": "environment"})
+                        "d": "destroy", "item_name": "environment",
+                        "read": True})
     check_items.append({"no": "7", "name": "Application", "m": "manage",
                         "r": "read", "c": "create", "u": "update",
                         "d": "destroy", "item_name": "application"})
@@ -106,7 +107,7 @@ def roleCreate(request):
                         "d": "destroy", "item_name": "account"})
     check_items.append({"no": "15", "name": "Role", "m": "manage",
                         "r": "read", "c": "create", "u": "update",
-                        "d": "destroy", "item_name": "role"})
+                        "d": "destroy", "item_name": "role", "read": True})
     check_items.append({"no": "16", "name": "Permission", "m": "manage",
                         "r": "read", "c": "create", "u": "update",
                         "d": "destroy", "item_name": "permission"})

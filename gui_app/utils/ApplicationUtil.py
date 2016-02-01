@@ -56,7 +56,7 @@ def get_application_detail(code, token, id):
 
     url = Url.applicationDetail(id, Url.url)
     list = ApiUtil.requestGet(url, code, data)
-    return list
+    return StringUtil.deleteNullDict(list)
 
 
 def create_application(code, token, form):
@@ -72,7 +72,7 @@ def create_application(code, token, form):
     # -- Set the value to the form
     data = put_application(token, form)
     # -- API call, get a response
-    response = ApiUtil.requestPost(url, code, data)
+    response = ApiUtil.requestPost(url, code, StringUtil.deleteNullDict(data))
 
     return response
 
@@ -93,28 +93,7 @@ def edit_application(code, token, id, form):
     # -- Set the value to the form
     data = put_application(token, form)
     # -- API call, get a response
-    response = ApiUtil.requestPut(url, code, data)
-
-    return response
-
-
-def edit_application(code, token, id, form):
-    if StringUtil.isEmpty(id):
-        return None
-
-    if StringUtil.isEmpty(token):
-        return None
-
-    if StringUtil.isEmpty(form):
-        return None
-
-    # -- URL set
-    url = Url.applicationEdit(id, Url.url)
-
-    # -- Set the value to the form
-    data = put_application(token, form)
-    # -- API call, get a response
-    response = ApiUtil.requestPut(url, code, data)
+    response = ApiUtil.requestPut(url, code, StringUtil.deleteNullDict(data))
 
     return response
 

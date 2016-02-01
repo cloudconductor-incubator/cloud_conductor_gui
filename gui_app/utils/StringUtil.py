@@ -16,7 +16,7 @@ def isNotEmpty(value):
 
 
 def stringToDict(param):
-    if param is not None:
+    if isNotEmpty(param) or param != '':
         param = ast.literal_eval(param)
 
     return param
@@ -29,6 +29,22 @@ def stringToDictList(list):
             dic_list.append(stringToDict(r))
 
     return dic_list
+
+
+def deleteNullDict(dic):
+    if dic is not None:
+
+        diccopy = dic.copy()
+
+        if 'csrfmiddlewaretoken' in diccopy:
+            del diccopy['csrfmiddlewaretoken']
+
+        for key, value in dic.items():
+            if isEmpty(value) or value == 'None':
+                del diccopy[key]
+        dic = diccopy
+
+    return dic
 
 
 def putKeyVlue(param):

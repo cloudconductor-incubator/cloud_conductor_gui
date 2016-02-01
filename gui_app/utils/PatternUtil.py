@@ -32,7 +32,7 @@ def get_pattern_list2(code, token, project_id):
         dic = {}
         list = []
         for pattern in patterns:
-            dic['id'] = pattern.get('id')
+            dic['id'] = str(pattern.get('id'))
             dic['name'] = pattern.get('name')
             list.append(dic.copy())
 
@@ -60,7 +60,7 @@ def get_pattern_detail(code, token, id):
     }
     pattern = ApiUtil.requestGet(url, code, data)
 
-    return pattern
+    return StringUtil.deleteNullDict(pattern)
 
 
 def create_pattern(code, token, name, description):
@@ -71,6 +71,8 @@ def create_pattern(code, token, name, description):
         'name': name,
         'description': description
     }
+
+    data = StringUtil.deleteNullDict(data)
     # -- API call, get a response
     pattern = ApiUtil.requestPost(url, code, data)
 
@@ -85,6 +87,7 @@ def edit_pattern(code, token, id, name, description):
         'name': name,
         'description': description
     }
+    data = StringUtil.deleteNullDict(data)
     # -- API call, get a response
     pattern = ApiUtil.requestPut(url, code, data)
 

@@ -62,7 +62,7 @@ def get_bluepritn_detail(code, token, id):
     }
     blueprint = ApiUtil.requestGet(url, code, data)
 
-    return blueprint
+    return StringUtil.deleteNullDict(blueprint)
 
 
 def create_blueprint(code, token, project_id, form):
@@ -83,7 +83,7 @@ def create_blueprint(code, token, project_id, form):
         'description': form.get('description'),
     }
     url = Url.blueprintCreate
-    bp = ApiUtil.requestPost(url, code, data)
+    bp = ApiUtil.requestPost(url, code, StringUtil.deleteNullDict(data))
 
     return bp
 
@@ -103,7 +103,7 @@ def edit_blueprint(code, token, id, form):
     }
 
     url = Url.blueprintEdit(id, Url.url)
-    bp = ApiUtil.requestPut(url, code, data)
+    bp = ApiUtil.requestPut(url, code, StringUtil.deleteNullDict(data))
 
     return bp
 

@@ -2,6 +2,7 @@
 from django.shortcuts import render, redirect, render_to_response
 import ast
 from collections import OrderedDict
+from ..forms import selecttForm
 from ..utils import ApplicationUtil
 from ..utils import EnvironmentUtil
 from ..utils import StringUtil
@@ -18,14 +19,16 @@ def applicationSelect(request):
         code = FuncCode.appDep_application.value
         token = session.get('auth_token')
         project_id = session.get('project_id')
+        application = ''
+        list = ''
 
         list = ApplicationUtil.get_application_list2(
-            code, token, project_id=None)
+            code, token, project_id)
         print(list)
 
         if request.method == "GET":
             application = request.session.get('w_app_select')
-            print(application)
+
             return render(request, Html.appdeploy_applicationSelect,
                           {'list': list, 'application': application,
                            'message': ''})
@@ -33,7 +36,14 @@ def applicationSelect(request):
             param = request.POST
 
             # -- Session add
-            application = applicationPut(param)
+            application = StringUtil.stringToDict(param.get('id'))
+            form = selecttForm(application)
+            if not form.is_valid():
+
+                return render(request, Html.appdeploy_applicationSelect,
+                              {'list': list, 'application': application,
+                               'form': form, 'message': ''})
+
             request.session['w_app_select'] = application
 
             return redirect(Path.appdeploy_environmentSelect)
@@ -41,10 +51,12 @@ def applicationSelect(request):
         log.error(FuncCode.appDep_application.value, None, ex)
 
         return render(request, Html.appdeploy_applicationSelect,
-                      {'application': '', 'message': str(ex)})
+                      {'list': list, 'application': application,
+                       'message': str(ex)})
 
 
 def environmentSelect(request):
+    list = ''
     try:
         code = FuncCode.appDep_environment.value
         session = request.session
@@ -129,23 +141,6 @@ def environmentPut(req):
         return environment
     else:
         return env
-
-
-def applicationPut(req):
-    if StringUtil.isEmpty(req):
-        return None
-
-    app = req.get('id', None)
-    if StringUtil.isNotEmpty(app):
-        app = ast.literal_eval(app)
-
-        application = {
-            'id': str(app.get('id')),
-            'name': app.get('name'),
-        }
-        return application
-    else:
-        return app
 
 
 def putBlueprint(param):

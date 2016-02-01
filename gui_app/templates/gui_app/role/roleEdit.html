@@ -18,9 +18,9 @@
 
 <script type="text/javascript">
 
-function changeManage(obj,name){
-	var name = name.split('-')[0];
-	$('input[name^=' + name + '-]:not(:first)').prop("checked",false);
+function changeManage(obj,param){
+	var name = param.split('-')[0];
+	//$('input[name^=' + name + '-]:not(:first)').prop("checked",false);
 	if($(obj).is(':checked')){
 		$('input[name^=' + name + '-]:not(:first)').attr("disabled",true);
 	}else{
@@ -28,6 +28,17 @@ function changeManage(obj,name){
 	}
 
 }
+
+$("[name$=-create],[name$=-update],[name$=-destroy]").change(function (){
+
+	var name = $(this).attr("name");
+	var read = name.split('-')[0] + '-read';
+	if($(this).is(':checked')){
+		$("[name=" + read + "]").prop("checked",true);
+	}
+
+
+});
 
 
 </script>

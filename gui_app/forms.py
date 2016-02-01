@@ -2,6 +2,8 @@
 import cgi
 from django import forms
 from .enum.MessageCode import Error
+from .enum.CloudType import CloudType
+from .utils import StringUtil
 
 
 class loginForm(forms.Form):
@@ -24,6 +26,25 @@ class cloudForm(forms.Form):
     key = forms.CharField(max_length=500)
     secret = forms.CharField(max_length=500)
     entry_point = forms.CharField(max_length=500)
+    description = forms.CharField(required=False, max_length=500)
+    tenant_name = forms.CharField(required=False, max_length=500)
+
+    def clean_tenant_name(self):
+        tenant_name = self.cleaned_data['tenant_name']
+        type = self.cleaned_data.get('type')
+        if StringUtil.isNotEmpty(type) and CloudType.openstack.name == type:
+            if StringUtil.isEmpty(tenant_name):
+                raise forms.ValidationError(Error.Required.value)
+
+        return tenant_name
+
+
+class cloudForm2(forms.Form):
+    name = forms.CharField(required=False, max_length=500)
+    type = forms.CharField(required=False, max_length=500)
+    key = forms.CharField(required=False, max_length=500)
+    secret = forms.CharField(required=False, max_length=500)
+    entry_point = forms.CharField(required=False, max_length=500)
     description = forms.CharField(required=False, max_length=500)
     tenant_name = forms.CharField(required=False, max_length=500)
 
@@ -204,6 +225,11 @@ class blueprintForm(forms.Form):
 
 class blueprintSelectForm(forms.Form):
     id = forms.CharField()
+
+
+class selecttForm(forms.Form):
+    id = forms.CharField()
+    name = forms.CharField()
 
 
 class patternForm(forms.Form):

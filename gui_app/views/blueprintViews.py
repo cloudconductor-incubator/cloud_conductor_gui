@@ -70,6 +70,7 @@ def blueprintCreate(request):
     code = FuncCode.blueprintCreate.value
     osversion = list(OSVersion)
     patterns = ''
+    my_pattern = ''
     try:
         if not SessionUtil.check_login(request):
             return redirect(Path.logout)
@@ -89,15 +90,17 @@ def blueprintCreate(request):
             # -- Get a value from a form
             msg = ''
             p = request.POST
-
+            my_pattern = BlueprintPatternUtil.dic_pattern_list(
+                            p.getlist('os_version'), p.getlist('pattern_id'))
             # -- Validate check
             form = blueprintForm(p)
             if not form.is_valid():
 
                 return render(request, Html.blueprintCreate,
                               {'blueprint': p, 'patterns': patterns,
-                               'osversion': osversion, 'form': form,
-                               'message': ''})
+                               'my_pattern': my_pattern,
+                               'osversion': osversion,
+                               'form': form, 'message': ''})
 
             # -- 1.Create a blueprint, api call
             blueprint = BlueprintUtil.create_blueprint(
@@ -118,7 +121,8 @@ def blueprintCreate(request):
 
         return render(request, Html.blueprintCreate,
                       {'blueprint': request.POST, 'patterns': patterns,
-                       'osversion': osversion, 'form': '', 'message': str(ex)})
+                       'my_pattern': my_pattern, 'osversion': osversion,
+                       'form': '', 'message': str(ex)})
 
 
 def blueprintEdit(request, id):
@@ -126,6 +130,8 @@ def blueprintEdit(request, id):
     osversion = list(OSVersion)
     blueprint = ''
     patterns = ''
+    old_pattern = ''
+    my_pattern = ''
     try:
         if not SessionUtil.check_login(request):
             return redirect(Path.logout)
@@ -137,19 +143,22 @@ def blueprintEdit(request, id):
 
         blueprint = BlueprintUtil.get_bluepritn_detail(code, token, id)
         patterns = PatternUtil.get_pattern_list(code, token, project_id)
-        my_pattern = BlueprintPatternUtil.get_blueprint_pattern_list2(
-            code, token, id)
 
         if request.method == "GET":
+            old_pattern = BlueprintPatternUtil.get_blueprint_pattern_list2(
+                           code, token, id)
 
             return render(request, Html.blueprintEdit,
                           {'blueprint': blueprint, 'patterns': patterns,
-                           'my_pattern': my_pattern, 'osversion': osversion,
+                           'my_pattern': old_pattern, 'osversion': osversion,
                            'form': '', 'message': ''})
         else:
             # -- Get a value from a form
             msg = ''
             p = request.POST
+            my_pattern = BlueprintPatternUtil.dic_pattern_list(
+                            p.getlist('os_version'), p.getlist('pattern_id'))
+
             # -- Validate check
             form = blueprintForm(p)
             form.full_clean()
@@ -164,20 +173,28 @@ def blueprintEdit(request, id):
             # -- 1.Edit a blueprint, api call
             blueprint = BlueprintUtil.edit_blueprint(
                 code, token, id, form.data)
-            # idがmylistに存在するかチェック
-#             reg_pattern = dic_pattern_list(pt_list, id_list)
-#             for my in my_pattern:
-#                 for reg in reg_pattern:
-#                     if  reg.get('id') == my.get('id'):
 
-            # mylistにない場合はnew_patternsに登録
+            # -- get newList
+            new_set = set(p.getlist('pattern_id'))
+            # -- get oldlist
+            old_set = set(BlueprintPatternUtil.get_blueprint_pattern_list3(
+                        code, token, id))
 
-            # mylistにはあるがpattern_listにない場合はdelete_patternsに登録
+            delete_list = old_set.difference(new_set)
+            add_list = new_set.difference(old_set)
 
             # -- 2. Add a Pattern, api call
             pattern_list = p.getlist('pattern_id')
+            BlueprintPatternUtil.add_blueprint_pattern_list(
+                code, token, id, p.getlist('os_version'), add_list)
 
-            # -- 3. BlueprintBuild, api call
+            # -- 3. Delete a Pattern, api call
+            BlueprintPatternUtil.delete_blueprint_pattern_list(
+                code, token, id, p.getlist('os_version'), delete_list)
+
+            # -- 4. BlueprintBuild, api call
+            BlueprintUtil.create_bluepritn_build(
+                code, token, blueprint.get('id'))
 
             return redirect(Path.blueprintList)
     except Exception as ex:
@@ -185,7 +202,8 @@ def blueprintEdit(request, id):
 
         return render(request, Html.blueprintEdit,
                       {'blueprint': request.POST, 'patterns': patterns,
-                       'osversion': osversion, 'form': '', 'message': str(ex)})
+                       'my_pattern': my_pattern, 'osversion': osversion,
+                       'form': '', 'message': str(ex)})
 
 
 def blueprintDelete(request, id):

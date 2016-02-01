@@ -3,12 +3,12 @@
 {{ form.non_field_errors }}
 	<div class="cc-select">
 	    <div class="form-group">
-	    	<label><span id="req">*</span>Cloud name</label>
+	    	<label>{% if create %}<span id="req">*</span>{% endif %}Cloud name</label>
 	        <input id="name" name="name" type="text" class="form-control" value="{{ cloud.name }}">
 	        {{ form.name.errors }}
 	    </div>
 	    <div class="form-group">
-	    	<label><span id="req">*</span>Cloud type</label>
+	    	<label>{% if create %}<span id="req">*</span>{% endif %}Cloud type</label>
 			<select class="form-control" name="type" id="type">
 		        <option value=""></option>
 		        {% for c in cloudType %}
@@ -20,17 +20,17 @@
 		    {{ form.type.errors }}
 	    </div>
 	    <div class="form-group">
-	    	<label><span id="req">*</span>key</label>
+	    	<label>{% if create %}<span id="req">*</span>{% endif %}key</label>
 	        <input id="key" name="key" type="password" class="form-control" value="{{ cloud.key }}">
 	        {{ form.key.errors }}
 	    </div>
 	    <div class="form-group">
-	    	<label><span id="req">*</span>secret</label>
+	    	<label>{% if create %}<span id="req">*</span>{% endif %}secret</label>
 	        <input id="secret" name="secret" type="password" class="form-control" value="{{ cloud.secret }}">
 	        {{ form.secret.errors }}
 	    </div>
 	    <div class="form-group">
-	    	<label><span id="req">*</span>entry_point</label>
+	    	<label>{% if create %}<span id="req">*</span>{% endif %}entry_point</label>
 	        <input id="entry_point" name="entry_point" type="text" class="form-control" value="{{ cloud.entry_point }}">
 	        {{ form.entry_point.errors }}
 	    </div>
@@ -39,8 +39,8 @@
 	        <textarea id="description" name="description" class="form-control">{{ cloud.description }}</textarea>
 	        {{ form.description.errors }}
 	    </div>
-	    <div class="form-group">
-	    	<label>tenant_name</label>
+	    <div class="form-group" id="tenant"  {% if  cloud.type == 'aws' %} style="display: none;" {% endif %}  >
+	    	<label>{% if create %}<span id="req">*</span>{% endif %}tenant_name</label>
 	        <textarea id="tenant_name" name="tenant_name" class="form-control">{{ cloud.tenant_name }}</textarea>
 	        {{ form.tenant_name.errors }}
 	    </div>

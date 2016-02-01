@@ -2,6 +2,7 @@
 from django.shortcuts import render, redirect, render_to_response
 import json
 from ..forms import cloudForm
+from ..forms import cloudForm2
 from ..enum.CloudType import CloudType
 from ..enum.FunctionCode import FuncCode
 from ..utils import ApiUtil
@@ -80,7 +81,8 @@ def cloudCreate(request):
 
             return render(request, Html.cloudCreate,
                           {'cloud': '', 'form': '', 'message': '',
-                           'cloudType': cloudType, 'save': True})
+                           'cloudType': cloudType, 'save': True,
+                           'create': True})
 
         else:
             # -- Get a value from a form
@@ -88,30 +90,17 @@ def cloudCreate(request):
             p = request.POST
             # -- Validate check
             form = cloudForm(p)
+            form.full_clean()
             if not form.is_valid():
 
                 return render(request, Html.cloudCreate,
                               {'cloud': p, 'form': form, 'message': '',
-                               'cloudType': cloudType, 'save': True})
-
-            cloud = CloudUtil.create_cloud2(
-                code, token, project_id, form.data.copy())
+                               'cloudType': cloudType, 'save': True,
+                               'create': True})
 
             # -- Create a cloud, api call
-#             url = Url.cloudCreate
-#             data = {
-#                 'auth_token': token,
-#                 'project_id': project_id,
-#                 'name': p['name'],
-#                 'type': p['type'],
-#                 'key': p['key'],
-#                 'secret': p['secret'],
-#                 'entry_point': p['entry_point'],
-#                 'tenant_name': p['tenant_name'],
-#                 'description': p['description']
-#             }
-#             # -- API call, get a response
-#             ApiUtil.requestPost(url, FuncCode.projectCreate.value, data)
+            cloud = CloudUtil.create_cloud2(
+                code, token, project_id, form.data.copy())
 
             return redirect(Path.cloudList)
 
@@ -120,12 +109,14 @@ def cloudCreate(request):
 
         return render(request, Html.cloudCreate,
                       {'cloud': request.POST, 'form': '', 'message': ex,
-                       'cloudType': cloudType, 'save': True})
+                       'cloudType': cloudType, 'save': True, 'create': True})
 
 
 def cloudEdit(request, id):
     cloudType = list(CloudType)
     code = FuncCode.cloudEdit.value
+    cloud = ''
+    p = ''
     try:
         if not SessionUtil.check_login(request):
             return redirect(Path.logout)
@@ -136,17 +127,9 @@ def cloudEdit(request, id):
         project_id = request.session['project_id']
 
         if request.method == "GET":
+            cloud = CloudUtil.get_cloud_detail(code, token, id)
 
-            url = Url.cloudDetail(id, Url.url)
-            data = {
-                'auth_token': token,
-                'project_id': project_id,
-                'cloudType': cloudType,
-            }
-            cloud = ApiUtil.requestGet(url, code, data)
-            cloud.update(data)
-
-            return render(request, "gui_app/cloud/cloudEdit.html",
+            return render(request, Html.cloudEdit,
                           {'cloud': cloud, 'form': '', 'message': '',
                            'cloudType': cloudType, 'save': True})
         elif request.method == "POST":
@@ -154,7 +137,7 @@ def cloudEdit(request, id):
             p = request.POST
             msg = ''
             # -- Validate check
-            form = cloudForm(request.POST)
+            form = cloudForm2(request.POST)
             form.full_clean()
             if not form.is_valid():
 
@@ -162,49 +145,36 @@ def cloudEdit(request, id):
                               {'cloud': p, 'form': form, 'message': '',
                                'cloudType': cloudType, 'save': True})
 
-            # -- URL set
-            url = Url.cloudEdit(id, Url.url)
-            # -- Set the value to the form
-            data = {
-                'auth_token': token,
-                'project_id': project_id,
-                'name': p['name'],
-                'type': p['type'],
-                'key': p['key'],
-                'secret': p['secret'],
-                'entry_point': p['entry_point'],
-                'tenant_name': p['tenant_name'],
-                'description': p['description']
-            }
             # -- API call, get a response
-            ApiUtil.requestPut(url, code, data)
+            cloud = CloudUtil.edit_cloud(code, token, id, form.data.copy())
 
             return redirect(Path.cloudList)
-        else:
-            url = None
-            return redirect(Path.list)
     except Exception as ex:
         log.error(code, None, ex)
 
         return render(request, Html.cloudEdit,
-                      {'cloud': request.POST, 'form': '', 'message': ex,
+                      {'cloud': p, 'form': '', 'message': ex,
                        'cloudType': cloudType, 'save': True})
 
 
 def cloudDelete(request, id):
+    code = FuncCode.projectDelete.value
+    cloud = ''
     try:
         if not SessionUtil.check_login(request):
             return redirect(Path.logout)
         if not SessionUtil.check_permission(request, 'cloud', 'destroy'):
             return render_to_response(Html.error_403)
 
+        token = request.session['auth_token']
+        cloud = CloudUtil.get_cloud_detail(code, token, id)
+
         # -- URL and data set
-        url = Url.cloudDetail(id, Url.url)
-        data = {'auth_token': request.session['auth_token']}
-        ApiUtil.requestDelete(url, FuncCode.projectDelete.value, data)
+        CloudUtil.delete_cloud(code, token, id)
 
         return redirect(Path.cloudList)
     except Exception as ex:
         log.error(FuncCode.cloudDelete.value, None, ex)
 
-        return render(request, Html.cloudDelete, {'cloud': '', 'message': ex})
+        return render(request, Html.cloudDetail,
+                      {'cloud': cloud, 'message': ex})
