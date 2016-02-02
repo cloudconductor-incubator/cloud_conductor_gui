@@ -31,14 +31,16 @@
 				<th>Creation Date</th>
 			</tr>
 		</thead>
+		{% for project in projects %}
            	<tr>
-				<td>{{ projects.id }}</td>
+				<td>{{ project.id }}</td>
 				<td>
-				<a href="{% url 'app:projectDetail' projects.id %}">{{ projects.name }}</a>
+				<a href="{% url 'app:projectDetail' project.id %}">{{ project.name }}</a>
 				</td>
-				<td>{{ projects.description }}</td>
-				<td>{{ projects.created_at }}</td>
+				<td>{{ project.description }}</td>
+				<td>{{ project.created_at }}</td>
 			</tr>
+		{% endfor %}
 </table>
 {% else %}
 	There is no project.

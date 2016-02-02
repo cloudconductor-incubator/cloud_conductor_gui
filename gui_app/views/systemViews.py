@@ -50,6 +50,7 @@ def systemList(request):
 
 
 def systemDetail(request, id):
+    system = None
     try:
         if not SessionUtil.check_login(request):
             return redirect(Path.logout)
@@ -67,7 +68,7 @@ def systemDetail(request, id):
         log.error(FuncCode.systemDetail.value, None, ex)
 
         return render(request, Html.systemDetail,
-                      {'system': '', 'message': str(ex)})
+                      {'system': system, 'message': str(ex)})
 
 
 def systemCreate(request):
@@ -155,6 +156,8 @@ def systemEdit(request, id):
 
 
 def systemDelete(request, id):
+    code = FuncCode.systemDelete.value
+    system = None
     try:
         if not SessionUtil.check_login(request):
             return redirect(Path.logout)
@@ -162,13 +165,14 @@ def systemDelete(request, id):
             return render_to_response(Html.error_403)
 
         # -- URL and data set
-        code = FuncCode.systemDelete.value
-        SystemUtil.get_system_delete(
-            code, request.session.get('auth_token'), id)
+        token = request.session.get('auth_token')
+        system = SystemUtil.get_system_detail(code, token, id)
+
+        SystemUtil.get_system_delete(code, token, id)
 
         return redirect(Path.systemList)
     except Exception as ex:
         log.error(FuncCode.systemDelete.value, None, ex)
 
         return render(request, Html.systemDetail,
-                      {'system': '', 'message': ex})
+                      {'system': system, 'message': ex})

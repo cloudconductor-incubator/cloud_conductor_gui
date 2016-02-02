@@ -193,6 +193,3 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 COVERAGE_REPORT_HTML_OUTPUT_DIR = '.cover'
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 NOSE_ARGS = ['--with-coverage','--with-xunit','--cover-package=gui_app\tests','--cover-xml','--cover-html',]
-
-CLOUDCONDUCTOR_URL = 'http://54.183.214.185:8080/api/v1/'
-# CLOUDCONDUCTOR_URL = 'http://54.67.14.181:8080/api/v1/'

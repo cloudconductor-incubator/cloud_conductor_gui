@@ -26,8 +26,11 @@ def projectList(request):
         # -- Get a project list, API call
         code = FuncCode.projectList.value
         token = request.session['auth_token']
-        projects = ProjectUtil.get_project_detail(
-            code, token, request.session.get('project_id'))
+        if request.session.get("account_admin"):
+            projects = ProjectUtil.get_project_list_admin(
+                code, token, request.session.get("account_id"))
+        else:
+            projects = ProjectUtil.get_project_list(code, token)
 
         return render(request, Html.projectList,
                       {'projects': projects, 'message': ''})
@@ -134,6 +137,7 @@ def projectEdit(request, id):
 
 def projectDetail(request, id):
     accountList = None
+    project = None
     try:
         if not SessionUtil.check_login(request):
             return redirect(Path.logout)
@@ -144,21 +148,56 @@ def projectDetail(request, id):
         token = request.session['auth_token']
 
         # -- project DetailAPI call, get a response
-        p = ProjectUtil.get_project_detail(code, token, id)
+        project = ProjectUtil.get_project_detail(code, token, id)
 
         # -- AccountAPI call, get a response
         accountList = AccountUtil.get_assginment_account(code, token, id)
 
+        # --##################
+
+        session = request.session
+        code = FuncCode.projectChange.value
+        token = session['auth_token']
+        account_id = session['account_id']
+
+        # -- ProjectAPI call, get a response
+        project = ProjectUtil.get_project_detail(code, token, id)
+
+        # -- RoleListAPI call, get a response
+        role = RoleUtil.get_account_role(code, token, id, account_id)
+
+        if not role:
+            raise(Error.Authentication.value)
+        # -- PermissionListAPI call, get a response
+        permissions = PermissionUtil.get_permission_list(
+            code, token, role.get('id'))
+
+        if not permissions:
+            raise(Error.Authentication.value)
+
+        session['project_id'] = id
+        session['project_name'] = project['name']
+
+        RoleUtil.delete_session_role(session)
+        RoleUtil.add_session_role(session, role, permissions)
+
+        # --######################
+
         return render(request, Html.projectDetail,
-                      {'project': p, 'accounts': accountList, 'message': ''})
+                      {'project': project, 'accounts': accountList,
+                       'message': ''})
     except Exception as ex:
         log.error(FuncCode.projectDetail.value, None, ex)
 
         return render(request, Html.projectDetail,
-                      {'project': '', 'accounts': '', 'message': str(ex)})
+                      {'project': project, 'accounts': accountList,
+                       'message': str(ex)})
 
 
 def projectDelete(request, id):
+    code = FuncCode.projectDelete.value
+    project = None
+    accountList = None
     try:
         if not SessionUtil.check_login(request):
             return redirect(Path.logout)
@@ -166,10 +205,10 @@ def projectDelete(request, id):
             return render_to_response(Html.error_403)
 
         # -- URL and data set
-        code = FuncCode.projectDelete.value
         session = request.session
         token = session['auth_token']
-        p = ProjectUtil.get_project_detail(code, token, id)
+        project = ProjectUtil.get_project_detail(code, token, id)
+        accountList = AccountUtil.get_assginment_account(code, token, id)
 
         ProjectUtil.delete_project(code, token, id)
 
@@ -180,7 +219,8 @@ def projectDelete(request, id):
         log.error(FuncCode.projectDelete.value, None, ex)
 
         return render(request, Html.projectDetail,
-                      {'project': '', 'accounts': '', 'message': str(ex)})
+                      {'project': project, 'accounts': accountList,
+                       'message': str(ex)})
 
 
 def projectChange(request, id):

@@ -71,7 +71,9 @@ def get_new_history(code, token, id):
     for app in apps:
         if int(new_app.get('id', 0)) < app.get('id'):
             new_app = app
-    return new_app
+    if new_app.get('parameters') == '{}':
+        new_app['parameters'] = ''
+    return StringUtil.deleteNullDict(new_app)
 
 
 def get_history_detail(code, token, id, his_id):
@@ -86,8 +88,8 @@ def get_history_detail(code, token, id, his_id):
     }
 
     url = Url.applicationHistoryDetail(id, his_id, Url.url)
-    list = ApiUtil.requestGet(url, code, data)
-    return StringUtil.deleteNullDict(list)
+    detail = ApiUtil.requestGet(url, code, data)
+    return StringUtil.deleteNullDict(detail)
 
 
 def create_history(code, token, id, form):

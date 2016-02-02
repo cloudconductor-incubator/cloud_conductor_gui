@@ -5,6 +5,7 @@ from collections import OrderedDict
 from ..forms import patternForm
 from ..utils import ApiUtil
 from ..utils import SessionUtil
+from ..utils import PatternUtil
 from ..utils.PathUtil import Path
 from ..utils.PathUtil import Html
 from ..utils.ApiUtil import Url
@@ -41,6 +42,8 @@ def patternList(request):
 
 
 def patternDetail(request, id):
+    code = FuncCode.patternDetail.value
+    pattern = None
     try:
         if not SessionUtil.check_login(request):
             return redirect(Path.logout)
@@ -49,19 +52,15 @@ def patternDetail(request, id):
 
         # -- pattern DetailAPI call, get a response
         token = request.session['auth_token']
-        url = Url.patternDetail(id, Url.url)
-        data = {
-            'auth_token': token
-        }
-        p = ApiUtil.requestGet(url, FuncCode.patternDetail.value, data)
+        pattern = PatternUtil.get_pattern_detail(code, token, id)
 
         return render(request, Html.patternDetail,
-                      {'pattern': p, 'message': ''})
+                      {'pattern': pattern, 'message': ''})
     except Exception as ex:
         log.error(FuncCode.patternDetail.value, None, ex)
 
         return render(request, Html.patternDetail,
-                      {'pattern': '', 'message': str(ex)})
+                      {'pattern': pattern, 'message': str(ex)})
 
 
 def patternCreate(request):
@@ -169,20 +168,23 @@ def patternEdit(request, id):
 
 
 def patternDelete(request, id):
+    code = FuncCode.patternDelete.value
+    pattern = None
     try:
         if not SessionUtil.check_login(request):
             return redirect(Path.logout)
         if not SessionUtil.check_permission(request, 'pattern', 'destroy'):
             return render_to_response(Html.error_403)
 
-        # -- URL and data set
-        url = Url.patternDelete(id, Url.url)
-        data = {'auth_token': request.session['auth_token']}
-        ApiUtil.requestDelete(url, FuncCode.patternDelete.value, data)
+        token = request.session['auth_token']
+
+        pattern = PatternUtil.get_pattern_detail(code, token, id)
+
+        PatternUtil.delete_pattern(code, token, id)
 
         return redirect(Path.patternList)
     except Exception as ex:
         log.error(FuncCode.patternDelete.value, None, ex)
 
-        return render(request, Html.patternDetail, {'pattern': '',
-                                                    'message': ex})
+        return render(request, Html.patternDetail,
+                      {'pattern': pattern, 'message': ex})

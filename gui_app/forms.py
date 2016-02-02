@@ -152,7 +152,6 @@ class w_environmentForm(forms.Form):
 
 class w_appenv_environmentForm(forms.Form):
     id = forms.IntegerField(required=False)
-    version = forms.CharField(required=False)
     name = forms.CharField(max_length=500)
     description = forms.CharField(required=False, max_length=500)
     template_parameters = forms.CharField(required=False, max_length=500)
@@ -207,8 +206,8 @@ class w_applicationForm(forms.Form):
     description = forms.CharField(required=False, max_length=500)
     domain = forms.URLField(required=False, max_length=500)
     url = forms.CharField(max_length=500)
-    type = forms.CharField(required=False, max_length=500)
-    protocol = forms.CharField(required=False, max_length=500)
+    type = forms.CharField(max_length=500)
+    protocol = forms.CharField(max_length=500)
     revision = forms.CharField(required=False, max_length=500)
     pre_deploy = forms.CharField(required=False, max_length=500)
     post_deploy = forms.CharField(required=False, max_length=500)

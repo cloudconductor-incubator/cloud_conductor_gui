@@ -18,7 +18,7 @@
 		{% include "gui_app/cloud/includes/formCloud.html" %}
 
 		<div class="button_left">
-			<button type="button" class="btn btn-primary btn-sm" onclick="location.href='{% url 'app:cloudregistProject' %}'" >
+			<button type="button" class="btn btn-primary btn-sm hidden" onclick="location.href=''" >
 				<span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
 				 &nbsp;　back
 			</button>
@@ -34,7 +34,7 @@
 $("[name=type]").change(function (){
 
 	$("#tenant").show();
-	if($(this).val() == 'aws'){
+	if($(this).val() != 'openstack'){
 		$("[name=tenant_name]").val("");
 		$("#tenant").hide();
 	}

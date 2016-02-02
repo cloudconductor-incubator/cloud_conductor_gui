@@ -61,7 +61,7 @@ def cloudDetail(request, id):
 
         log.error(FuncCode.cloudList.value, None, ex)
         return render(request, Html.cloudDetail,
-                      {'cloud': '', 'baseImage': '', 'message': ex})
+                      {'cloud': cloud, 'baseImage': baseimages, 'message': ex})
 
 
 def cloudCreate(request):
@@ -159,7 +159,8 @@ def cloudEdit(request, id):
 
 def cloudDelete(request, id):
     code = FuncCode.projectDelete.value
-    cloud = ''
+    cloud = None
+    baseimages = None
     try:
         if not SessionUtil.check_login(request):
             return redirect(Path.logout)
@@ -169,6 +170,11 @@ def cloudDelete(request, id):
         token = request.session['auth_token']
         cloud = CloudUtil.get_cloud_detail(code, token, id)
 
+        # -- Get a cloud list, API call
+        cloud = CloudUtil.get_cloud_detail(code, token, id)
+        # -- Get a baseImage list, API call
+        baseimages = BaseimageUtil.get_baseimege_list(code, token, id)
+
         # -- URL and data set
         CloudUtil.delete_cloud(code, token, id)
 
@@ -177,4 +183,4 @@ def cloudDelete(request, id):
         log.error(FuncCode.cloudDelete.value, None, ex)
 
         return render(request, Html.cloudDetail,
-                      {'cloud': cloud, 'message': ex})
+                      {'cloud': cloud, 'baseImage': baseimages, 'message': ex})

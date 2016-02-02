@@ -46,6 +46,8 @@ def environmentList(request):
 
 
 def environmentDetail(request, id):
+    code = FuncCode.environmentDetail.value
+    env = None
     try:
         if not SessionUtil.check_login(request):
             return redirect(Path.logout)
@@ -54,25 +56,22 @@ def environmentDetail(request, id):
 
         # -- environment DetailAPI call, get a response
         token = request.session['auth_token']
-        url = Url.environmentDetail(id, Url.url)
-        data = {
-            'auth_token': token
-        }
-        p = ApiUtil.requestGet(url, FuncCode.environmentDetail.value, data)
+        env = EnvironmentUtil.get_environment_detail(code, token, id)
 
         return render(request, Html.environmentDetail,
-                      {'env': p, 'message': ''})
+                      {'env': env, 'message': ''})
     except Exception as ex:
         log.error(FuncCode.environmentDetail.value, None, ex)
 
         return render(request, Html.environmentDetail,
-                      {'env': '', 'message': str(ex)})
+                      {'env': env, 'message': str(ex)})
 
 
 def environmentCreate(request):
     clouds = None
     systems = None
     blueprints = None
+    code = None
     try:
         if not SessionUtil.check_login(request):
             return redirect(Path.logout)
@@ -105,8 +104,6 @@ def environmentCreate(request):
             # -- Validate check
             cpPost = p.copy()
             param = putBlueprint(cpPost)
-#             form = environment_form(cpPost)
-            inputs = createJson(param)
 
             form = environmentForm(param)
             form.full_clean()
@@ -117,15 +114,8 @@ def environmentCreate(request):
                                'systems': systems, 'blueprints': blueprints,
                                'form': form, 'message': '', 'create': True,
                                'save': True})
-            # -- add
-            inputs = createJson(param)
-#             env = addEnvironmentParam(cpPost, inputs)
-            env = addEnvironmentParam(cpPost, inputs, request.session)
-            # -- Create a environment, api call
-            url = Url.environmentCreate
-            # -- API call, get a response
-            a = ApiUtil.requestPost(url, FuncCode.environmentCreate.value,
-                                    StringUtil.deleteNullDict(env))
+
+            EnvironmentUtil.create_environment(code, cpPost, request.session)
 
             return redirect(Path.environmentList)
     except Exception as ex:
@@ -195,23 +185,30 @@ def environmentEdit(request, id):
 
 
 def environmentDelete(request, id):
+    code = FuncCode.environmentDelete.value
+    env = None
     try:
         if not SessionUtil.check_login(request):
             return redirect(Path.logout)
         if not SessionUtil.check_permission(request, 'environment', 'destroy'):
             return render_to_response(Html.error_403)
 
+        token = request.session['auth_token']
+
+        env = EnvironmentUtil.get_environment_detail(code, token, id)
+
         # -- URL and data set
-        url = Url.environmentDelete(id, Url.url)
-        data = {'auth_token': request.session['auth_token']}
-        ApiUtil.requestDelete(url, FuncCode.environmentDelete.value, data)
+        EnvironmentUtil.delete_system(code, token, id)
+#         url = Url.environmentDelete(id, Url.url)
+#         data = {'auth_token': request.session['auth_token']}
+#         ApiUtil.requestDelete(url, FuncCode.environmentDelete.value, data)
 
         return redirect(Path.environmentList)
     except Exception as ex:
-        log.error(FuncCode.environmentDelete.value, None, ex)
+        log.error(code, None, ex)
 
         return render(request, Html.environmentDetail,
-                      {'env': '', 'message': ex})
+                      {'env': env, 'message': ex})
 
 
 def createForm(js, keyParent):

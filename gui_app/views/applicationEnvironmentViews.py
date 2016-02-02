@@ -45,7 +45,8 @@ def systemSelect(request):
 
                 return render(request, Html.envapp_systemSelect,
                               {"list": list, 'system': system,
-                               'message': form.errors,
+                               'form': form,
+                               'message': '',
                                'wizard_code': Info.WizardSystem.value})
 
             session['w_sys_select'] = system
@@ -115,7 +116,7 @@ def environmentCreate(request):
             environment = request.session.get('w_env_create')
 
             return render(request, Html.envapp_environmentCreate,
-                          {'clouds': clouds, 'systems': systems,
+                          {'clouds': clouds, 'systems': None,
                            'blueprints': blueprints, 'env': environment,
                            'message': '', 'create': True})
         elif request.method == "POST":
@@ -125,7 +126,7 @@ def environmentCreate(request):
             if not form.is_valid():
 
                 return render(request, Html.envapp_environmentCreate,
-                              {'clouds': clouds, 'systems': systems,
+                              {'clouds': clouds, 'systems': None,
                                'blueprints': blueprints, 'env': param,
                                'form': form, 'create': True})
 
@@ -158,8 +159,12 @@ def confirm(request):
         elif request.method == "POST":
             session = request.session
             code = FuncCode.appenv_confirm.value
-            token = session.get('auth_token')
-            project_id = ''
+
+            env_session.update(bp_session)
+            env_session.update(sys_session)
+
+            EnvironmentUtil.create_environment(code, env_session,
+                                               request.session)
 
             # -- session delete
             sessionDelete(session)

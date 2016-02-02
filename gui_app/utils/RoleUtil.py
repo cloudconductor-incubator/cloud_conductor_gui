@@ -220,10 +220,20 @@ def get_account_role(code, token, project_id, account_id):
 #     list = []
 #     dic = {}
 #     for per in permissions:
-#
+#         dic = {}
 #         if per.get('model') in list:
 #             index = list.index(per.get('model'))
-#             list.insert(index, per.get('action'))
+#             model = list.get(index)
+#             value = model.get(per.get('model'))
+#             if StringUtil.isEmpty(model):
+#                 break
+#
+# #             value.update({per.get('model'): True})
+#             value[per.get('action')]=True
+#
+#             model = value
+#             list[index] = value
+# #             list.insert(index, per.get('action'))
 #         else:
 #             dic[per.get('action')]=True
 #             list.append({per.get('model'): dic})
@@ -239,6 +249,7 @@ def add_session_role(session, role, permissions):
     model_bk = ''
     dic_project = {}
     dic_account = {}
+    dic_assignment = {}
     dic_role = {}
     dic_cloud = {}
     dic_base_image = {}
@@ -294,6 +305,27 @@ def add_session_role(session, role, permissions):
                 dic_account['destroy'] = True
 
             session['account'] = dic_account
+
+        elif per.get("model") == 'assignment':
+
+            dic_assignment['m_assignment'] = True
+
+            if per.get("action") == 'manage':
+                dic_assignment['manage'] = True
+
+            elif per.get("action") == 'read':
+                dic_assignment['read'] = True
+
+            elif per.get("action") == 'create':
+                dic_assignment['create'] = True
+
+            elif per.get("action") == 'update':
+                dic_assignment['update'] = True
+
+            elif per.get("action") == 'destroy':
+                dic_assignment['destroy'] = True
+
+            session['assignment'] = dic_assignment
 
         elif per.get("model") == 'role':
 
@@ -521,6 +553,9 @@ def delete_session_role(session):
 
     if 'account' in session:
         del session['account']
+
+    if 'assignment' in session:
+        del session['assignment']
 
     if 'role' in session:
         del session['role']

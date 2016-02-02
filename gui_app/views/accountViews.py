@@ -41,6 +41,7 @@ def accountList(request):
 
 
 def accountDetail(request, id):
+    account = None
     try:
         if not SessionUtil.check_login(request):
             return redirect(Path.logout)
@@ -64,7 +65,7 @@ def accountDetail(request, id):
         log.error(FuncCode.accountDetail.value, None, ex)
 
         return render(request, Html.accountDetail,
-                      {'account': '', 'message': str(ex)})
+                      {'account': account, 'message': str(ex)})
 
 
 def accountCreate(request):
@@ -164,19 +165,28 @@ def accountEdit(request, id):
 
 
 def accountDelete(request, id):
+    account = None
+    code = FuncCode.accountDetail.value
     try:
         if not SessionUtil.check_login(request):
             return redirect(Path.logout)
         if not SessionUtil.check_permission(request, 'account', 'destroy'):
             return render_to_response(Html.error_403)
 
-        url = Url.accountDetail(id, Url.url)
-        r = requests.get(url)
-        p = json.loads(r.text)
+        token = request.session['auth_token']
+        project_id = request.session['project_id']
 
-        return redirect(Path.accouuntList)
+        account = AccountUtil.get_account_detail(code, token, id)
+        role = RoleUtil.get_account_role(
+            code, token, project_id, account.get('id'))
+        account.update({'role': role.get('name')})
+
+        # -- accounDelte
+        AccountUtil.delete_account(code, token, id)
+
+        return redirect(Path.accountList)
     except Exception as ex:
         log.error(FuncCode.accountDetail.value, None, ex)
 
-        return render(request, Html.accountDelete,
-                      {'account': '', 'message': str(ex)})
+        return render(request, Html.accountDetail,
+                      {'account': account, 'message': str(ex)})

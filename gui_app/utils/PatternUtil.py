@@ -92,3 +92,19 @@ def edit_pattern(code, token, id, name, description):
     pattern = ApiUtil.requestPut(url, code, data)
 
     return pattern
+
+
+def delete_pattern(code, token, id):
+    if StringUtil.isEmpty(id):
+        return None
+
+    if StringUtil.isEmpty(token):
+        return None
+
+    # -- URL set
+    url = Url.patternDelete(id, Url.url)
+
+    # -- Set the value to the form
+    data = {'auth_token': token}
+    # -- API call, get a response
+    ApiUtil.requestDelete(url, code, data)

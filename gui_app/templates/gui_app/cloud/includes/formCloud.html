@@ -39,7 +39,7 @@
 	        <textarea id="description" name="description" class="form-control">{{ cloud.description }}</textarea>
 	        {{ form.description.errors }}
 	    </div>
-	    <div class="form-group" id="tenant"  {% if  cloud.type == 'aws' %} style="display: none;" {% endif %}  >
+	    <div class="form-group" id="tenant"  {% if  cloud.type != 'openstack' %} style="display: none;" {% endif %}  >
 	    	<label>{% if create %}<span id="req">*</span>{% endif %}tenant_name</label>
 	        <textarea id="tenant_name" name="tenant_name" class="form-control">{{ cloud.tenant_name }}</textarea>
 	        {{ form.tenant_name.errors }}

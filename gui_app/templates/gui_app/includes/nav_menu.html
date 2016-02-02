@@ -15,14 +15,13 @@
 				{% endfor %}
 			    </ul>
 			  </div>
-
+<!--
 			{% else %}
 				{% for p in request.session.project_list %}
 					{{ p.name }}
 				{% endfor %}
 			{% endif %}
 
-			<!--
 			auth_token:{{ request.session.auth_token }}<br>
 			project_id:{{ request.session.project_id }}<br>
 			account_id:{{ request.session.account_id }}<br>
@@ -31,6 +30,7 @@
 			rolesession:{{request.session.project}}<br>
 			project:{{request.session.project}}<br>
 			account:{{request.session.account}}<br>
+			project:{{request.session.project}}<br>
 			role:{{request.session.role}}<br>
 			cloud:{{request.session.cloud}}<br>
 			baseimage:{{request.session.baseimage}}<br>
@@ -41,8 +41,7 @@
 			application:{{request.session.application}}<br>
 			application_history:{{request.session.application_history}}<br>
 			deployment:{{request.session.deployment}}<br>
-			-->
-
+-->
 			<div class="menu-menu"></div>
 			<ul class="nav">
 				<li class="active">
@@ -104,7 +103,7 @@
 			</ul>
 			<div class="var-heading">Various settings</div>
 			<ul class="nav">
-					<li><a href="{% url 'app:cloudregistProjectSelect'%}" id="var-menu">Cloud registration</a></li>
+					<li><a href="{% url 'app:cloudregistCloud'%}" id="var-menu">Cloud registration</a></li>
 					<li><a href="{% url 'app:mkappSystemSelect'%}" id="var-menu">Make new application</a></li>
 					<li><a href="{% url 'app:envapp_systemSelect'%}" id="var-menu">Application environment</a></li>
 					<li><a href="{% url 'app:appdeployApplicationSelect'%}" id="var-menu">Deploying applications</a></li>

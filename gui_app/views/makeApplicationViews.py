@@ -99,7 +99,9 @@ def applicationCreate(request):
             application = request.session.get('w_app_create')
 
             return render(request, Html.newapp_applicationCreate,
-                          {"app": application, 'apptype': list(ApplicaionType),
+                          {"app": application,
+                           "history": application,
+                           'apptype': list(ApplicaionType),
                            'protocol': list(ProtocolType), 'message': ''})
         elif request.method == "POST":
             param = request.POST
@@ -109,10 +111,11 @@ def applicationCreate(request):
             if not form.is_valid():
 
                 return render(request, Html.newapp_applicationCreate,
-                              {"application": param,
+                              {"app": param,
+                               "history": param,
                                'apptype': list(ApplicaionType),
-                               'protocol': list(ProtocolType), 'form': '',
-                               'message': form.errors})
+                               'protocol': list(ProtocolType), 'form': form,
+                               'message': ''})
 
             # -- Session add
             application = applicationPut(param)
@@ -138,8 +141,12 @@ def environmentSelect(request):
         if request.method == "GET":
             environment = session.get('w_env_select')
 
+            env = None
+            if environment is not None:
+                env = ast.literal_eval(environment["id"])
+
             return render(request, Html.newapp_environmentSelect,
-                          {"list": list, 'environment': environment,
+                          {"list": list, 'environment': env,
                            'message': '',
                            'wizard_code': Info.WizardSystem.value})
         elif request.method == "POST":
@@ -222,7 +229,8 @@ def confirm(request):
 
             return render(request, Html.newapp_confirm,
                           {'system': sys_session, 'application': app_session,
-                           'environment': env_session, 'message': ''})
+                           'environment': ast.literal_eval(env_session["id"]),
+                           'message': ''})
         elif request.method == "POST":
             session = request.session
             code = FuncCode.newapp_confirm.value
@@ -240,8 +248,9 @@ def confirm(request):
                     code, token, application.get('id'), app_session)
 
             # -- application deploy
+            env = ast.literal_eval(env_session["id"])
             deploy = ApplicationUtil.deploy_application(
-                    code, token, env_session.get('id'),
+                    code, token, env.get('id'),
                     app_id, history.get('id'))
 
             # -- session delete

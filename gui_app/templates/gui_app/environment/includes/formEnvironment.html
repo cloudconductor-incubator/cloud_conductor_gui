@@ -24,6 +24,7 @@ $(function(){
 			{{ form.name.errors }}
 	</div>
 	{% if create %}
+	{% if systems %}
 	<div class="form-group">
 		<label><span id="req">*</span>System</label> <select
 			class="form-control" name="system_id" id="system_id">
@@ -37,6 +38,7 @@ $(function(){
 		{{ form.system_id.errors }}
 	</div>
 	{% endif %}
+	{% endif %}
 
 	{% if create %}
 	<div class="form-group">
@@ -46,7 +48,8 @@ $(function(){
 			<select class="form-control" name="candidates_attributes_1" id="candidates_attributes_1">
 				<option value=""></option>
 				{% for c in clouds %}
-					<option value="{{ c.id }}" {% if c.id == env.candidates_attributes_1 %} selected="selected"{% endif %}>
+					{{env}}
+					<option value="{{ c.id }}" {% if c.id|add:"0" == env.candidates_attributes_1 %} selected="selected"{% endif %}>
 					{{ c.name }}</option>
 				{% endfor %}
 			</select>
@@ -80,6 +83,7 @@ $(function(){
 		{{ form.candidates_attributes_3.errors }}
 	</div>
 
+	{% if systems %}
 	<div class="form-group">
 		<label><span id="req">*</span>Blueprint&nbsp;:&nbsp;version</label>
 		<select class="form-control" name="blueprint" id="blueprint">
@@ -92,12 +96,15 @@ $(function(){
 		</select>
 	</div>
 	{% endif %}
+	{% endif %}
 
+	{% if systems %}
 	<div class="form-group">
 		<label>template_parameters</label>
 		<div id="template_parameters-div"></div>
 		{{ form.template_parameters.errors }}
 	</div>
+	{% endif %}
 	<div class="form-group">
 		<label>user_attributes</label>
 		<input type="file" onchange="read(this, 'user_attributes', 'user_output')" accept="application/json"  />

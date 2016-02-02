@@ -16,7 +16,7 @@
 {% include "gui_app/includes/message.html" %}
 
 {% if project %}
-
+{% if project.id %}
 {% if request.session.project.manage or request.session.project.update %}
 <div class="btn_group_top">
 	<button type="button" class="btn btn-success btn-sm" onclick="location.href='{% url 'app:projectEdit' project.id %}'">
@@ -24,7 +24,7 @@
 	</button>
 </div>
 {% endif %}
-
+{% endif %}
 <table class="table table-hover">
 		<tr>
 			<th>ID</th><td>{{ project.id }}</td>
@@ -42,25 +42,28 @@
 			<th>Update date</th><td>{{ project.updated_at }}</td>
 		</tr>
 </table>
-
-{% if request.session.project.manage or request.session.project.destroy %}
-<div class="btn_group_bottom">
-	<button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#myModal">
-		<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>&nbsp;　delete
-	</button>
-</div>
+{% if project.id %}
+	{% if request.session.project.manage or request.session.project.destroy %}
+	<div class="btn_group_bottom">
+		<button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#myModal">
+			<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>&nbsp;　delete
+		</button>
+	</div>
+	{% endif %}
 {% endif %}
+
 {% if accounts %}
 	<div class="panel panel-default">
 		<div class="panel-heading">Account List</div>
 		<div class="panel-body">
 
+	{% if request.session.assignment.manage or request.session.assignment.edit %}
 	<div class="btn_group_top">
 		<button type="button" class="btn btn-success btn-sm" onclick="location.href='{% url 'app:assignmentEdit' project.id %}'">
 			<span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp;　edit
 		</button>
 	</div>
-
+	{% endif %}
 		<table class="table table-hover">
 			<thead>
 				<tr>
@@ -112,9 +115,11 @@
         <button type="button" class="btn btn-default" data-dismiss="modal">
         	<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
 		</button>
+		{% if project.id %}
         <button type="button" class="btn btn-danger" onclick="location.href='{% url 'app:projectDelete' project.id %}'">
 			<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
 		</button>
+		{% endif %}
       </div>
     </div>
   </div>

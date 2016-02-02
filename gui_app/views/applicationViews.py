@@ -50,7 +50,8 @@ def applicationList(request):
 
 
 def applicationDetail(request, id):
-    app = ''
+    code = FuncCode.applicationDetail.value
+    app = None
     try:
         if not SessionUtil.check_login(request):
             return redirect(Path.logout)
@@ -59,11 +60,7 @@ def applicationDetail(request, id):
 
         # -- application DetailAPI call, get a response
         token = request.session['auth_token']
-        url = Url.applicationDetail(id, Url.url)
-        data = {
-            'auth_token': token
-        }
-        app = ApiUtil.requestGet(url, FuncCode.applicationDetail.value, data)
+        app = ApplicationUtil.get_application_detail(code, token, id)
 
         return render(request, Html.applicationDetail,
                       {'app': app, 'message': ''})
@@ -78,7 +75,7 @@ def applicationCreate(request):
     code = FuncCode.applicationCreate.value
     apptype = list(ApplicaionType)
     protocol = list(ProtocolType)
-    systems = ''
+    systems = None
     try:
         if not SessionUtil.check_login(request):
             return redirect(Path.logout)
@@ -136,10 +133,10 @@ def applicationEdit(request, id):
     code = FuncCode.systemList.value
     apptype = list(ApplicaionType)
     protocol = list(ProtocolType)
-    systems = ''
-    newhis = ''
-    history = ''
-    app = ''
+    systems = None
+    newhis = None
+    history = None
+    app = None
 
     try:
         if not SessionUtil.check_login(request):
@@ -198,6 +195,7 @@ def applicationEdit(request, id):
 
 def applicationDelete(request, id):
     code = FuncCode.applicationDelete.value
+    app = None
     try:
         if not SessionUtil.check_login(request):
             return redirect(Path.logout)
@@ -206,6 +204,8 @@ def applicationDelete(request, id):
 
         # -- URL and data set
         token = request.session['auth_token']
+        app = ApplicationUtil.get_application_detail(code, token, id)
+
         ApplicationUtil.delete_application(code, token, id)
 
         return redirect(Path.applicationList)
@@ -213,4 +213,4 @@ def applicationDelete(request, id):
         log.error(code, None, ex)
 
         return render(request, Html.applicationDetail,
-                      {'app': '', 'message': ex})
+                      {'app': app, 'message': ex})

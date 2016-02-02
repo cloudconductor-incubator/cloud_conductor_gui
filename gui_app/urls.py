@@ -144,10 +144,6 @@ urlpatterns = [
 
     url('^role/create/', roleViews.roleCreate, name="roleCreate"),
 
-    url('^cloudregist/project/create/',
-        cloudRegistrationViews.projectCreate, name="cloudregistProject"),
-    url('^cloudregist/project/select/',
-        cloudRegistrationViews.projectSelect, name="cloudregistProjectSelect"),
     url('^cloudregist/cloud/create/',
         cloudRegistrationViews.cloudCreate, name="cloudregistCloud"),
     url('^cloudregist/baseimage/create/',

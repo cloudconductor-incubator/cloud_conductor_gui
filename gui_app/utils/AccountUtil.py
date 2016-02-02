@@ -124,3 +124,15 @@ def get_assginment_account(code, token, id):
                             })
 
     return accountList
+
+
+def delete_account(code, token, id):
+    if StringUtil.isEmpty(id):
+        return None
+
+    if StringUtil.isEmpty(token):
+        return None
+
+    url = Url.accountDelete(id, Url.url)
+    data = {'auth_token': token}
+    ApiUtil.requestDelete(url, code, data)

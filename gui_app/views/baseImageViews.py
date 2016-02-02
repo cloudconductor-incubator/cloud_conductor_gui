@@ -24,6 +24,7 @@ from ..logs import log
 # Create your views here.
 def baseImageDetail(request, id):
     code = FuncCode.baseImageDetail.value
+    baseimage = None
     try:
         if not SessionUtil.check_login(request):
             return redirect(Path.logout)
@@ -39,7 +40,7 @@ def baseImageDetail(request, id):
         log.error(FuncCode.baseImageDetail.value, None, ex)
 
         return render(request, Html.baseImageDetail,
-                      {'baseImage': '', 'message': str(ex)})
+                      {'baseImage': baseimage, 'message': str(ex)})
 
 
 def baseImageCreate(request, cid):
@@ -88,6 +89,7 @@ def baseImageCreate(request, cid):
 
 def baseImageEdit(request, id):
     osversion = list(OSVersion)
+    baseimage = None
     try:
         if not SessionUtil.check_login(request):
             return redirect(Path.logout)
@@ -140,24 +142,26 @@ def baseImageEdit(request, id):
 
 
 def baseImageDelete(request, id):
+    code = FuncCode.baseImageDelete.value
+    baseimage = None
+    cloud_id = None
     try:
         if not SessionUtil.check_login(request):
             return redirect(Path.logout)
         if not SessionUtil.check_permission(request, 'baseimage', 'destroy'):
             return render_to_response(Html.error_403)
 
-        data = {'auth_token': request.session['auth_token']}
-        # -- Get a baseImage
-        urlb = Url.baseImageDetail(id, Url.url)
-        detail = ApiUtil.requestGet(urlb, FuncCode.baseImageDetail.value, data)
+#         token = request.session.get('auth_token')
+        # -- Get a baseImage, api call
+        baseimage = BaseimageUtil.get_baseimage_detail(code, token, id)
+        cloud_id = baseimage.get('cloud_id')
 
         # -- Delete a baseImage, api call
-        url = Url.baseImageDelete(id, Url.url)
-        ApiUtil.requestDelete(url, FuncCode.baseImageDelete.value, data)
+        BaseimageUtil.delete_baseimage(code, token, id)
 
-        return redirect(Path.cloudDetail('1'))
+        return redirect(Path.cloudDetail(cloud_id))
     except Exception as ex:
         log.error(FuncCode.baseImageDelete.value, None, ex)
 
         return render(request, Html.baseImageDetail,
-                      {'baseImage': '', 'message': ex})
+                      {'baseImage': baseimage, 'message': ex})

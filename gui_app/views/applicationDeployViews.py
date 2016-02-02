@@ -61,13 +61,13 @@ def environmentSelect(request):
         code = FuncCode.appDep_environment.value
         session = request.session
         environment = session.get('w_env_select')
+        token = session['auth_token']
+        project_id = session['project_id']
+
+        list = EnvironmentUtil.get_environment_list2(
+            code, token, project_id)
 
         if request.method == "GET":
-            token = session['auth_token']
-            project_id = session['project_id']
-
-            list = EnvironmentUtil.get_environment_list2(
-                code, token, project_id)
 
             return render(request, Html.appdeploy_environmentSelect,
                           {"list": list, 'environment': environment,
@@ -76,6 +76,14 @@ def environmentSelect(request):
             param = request.POST
 
             environment = environmentPut(param)
+
+            form = selecttForm(environment)
+            if not form.is_valid():
+                return render(request, Html.appdeploy_environmentSelect,
+                              {"list": list, 'environment': environment,
+                               'form': form,
+                               'message': ''})
+
             request.session['w_env_select'] = environment
 
             return redirect(Path.appdeploy_confirm)

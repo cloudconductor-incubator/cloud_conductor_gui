@@ -4,13 +4,15 @@ import requests
 from ..logs import log
 from django.conf import settings
 from ..utils import StringUtil
+from ..utils import FileUtil
 from ..enum.ResponseType import Response
 from ..enum.LogType import Message
 from ..utils.ErrorUtil import ApiError
 
 
 class Url():
-    url = settings.CLOUDCONDUCTOR_URL
+    # url = settings.CLOUDCONDUCTOR_URL
+    url = FileUtil.getUrlPath()
 
     token = url + 'tokens'
 

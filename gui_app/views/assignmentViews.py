@@ -14,6 +14,7 @@ from ..utils.PathUtil import Html
 from ..utils.ApiUtil import Url
 from ..utils import SessionUtil
 from ..enum.FunctionCode import FuncCode
+from ..enum.MessageCode import Error
 from ..logs import log
 
 # CloudConductor add
@@ -172,6 +173,62 @@ def assignmentEdit(request, id=None):
             }
             assignments = ApiUtil.requestGet(
                 url, FuncCode.projectDetail.value, data)
+
+            selected = True
+
+            for assignment in assignments:
+                if 'chk-' + str(assignment['id']) in p:
+                    if p['sel-' + str(assignment['id'])] == '':
+                        selected = False
+
+            if not selected:
+
+                assignmentList = []
+                for assignment in assignments:
+                    url = Url.roleList
+                    data = {
+                        'auth_token': token,
+                        'account_id': assignment["account_id"],
+                        'project_id': id
+                    }
+                    roleList = ApiUtil.requestGet(
+                        url, FuncCode.projectDetail.value, data)
+                    role = ""
+                    for item in roleList:
+                        role = item["id"]
+
+                    url = Url.accountList
+                    data = {
+                        'auth_token': token,
+                    }
+                    accountList = ApiUtil.requestGet(
+                        url, FuncCode.projectDetail.value, data)
+                    accountName = ""
+                    for item in accountList:
+                        if item["id"] == assignment["account_id"]:
+                            accountName = item["name"]
+                            break
+
+                    assignmentList.append({
+                        'id': assignment["id"],
+                        'account_id': assignment["account_id"],
+                        'name': accountName,
+                        'role': role,
+                    })
+
+                url = Url.roleList
+                data = {
+                    'auth_token': token,
+                    'project_id': id
+                }
+                roleList = ApiUtil.requestGet(
+                    url, FuncCode.projectDetail.value, data)
+
+                return render(request, Html.assignmentEdit,
+                              {'assignments': assignmentList,
+                               'message': Error.CheckboxNotSelected.value,
+                               'roleList': roleList, 'project_id': id,
+                               'account_id': account_id, 'save': True})
 
             for assignment in assignments:
                 if 'chk-' + str(assignment['id']) in p:

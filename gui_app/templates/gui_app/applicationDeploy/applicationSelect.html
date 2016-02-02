@@ -21,7 +21,7 @@
 			<select class="form-control" name="id" id="id">
 		        <option value=""></option>
 				{% for app in list %}
-					<option value="{'id': {{ app.id }}, 'name': '{{ app.name }}'}" {% ifequal app.id application.id%} selected="selected"{% endifequal %}>
+					<option value="{'id': {{ app.id }}, 'name': '{{ app.name }}'}" {% ifequal app.id|add:"0" application.id|add:"0" %} selected="selected"{% endifequal %}>
 					{{ app.name }}</option>
 				{% endfor %}
 		    </select>

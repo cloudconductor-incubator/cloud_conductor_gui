@@ -18,62 +18,6 @@ from ..enum.FunctionCode import FuncCode
 from ..logs import log
 
 
-def projectSelect(request):
-    try:
-        session = request.session
-        sessionDelete(session)
-
-        id = session.get('project_id')
-        token = session.get('auth_token')
-        code = FuncCode.cloudReg_project.value
-
-        if request.method == "GET":
-            project = ProjectUtil.get_project_detail(code, token, id)
-
-            return render(request, Html.cloudregist_projectSelect,
-                          {"project": project, 'message': ''})
-        elif request.method == "POST":
-
-            return redirect(Path.cloudregist_cloudCreate)
-    except Exception as ex:
-        log.error(FuncCode.cloudReg_project.value, None, ex)
-
-        return render(request, Html.cloudregist_projectSelect,
-                      {"project": request.POST, 'message': str(ex)})
-
-
-def projectCreate(request):
-    try:
-        if request.method == "GET":
-
-            project = request.session.get('project')
-            p = {'auth_token': request.session['auth_token']}
-            if project:
-                p.update(project)
-
-            return render(request, Html.cloudregist_projectCreate,
-                          {"project": p, 'message': ''})
-        elif request.method == "POST":
-            param = request.POST
-            # -- Validate check
-            form = projectForm(param)
-            if not form.is_valid():
-                project = param.copy()
-                return render(request, Html.cloudregist_projectCreate,
-                              {"project": project, 'form': form})
-
-            # -- Session add
-            project = projectPut(param)
-            request.session['project'] = project
-
-            return redirect(Path.cloudregist_cloudCreate)
-    except Exception as ex:
-        log.error(FuncCode.cloudReg_project.value, None, ex)
-
-        return render(request, Html.cloudregist_projectCreate,
-                      {"project": request.POST, 'message': str(ex)})
-
-
 def cloudCreate(request):
     try:
         if request.method == "GET":

@@ -226,3 +226,19 @@ def create_bluepritn_build(code, token, id):
     blueprint = ApiUtil.requestPost(url, code, data)
 
     return blueprint
+
+
+def delete_bluepritn_build(code, token, id):
+    if StringUtil.isEmpty(id):
+        return None
+
+    if StringUtil.isEmpty(token):
+        return None
+
+    # -- URL set
+    url = Url.blueprintDelete(id, Url.url)
+
+    # -- Set the value to the form
+    data = {'auth_token': token}
+    # -- API call, get a response
+    ApiUtil.requestDelete(url, code, data)

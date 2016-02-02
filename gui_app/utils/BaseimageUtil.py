@@ -80,3 +80,19 @@ def put_baseimage(token, form):
     }
 
     return data
+
+
+def delete_baseimage(code, token, id):
+    if StringUtil.isEmpty(id):
+        return None
+
+    if StringUtil.isEmpty(token):
+        return None
+
+    # -- URL set
+    url = Url.baseImageDelete(id, Url.url)
+
+    # -- Set the value to the form
+    data = {'auth_token': token}
+    # -- API call, get a response
+    ApiUtil.requestDelete(url, code, data)

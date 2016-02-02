@@ -41,8 +41,8 @@ def blueprintList(request):
 
 def blueprintDetail(request, id):
     code = FuncCode.blueprintDetail.value
-    blueprint = ''
-    pattern = ''
+    blueprint = None
+    pattern = None
     try:
         if not SessionUtil.check_login(request):
             return redirect(Path.logout)
@@ -63,7 +63,8 @@ def blueprintDetail(request, id):
         log.error(FuncCode.blueprintDetail.value, None, ex)
 
         return render(request, Html.blueprintDetail,
-                      {'blueprint': '', 'message': str(ex)})
+                      {'blueprint': blueprint, 'pattern': pattern,
+                       'message': str(ex)})
 
 
 def blueprintCreate(request):
@@ -207,20 +208,29 @@ def blueprintEdit(request, id):
 
 
 def blueprintDelete(request, id):
+    code = FuncCode.blueprintDelete.value
+    blueprint = None
+    pattern = None
     try:
         if not SessionUtil.check_login(request):
             return redirect(Path.logout)
         if not SessionUtil.check_permission(request, 'blueprint', 'destroy'):
             return render_to_response(Html.error_403)
 
+        token = request.session['auth_token']
+        project_id = request.session['project_id']
+
+        # -- blueprint DetailAPI call, get a response
+        blueprint = BlueprintUtil.get_bluepritn_detail(code, token, id)
+        pattern = BlueprintUtil.get_pattern_list(code, id, token, project_id)
+
         # -- URL and data set
-        url = Url.blueprintDelete(id, Url.url)
-        data = {'auth_token': request.session['auth_token']}
-        ApiUtil.requestDelete(url, FuncCode.blueprintDelete.value, data)
+        BlueprintUtil.delete_bluepritn_build(code, token, id)
 
         return redirect(Path.blueprintList)
     except Exception as ex:
         log.error(FuncCode.blueprintDelete.value, None, ex)
 
         return render(request, Html.blueprintDetail,
-                      {'blueprint': '', 'message': ex})
+                      {'blueprint': blueprint, 'pattern': pattern,
+                       'message': ex})
