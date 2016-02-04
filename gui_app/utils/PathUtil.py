@@ -66,6 +66,9 @@ class Path():
     def applicationEdit(id):
         return "/ccgui/application/{0}/edit".format(id)
 
+    def applicationHistoryDetail(id, his_id):
+        return "/ccgui/application/{0}/history/{1}/detail".format(id, his_id)
+
     blueprintList = "/ccgui/blueprint/list/"
     blueprintCreate = "/ccgui/blueprint/create/"
 
@@ -74,6 +77,12 @@ class Path():
 
     def blueprintEdit(id):
         return "/ccgui/blueprint/{0}/edit".format(id)
+
+    def blueprintBuild(id):
+        return "/ccgui/blueprint/{0}/build".format(id)
+
+    def blueprintHistoryDetail(id, hid):
+        return "/ccgui/blueprint/{0}/history/{1}/detail".format(id, hid)
 
     patternList = "/ccgui/pattern/list/"
     patternCreate = "/ccgui/pattern/create/"
@@ -167,6 +176,8 @@ class Html():
 
     applicationList = "gui_app/application/applicationList.html"
     applicationDetail = "gui_app/application/applicationDetail.html"
+    applicationHistoryDetail = "gui_app/" + \
+                               "application/applicationHistoryDetail.html"
     applicationCreate = "gui_app/application/applicationCreate.html"
     applicationEdit = "gui_app/application/applicationEdit.html"
 
@@ -174,6 +185,8 @@ class Html():
     blueprintDetail = "gui_app/blueprint/blueprintDetail.html"
     blueprintCreate = "gui_app/blueprint/blueprintCreate.html"
     blueprintEdit = "gui_app/blueprint/blueprintEdit.html"
+
+    blueprintHistoryDetail = "gui_app/blueprint/blueprintHistoryDetail.html"
 
     patternList = "gui_app/pattern/patternList.html"
     patternDetail = "gui_app/pattern/patternDetail.html"
@@ -184,13 +197,11 @@ class Html():
     accountCreate = "gui_app/account/accountCreate.html"
     accountDetail = "gui_app/account/accountDetail.html"
     accountEdit = "gui_app/account/accountEdit.html"
-    accountDelete = "gui_app/account/accountDetail.html"
 
     roleList = "gui_app/role/roleList.html"
     roleCreate = "gui_app/role/roleCreate.html"
     roleDetail = "gui_app/role/roleDetail.html"
     roleEdit = "gui_app/role/roleEdit.html"
-    roleDelete = "gui_app/role/roleDetail.html"
 
     cloudregist_projectCreate = \
         "gui_app/cloudRegistration/projectCreate.html"

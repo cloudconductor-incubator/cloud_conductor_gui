@@ -22,7 +22,7 @@ def applicationSelect(request):
         application = ''
         list = ''
 
-        list = ApplicationUtil.get_application_list2(
+        list = ApplicationUtil.get_application_list(
             code, token, project_id)
         print(list)
 
@@ -64,7 +64,7 @@ def environmentSelect(request):
         token = session['auth_token']
         project_id = session['project_id']
 
-        list = EnvironmentUtil.get_environment_list2(
+        list = EnvironmentUtil.get_environment_list(
             code, token, project_id)
 
         if request.method == "GET":

@@ -34,6 +34,7 @@ class FuncCode(Enum):
     applicationCreate = 'GM2230'
     applicationEdit = 'GM2240'
     applicationDelete = 'GM2250'
+    applicationHistoryDetail = 'GM2221'
 
     patternList = 'GM2310'
     patternDetail = 'GM2320'
@@ -46,6 +47,8 @@ class FuncCode(Enum):
     blueprintCreate = 'GM2430'
     blueprintEdit = 'GM2440'
     blueprintDelete = 'GM2450'
+    blueprintBuild = 'GM2460'
+    blueprintHistoryDetail = 'GM2421'
 
     systemList = 'GM2510'
     systemDetail = 'GM2520'

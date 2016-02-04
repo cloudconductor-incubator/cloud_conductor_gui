@@ -7,6 +7,7 @@ from ..utils import ApiUtil
 from ..utils import PatternUtil
 from ..utils import BlueprintUtil
 from ..utils import BlueprintPatternUtil
+from ..utils import BlueprintHistoryUtil
 from ..utils import SessionUtil
 from ..utils.PathUtil import Path
 from ..utils.PathUtil import Html
@@ -42,6 +43,7 @@ def blueprintList(request):
 def blueprintDetail(request, id):
     code = FuncCode.blueprintDetail.value
     blueprint = None
+    history_list = None
     pattern = None
     try:
         if not SessionUtil.check_login(request):
@@ -54,17 +56,19 @@ def blueprintDetail(request, id):
 
         # -- blueprint DetailAPI call, get a response
         blueprint = BlueprintUtil.get_bluepritn_detail(code, token, id)
+        history_list = BlueprintHistoryUtil.get_blueprint_history_list(
+            code, token, id)
         pattern = BlueprintUtil.get_pattern_list(code, id, token, project_id)
 
         return render(request, Html.blueprintDetail,
-                      {'blueprint': blueprint, 'pattern': pattern,
-                       'message': ''})
+                      {'blueprint': blueprint, 'history_list': history_list,
+                       'pattern': pattern, 'message': ''})
     except Exception as ex:
         log.error(FuncCode.blueprintDetail.value, None, ex)
 
         return render(request, Html.blueprintDetail,
                       {'blueprint': blueprint, 'pattern': pattern,
-                       'message': str(ex)})
+                       'history_list': history_list, 'message': str(ex)})
 
 
 def blueprintCreate(request):
@@ -92,7 +96,7 @@ def blueprintCreate(request):
             msg = ''
             p = request.POST
             my_pattern = BlueprintPatternUtil.dic_pattern_list(
-                            p.getlist('os_version'), p.getlist('pattern_id'))
+                p.getlist('os_version'), p.getlist('pattern_id'))
             # -- Validate check
             form = blueprintForm(p)
             if not form.is_valid():
@@ -147,7 +151,7 @@ def blueprintEdit(request, id):
 
         if request.method == "GET":
             old_pattern = BlueprintPatternUtil.get_blueprint_pattern_list2(
-                           code, token, id)
+                code, token, id)
 
             return render(request, Html.blueprintEdit,
                           {'blueprint': blueprint, 'patterns': patterns,
@@ -158,7 +162,7 @@ def blueprintEdit(request, id):
             msg = ''
             p = request.POST
             my_pattern = BlueprintPatternUtil.dic_pattern_list(
-                            p.getlist('os_version'), p.getlist('pattern_id'))
+                p.getlist('os_version'), p.getlist('pattern_id'))
 
             # -- Validate check
             form = blueprintForm(p)
@@ -175,17 +179,17 @@ def blueprintEdit(request, id):
             blueprint = BlueprintUtil.edit_blueprint(
                 code, token, id, form.data)
 
-            # -- get newList
+            # -- 2. Add a Pattern, api call
+
+            # --     get newList
             new_set = set(p.getlist('pattern_id'))
-            # -- get oldlist
+            # --     get oldlist
             old_set = set(BlueprintPatternUtil.get_blueprint_pattern_list3(
-                        code, token, id))
+                code, token, id))
 
             delete_list = old_set.difference(new_set)
             add_list = new_set.difference(old_set)
 
-            # -- 2. Add a Pattern, api call
-            pattern_list = p.getlist('pattern_id')
             BlueprintPatternUtil.add_blueprint_pattern_list(
                 code, token, id, p.getlist('os_version'), add_list)
 
@@ -223,6 +227,8 @@ def blueprintDelete(request, id):
         # -- blueprint DetailAPI call, get a response
         blueprint = BlueprintUtil.get_bluepritn_detail(code, token, id)
         pattern = BlueprintUtil.get_pattern_list(code, id, token, project_id)
+        history_list = BlueprintHistoryUtil.get_blueprint_history_list(
+            code, token, id)
 
         # -- URL and data set
         BlueprintUtil.delete_bluepritn_build(code, token, id)
@@ -233,4 +239,62 @@ def blueprintDelete(request, id):
 
         return render(request, Html.blueprintDetail,
                       {'blueprint': blueprint, 'pattern': pattern,
-                       'message': ex})
+                       'history_list': history_list, 'message': ex})
+
+
+def blueprintBuild(request, id):
+    code = FuncCode.blueprintBuild.value
+    blueprint = None
+    pattern = None
+    history_list = None
+    try:
+        if not SessionUtil.check_login(request):
+            return redirect(Path.logout)
+        if not SessionUtil.check_permission(request, 'blueprint', 'create'):
+            return render_to_response(Html.error_403)
+
+        token = request.session['auth_token']
+        project_id = request.session['project_id']
+
+        # -- blueprint DetailAPI call, get a response
+        blueprint = BlueprintUtil.get_bluepritn_detail(code, token, id)
+        pattern = BlueprintUtil.get_pattern_list(code, id, token, project_id)
+        history_list = BlueprintHistoryUtil.get_blueprint_history_list(
+            code, token, id)
+
+        # -- URL and data set
+        BlueprintUtil.create_bluepritn_build(code, token, id)
+
+        return redirect(Path.blueprintList)
+    except Exception as ex:
+        log.error(FuncCode.blueprintDelete.value, None, ex)
+
+        return render(request, Html.blueprintDetail,
+                      {'blueprint': blueprint, 'pattern': pattern,
+                       'history_list': history_list, 'message': ex})
+
+
+# def blueprintHistoryDetail(request, id, ver):
+#     code = FuncCode.blueprintHistoryDetail.value
+#     history = None
+#     try:
+#         if not SessionUtil.check_login(request):
+#             return redirect(Path.logout)
+#         if not SessionUtil.check_permission(request, 'blueprint_history',
+#                                                      'read'):
+#             return render_to_response(Html.error_403)
+#
+#         token = request.session['auth_token']
+#         project_id = request.session['project_id']
+#
+#         # -- blueprint DetailAPI call, get a response
+#         history = BlueprintHistoryUtil.get_blueprint_history_detail(
+#             code, token, id, ver)
+#
+#         return render(request, Html.blueprintHistoryDetail,
+#                       {'history': history,  'message': ''})
+#     except Exception as ex:
+#         log.error(FuncCode.blueprintDetail.value, None, ex)
+#
+#         return render(request, Html.blueprintHistoryDetail,
+#                       {'history': history, 'message': str(ex)})

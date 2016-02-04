@@ -27,7 +27,6 @@
 					<th>No</th>
 					<th>Account Name</th>
 					<th>Email</th>
-					<th>Role</th>
 					<th>Admin</th>
 					<th>Creation Date</th>
 				</tr>
@@ -39,7 +38,6 @@
 						<a href="{% url 'app:accountDetail' ac.id %}">{{ ac.name }}</a>
 					</td>
 					<td>{{ ac.email }}</td>
-					<td>{{ ac.role }}</td>
 					<td>{{ ac.admin }}</td>
 					<td>{{ ac.created_at }}</td>
 				</tr>

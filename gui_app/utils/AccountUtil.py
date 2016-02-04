@@ -18,8 +18,10 @@ def get_account_list(code, token, project_id=None):
 
     data = {
         'auth_token': token,
-        'project_id': project_id,
     }
+
+    if StringUtil.isNotEmpty(project_id):
+        data['project_id'] = project_id
 
     url = Url.accountList
     list = ApiUtil.requestGet(url, code, data)

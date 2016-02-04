@@ -38,6 +38,44 @@
 		</div>
 	</div>
 </form>
+
+<script type="text/javascript">
+
+$(function(){
+
+	if($("#id").val() != ''){
+		$("#name").html( $("#id").find("option:selected").data('name') );
+		$("#system_id").html( $("#id").find("option:selected").data('system_id') );
+		$("#blueprint_history_id").html( $("#id").find("option:selected").data('blueprint_history_id') );
+		$("#description").html( $("#id").find("option:selected").data('description') );
+		$("#status").html( $("#id").find("option:selected").data('status') );
+		$("#ip_address").html( $("#id").find("option:selected").data('ip_address') );
+		$("#application_status").html( $("#id").find("option:selected").data('application_status') );
+	}
+});
+
+$('#id').on('change', function(){
+	if($(this).val() == ''){
+		$("#name").html("");
+		$("#system_id").html("");
+		$("#blueprint_history_id").html("");
+		$("#description").html("");
+		$("#status").html("");
+		$("#ip_address").html("");
+		$("#application_status").html("");
+	}else{
+		$("#name").html( $(this).find("option:selected").data('name') );
+		$("#system_id").html( $(this).find("option:selected").data('system_id') );
+		$("#blueprint_history_id").html( $(this).find("option:selected").data('blueprint_history_id') );
+		$("#description").html( $(this).find("option:selected").data('description') );
+		$("#status").html( $(this).find("option:selected").data('status') );
+		$("#ip_address").html( $(this).find("option:selected").data('ip_address') );
+		$("#application_status").html( $(this).find("option:selected").data('application_status') );
+	}
+});
+
+</script>
+
 {% endblock %}
 
 {% block bodyscript %}{% endblock %}

@@ -1,0 +1,55 @@
+{% extends "gui_app/base.html" %}
+{% block title %}Blueprint Detail{% endblock %}
+{% block headerscript %}
+{% endblock %}
+
+{% block nav %}
+    {% include "gui_app/includes/nav_menu.html" %}
+{% endblock %}
+{% block breadcrumb %}
+	<li><a href="{% url 'app:blueprintList' %}">Blueprint Management</a></li>
+	<li>Blueprint Detail</li>
+{% endblock %}
+{% block content %}
+<div class="cc-title">Blueprint Detail</div>
+<br>
+{% include "gui_app/includes/message.html" %}
+{% if history %}
+
+	<table class="table table-hover">
+			<tr>
+				<th>ID</th><td>{{ blueprint.id }}</td>
+			</tr>
+			<tr>
+				<th>Blueprint Name</th><td>{{ blueprint.name }}</td>
+			</tr>
+			<tr>
+				<th>Description</th><td>{{ blueprint.description }}</td>
+			</tr>
+			<tr>
+				<th>Create date</th><td>{{ blueprint.created_at }}</td>
+			</tr>
+			<tr>
+				<th>Update date</th><td>{{ blueprint.updated_at }}</td>
+			</tr>
+	</table>
+	<!-- pattern -->
+    {% if pattern %}
+		{% include "gui_app/blueprint/includes/patternList.html" %}
+	{% else %}
+		There is no pattern.
+	{% endif %}
+	<br/>
+	<div class="button_left">
+		<button type="button" class="btn btn-default btn-sm" onclick="location.href='{% url 'app:blueprintList' %}'">
+			<span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
+			 &nbsp;　back
+		</button>
+	</div>
+
+{% else %}
+	There is no blueprint.
+{% endif %}
+{% endblock %}
+
+{% block bodyscript %}{% endblock %}

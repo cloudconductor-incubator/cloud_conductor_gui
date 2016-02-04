@@ -35,7 +35,7 @@
 			</thead>
         {% for assignment in assignments %}
             	<tr>
-            		<td><input name="chk-{{assignment.id}}" id="chk-{{assignment.id}}" checked type="checkbox"></td>
+            		<td><input name="chk-{{assignment.id}}" id="chk-{{assignment.id}}" checked type="checkbox" {% if  assignment.account_id == account_id %} onclick="return false;" {%endif%}></td>
 					<td>{{assignment.id}}</td>
 					<td>{{ assignment.name }}</td>
 					<td>

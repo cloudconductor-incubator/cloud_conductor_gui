@@ -28,7 +28,7 @@ def accountList(request):
         project_id = request.session.get('project_id')
 
         # -- Get a  list, API call
-        accounts = AccountUtil.get_account_list(code, token, project_id)
+        accounts = AccountUtil.get_account_list(code, token)
 
         return render(request, Html.accountList,
                       {'accounts': accounts, 'message': ''})
@@ -54,9 +54,6 @@ def accountDetail(request, id):
         code = FuncCode.accountDetail.value
 
         account = AccountUtil.get_account_detail(code, token, id)
-        role = RoleUtil.get_account_role(
-            code, token, project_id, account.get('id'))
-        account.update({'role': role.get('name')})
 
         return render(request, Html.accountDetail,
                       {'account': account, 'message': ''})
@@ -177,9 +174,6 @@ def accountDelete(request, id):
         project_id = request.session['project_id']
 
         account = AccountUtil.get_account_detail(code, token, id)
-        role = RoleUtil.get_account_role(
-            code, token, project_id, account.get('id'))
-        account.update({'role': role.get('name')})
 
         # -- accounDelte
         AccountUtil.delete_account(code, token, id)

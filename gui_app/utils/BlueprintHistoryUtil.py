@@ -9,7 +9,24 @@ from ..enum.FunctionCode import FuncCode
 from ..logs import log
 
 
-def get_blueprint_history_list(code, token, blueprint_id, version):
+def get_blueprint_history_list(code, token, id):
+
+    if StringUtil.isEmpty(token):
+        return None
+
+    if StringUtil.isEmpty(id):
+        return None
+
+    data = {
+        'auth_token': token,
+    }
+    url = Url.blueprintHistoriesList(id, Url.url)
+    list = ApiUtil.requestGet(url, code, data)
+
+    return list
+
+
+def get_blueprint_parameters(code, token, blueprint_id, version):
 
     if StringUtil.isEmpty(code):
         return None
@@ -24,12 +41,41 @@ def get_blueprint_history_list(code, token, blueprint_id, version):
         'auth_token': token,
     }
     url = Url.blueprintHistoriesParameters(blueprint_id, version, Url.url)
-    list = ApiUtil.requestGet(url, code, data)
+    param = ApiUtil.requestGet(url, code, data)
 
-    return list
+    return param
 
 
-def get_blueprint_history_detail(code, token, id, his_id):
+def get_blueprint_history_parameters(code, token, blueprint_id, history_id):
+    # -- Later modifications
+    if StringUtil.isEmpty(token):
+        return None
+
+    if StringUtil.isEmpty(blueprint_id):
+        return None
+
+    if StringUtil.isEmpty(history_id):
+        return None
+
+    list = get_blueprint_history_list(code, token, blueprint_id)
+
+    history = None
+    for his in list:
+        if his.get('id') == history_id:
+            history = his
+            break
+
+    data = {
+        'auth_token': token,
+    }
+    url = Url.blueprintHistoriesParameters(history.get('blueprint_id'),
+                                           history.get('version'), Url.url)
+    param = ApiUtil.requestGet(url, code, data)
+
+    return param
+
+
+def get_blueprint_history_detail(code, token, id, version):
     if StringUtil.isEmpty(code):
         return None
 

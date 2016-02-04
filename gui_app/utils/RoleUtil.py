@@ -432,6 +432,27 @@ def add_session_role(session, role, permissions):
 
             session['blueprint'] = dic_blueprint
 
+        elif per.get("model") == 'blueprint_history':
+
+            dic_blueprint['m_blueprint'] = True
+
+            if per.get("action") == 'manage':
+                dic_blueprint['manage'] = True
+
+            elif per.get("action") == 'read':
+                dic_blueprint['read'] = True
+
+            elif per.get("action") == 'create':
+                dic_blueprint['create'] = True
+
+            elif per.get("action") == 'update':
+                dic_blueprint['update'] = True
+
+            elif per.get("action") == 'destroy':
+                dic_blueprint['destroy'] = True
+
+            session['blueprint_history'] = dic_blueprint
+
         elif per.get("model") == 'system':
 
             dic_system['m_system'] = per.get("model")
@@ -571,6 +592,9 @@ def delete_session_role(session):
 
     if 'blueprint' in session:
         del session['blueprint']
+
+    if 'blueprint_history' in session:
+        del session['blueprint_history']
 
     if 'system' in session:
         del session['system']

@@ -1,5 +1,5 @@
 {% extends "gui_app/base.html" %}
-{% block title %}Application Detail{% endblock %}
+{% block title %}Application History Detail{% endblock %}
 {% block headerscript %}
 {% endblock %}
 
@@ -9,16 +9,17 @@
 {% block breadcrumb %}
 	<li><a href="{% url 'app:applicationList' %}">Application Management</a></li>
 	<li>Application Detail</li>
+	<li>Application History Detail</li>
 {% endblock %}
 {% block content %}
-<div class="cc-title">Application Detail</div>
+<div class="cc-title">Application History Detail</div>
 <br>
 {% include "gui_app/includes/message.html" %}
 {% if app %}
-	{% if app.id %}
+	{% if history.id %}
 	{% if request.session.application.manage or request.session.application.update %}
 	<div class="btn_group_top">
-		<button type="button" class="btn btn-success btn-sm" onclick="location.href='{% url 'app:applicationEdit' app.id %}'">
+		<button type="button" class="btn btn-success btn-sm" onclick="location.href='{% url 'app:applicationEdit' history.id %}'">
 			<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>&nbsp;　edit
 		</button>
 	</div>
@@ -26,25 +27,34 @@
 	{% endif %}
 	<table class="table table-hover">
 			<tr>
-				<th>ID</th><td>{{ app.id }}</td>
+				<th>ID</th><td>{{ history.id }}</td>
 			</tr>
 			<tr>
-				<th>Application name</th><td>{{ app.name }}</td>
+				<th>Type</th><td>{{ history.type }}</td>
 			</tr>
 			<tr>
-				<th>System</th><td>{{ app.system_id }}</td>
+				<th>Version</th><td>{{ history.version }}</td>
 			</tr>
 			<tr>
-				<th>Domain</th><td>{{ app.domain }}</td>
+				<th>Protocol</th><td>{{ history.protocol }}</td>
 			</tr>
 			<tr>
-				<th>Description</th><td>{{ app.description }}</td>
+				<th>revision</th><td>{{ history.revision }}</td>
 			</tr>
 			<tr>
-				<th>Create date</th><td>{{ app.created_at }}</td>
+				<th>pre_deploy</th><td>{{ history.pre_deploy }}</td>
 			</tr>
 			<tr>
-				<th>Update date</th><td>{{ app.updated_at }}</td>
+				<th>post_deploy</th><td>{{ history.post_deploy }}</td>
+			</tr>
+			<tr>
+				<th>parameters</th><td>{{ history.parameters }}</td>
+			</tr>
+			<tr>
+				<th>Create date</th><td>{{ history.created_at }}</td>
+			</tr>
+			<tr>
+				<th>Update date</th><td>{{ history.updated_at }}</td>
 			</tr>
 	</table>
 
@@ -60,7 +70,7 @@
 			<span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
 			 &nbsp;　back
 		</button>
-		{% if app.id %}
+		{% if history.id %}
 		{% if request.session.application.manage or request.session.application.destroy %}
 		<span class="delete_btn">
 			<button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#myModal">
@@ -87,8 +97,8 @@
         <button type="button" class="btn btn-default" data-dismiss="modal">
         	<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
 		</button>
-		{% if app.id %}
-        <button type="button" class="btn btn-danger" onclick="location.href='{% url 'app:applicationDelete' app.id %}'">
+		{% if history.id %}
+        <button type="button" class="btn btn-danger" onclick="location.href='#'">
 			<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
 		</button>
 		{% endif %}

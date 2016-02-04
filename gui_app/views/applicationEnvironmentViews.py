@@ -28,7 +28,7 @@ def systemSelect(request):
         id = session.get('project_id')
         token = session.get('auth_token')
         code = FuncCode.appenv_system.value
-        list = SystemUtil.get_system_list2(code, token, id)
+        list = SystemUtil.get_system_list(code, token, id)
 
         if request.method == "GET":
             system = session.get('w_sys_select')
@@ -66,7 +66,7 @@ def blueprintSelect(request):
         session = request.session
         token = session['auth_token']
         project_id = session['project_id']
-        list = BlueprintUtil.get_blueprint_list2(code, token, project_id)
+        list = BlueprintUtil.get_blueprint_list(code, token, project_id)
         print(list)
 
         if request.method == "GET":

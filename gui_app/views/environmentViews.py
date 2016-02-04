@@ -146,13 +146,16 @@ def environmentEdit(request, id):
         p = ApiUtil.requestGet(url, code, data)
         p.update(data)
 
-        env = EnvironmentUtil.get_environment_detail(code, token, id)
+#         env = EnvironmentUtil.get_environment_detail(code, token, id)
+#         temp_param = BlueprintHistoryUtil.get_blueprint_history_parameters(
+#                  code, token, blueprint_id, env.get('blueprint_history_id'))
+
 #         bphistory = BlueprintHistoryUtil.get_blueprint_history_list(
 #             code, token, bp['blueprint_id'], bp['version'])
 #         blueprints = get_blueprint_version(code, data)
 
 #         temp_param = BlueprintHistoryUtil.get_blueprint_history_detail(
-#                             code, token, id, env.get('blueprint_history_id'))
+#                  code, token, id, env.get('blueprint_history_id'))
 
         if request.method == "GET":
 
@@ -199,9 +202,6 @@ def environmentDelete(request, id):
 
         # -- URL and data set
         EnvironmentUtil.delete_system(code, token, id)
-#         url = Url.environmentDelete(id, Url.url)
-#         data = {'auth_token': request.session['auth_token']}
-#         ApiUtil.requestDelete(url, FuncCode.environmentDelete.value, data)
 
         return redirect(Path.environmentList)
     except Exception as ex:
@@ -237,7 +237,7 @@ def environmentAjaxBlueprint(request):
 
         code = FuncCode.environmentCreate.value
         token = request.session['auth_token']
-        param = BlueprintHistoryUtil.get_blueprint_history_list(
+        param = BlueprintHistoryUtil.get_blueprint_parameters(
             code, token, bp['blueprint_id'], bp['version'])
 
         ff = createForm(param, 'json')

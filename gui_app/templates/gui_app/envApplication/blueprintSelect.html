@@ -28,7 +28,9 @@
 			<select class="form-control" name="id" id="id">
 		        <option value=""></option>
 				{% for bp in list %}
-					<option value="{'id': {{ bp.id }}, 'name': '{{ bp.name }}'}" {% if bp.id == blueprint.id %} selected="selected" {% endif %}>
+					<option value="{'id': {{ bp.id }}, 'name': '{{ bp.name }}'}" {% if bp.id == blueprint.id %} selected="selected" {% endif %}
+					data-name="{{ bp.name }}" data-description="{{ bp.description }}"
+					>
 					{{ bp.name }}
 					</option>
 				{% endfor %}
@@ -36,7 +38,12 @@
 		    {{ form.id.errors }}
 	    </div>
 
-    	<div class="cc-desc" id="contents-reload"> Display the contents </div>
+    	<div class="cc-desc" id="contents-reload">
+   	    		    <table>
+	    <tr><td>Blueprint Name：</td><td id="name"></td></tr>
+	    <tr><td>Description：</td><td id="description"></td></tr>
+	    </table>
+    	</div>
 		<div class="button_left">
 			<button type="button" class="btn btn-primary btn-sm" onclick="location.href='{% url 'app:envapp_systemSelect'%}'" >
 				<span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
@@ -74,6 +81,27 @@
     </div>
   </div>
 </div>
+<script type="text/javascript">
+
+$(function(){
+
+	if($("#id").val() != ''){
+		$("#name").html( $("#id").find("option:selected").data('name') );
+		$("#description").html( $("#id").find("option:selected").data('description') );
+	}
+});
+
+$('#id').on('change', function(){
+	if($(this).val() == ''){
+		$("#name").html("");
+		$("#description").html("");
+	}else{
+		$("#name").html( $(this).find("option:selected").data('name') );
+		$("#description").html( $(this).find("option:selected").data('description') );
+	}
+});
+
+</script>
 {% endblock %}
 
 {% block bodyscript %}{% endblock %}

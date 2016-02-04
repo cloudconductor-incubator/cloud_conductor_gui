@@ -52,6 +52,7 @@ def applicationList(request):
 def applicationDetail(request, id):
     code = FuncCode.applicationDetail.value
     app = None
+    history_list = None
     try:
         if not SessionUtil.check_login(request):
             return redirect(Path.logout)
@@ -61,14 +62,17 @@ def applicationDetail(request, id):
         # -- application DetailAPI call, get a response
         token = request.session['auth_token']
         app = ApplicationUtil.get_application_detail(code, token, id)
+        history_list = ApplicationHistoryUtil.get_history_list(code, token, id)
 
         return render(request, Html.applicationDetail,
-                      {'app': app, 'message': ''})
+                      {'app': app, 'history_list': history_list,
+                       'message': ''})
     except Exception as ex:
         log.error(FuncCode.applicationDetail.value, None, ex)
 
         return render(request, Html.applicationDetail,
-                      {'app': app, 'message': str(ex)})
+                      {'app': app, 'history_list': history_list,
+                       'message': str(ex)})
 
 
 def applicationCreate(request):
@@ -214,3 +218,30 @@ def applicationDelete(request, id):
 
         return render(request, Html.applicationDetail,
                       {'app': app, 'message': ex})
+
+
+def applicationHistoryDetail(request, id, hid):
+    code = FuncCode.applicationDetail.value
+    app = None
+    history_list = None
+    try:
+        if not SessionUtil.check_login(request):
+            return redirect(Path.logout)
+        if not SessionUtil.check_permission(request, 'application', 'read'):
+            return render_to_response(Html.error_403)
+
+        # -- application DetailAPI call, get a response
+        token = request.session['auth_token']
+        app = ApplicationUtil.get_application_detail(code, token, id)
+        history_list = ApplicationHistoryUtil.get_history_list(code,
+                                                               token, id)
+
+        return render(request, Html.applicationHistoryDetail,
+                      {'app': app, 'history_list': history_list,
+                       'message': ''})
+    except Exception as ex:
+        log.error(FuncCode.applicationDetail.value, None, ex)
+
+        return render(request, Html.applicationHistoryDetail,
+                      {'app': app, 'history_list': history_list,
+                       'message': str(ex)})

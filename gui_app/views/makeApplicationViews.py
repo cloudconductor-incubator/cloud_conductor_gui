@@ -31,7 +31,7 @@ def systemSelect(request):
         id = session.get('project_id')
         token = session.get('auth_token')
         code = FuncCode.newapp_system.value
-        list = SystemUtil.get_system_list2(code, token, id)
+        list = SystemUtil.get_system_list(code, token, id)
 
         if request.method == "GET":
             system = session.get('w_sys_select')
@@ -136,7 +136,7 @@ def environmentSelect(request):
         session = request.session
         token = session['auth_token']
         project_id = session['project_id']
-        list = EnvironmentUtil.get_environment_list2(code, token, project_id)
+        list = EnvironmentUtil.get_environment_list(code, token, project_id)
 
         if request.method == "GET":
             environment = session.get('w_env_select')

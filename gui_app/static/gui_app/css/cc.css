@@ -131,6 +131,12 @@ button.cc-menu-change{
 	margin-top: 40px;
 }
 
+.button_center2{
+	text-align:center;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
 .button_left{
 	text-align:left;
 	margin-top: 40px;

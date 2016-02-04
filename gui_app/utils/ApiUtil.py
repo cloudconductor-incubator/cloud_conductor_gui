@@ -142,7 +142,7 @@ class Url():
     def blueprintHistoriesParameters(id, id2, id3):
         return id3 + 'blueprints/{0}/histories/{1}/parameters'.format(id, id2)
 
-    def blueprintHistoriesEdit(id, id2, id3):
+    def blueprintHistoriesDetail(id, id2, id3):
         return id3 + 'blueprints/{0}/histories/{1}'.format(id, id2)
 
     def blueprintHistoriesDetail(id, id2, id3):
