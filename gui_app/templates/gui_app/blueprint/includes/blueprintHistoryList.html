@@ -20,7 +20,7 @@
 		    <tbody>
 			{% for his in history_list %}
 		      <tr>
-				<td><a href="#">{{ his.version }}</a></td>
+				<td><a href="{% url 'app:blueprintHistoryDetail' blueprint.id his.version %}">{{ his.version }}</a></td>
 		        <td>{{ his.status }}</td>
 		        <td>{{ his.created_at }}</td>
 		      </tr>

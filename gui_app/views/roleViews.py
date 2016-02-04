@@ -211,7 +211,28 @@ def roleEdit(request, id):
                        'items': role["check_items"], 'save': True})
 
 
+# def roleDelete(request, id):
+#     try:
+#         if not SessionUtil.check_login(request):
+#             return redirect(Path.logout)
+#         if not SessionUtil.check_permission(request, 'role', 'destroy'):
+#             return render_to_response(Html.error_403)
+#
+#         # -- URL and data set
+#         url = Url.roleDelete(id, Url.url)
+#         data = {'auth_token': request.session['auth_token']}
+#         ApiUtil.requestDelete(url, FuncCode.roleDelete.value, data)
+#
+#         return redirect(Path.roleList)
+#     except Exception as ex:
+#         log.error(FuncCode.roleDelete.value, None, ex)
+#
+#         return render(request, Html.roleDetail, {'role': '', 'message': ex})
+
+
 def roleDelete(request, id):
+    code = FuncCode.roleDelete.value
+    roles = None
     try:
         if not SessionUtil.check_login(request):
             return redirect(Path.logout)
@@ -219,12 +240,17 @@ def roleDelete(request, id):
             return render_to_response(Html.error_403)
 
         # -- URL and data set
-        url = Url.roleDelete(id, Url.url)
-        data = {'auth_token': request.session['auth_token']}
-        ApiUtil.requestDelete(url, FuncCode.roleDelete.value, data)
+        session = request.session
+        token = session.get('auth_token')
+        project_id = session.get('project_id')
+        roles = RoleUtil.get_role_list(code, token, project_id)
+
+        # -- Role delete
+        RoleUtil.delete_role(code, token, id)
 
         return redirect(Path.roleList)
     except Exception as ex:
-        log.error(FuncCode.roleDelete.value, None, ex)
+        log.error(code, None, ex)
 
-        return render(request, Html.roleDetail, {'role': '', 'message': ex})
+        return render(request, Html.projectDetail,
+                      {'roles': roles, 'message': str(ex)})

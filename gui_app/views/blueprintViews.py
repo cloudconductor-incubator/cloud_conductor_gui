@@ -55,7 +55,7 @@ def blueprintDetail(request, id):
         project_id = request.session['project_id']
 
         # -- blueprint DetailAPI call, get a response
-        blueprint = BlueprintUtil.get_bluepritn_detail(code, token, id)
+        blueprint = BlueprintUtil.get_blueprint_detail(code, token, id)
         history_list = BlueprintHistoryUtil.get_blueprint_history_list(
             code, token, id)
         pattern = BlueprintUtil.get_pattern_list(code, id, token, project_id)
@@ -146,7 +146,7 @@ def blueprintEdit(request, id):
         project_id = request.session['project_id']
         token = request.session['auth_token']
 
-        blueprint = BlueprintUtil.get_bluepritn_detail(code, token, id)
+        blueprint = BlueprintUtil.get_blueprint_detail(code, token, id)
         patterns = PatternUtil.get_pattern_list(code, token, project_id)
 
         if request.method == "GET":
@@ -225,7 +225,7 @@ def blueprintDelete(request, id):
         project_id = request.session['project_id']
 
         # -- blueprint DetailAPI call, get a response
-        blueprint = BlueprintUtil.get_bluepritn_detail(code, token, id)
+        blueprint = BlueprintUtil.get_blueprint_detail(code, token, id)
         pattern = BlueprintUtil.get_pattern_list(code, id, token, project_id)
         history_list = BlueprintHistoryUtil.get_blueprint_history_list(
             code, token, id)
@@ -257,7 +257,7 @@ def blueprintBuild(request, id):
         project_id = request.session['project_id']
 
         # -- blueprint DetailAPI call, get a response
-        blueprint = BlueprintUtil.get_bluepritn_detail(code, token, id)
+        blueprint = BlueprintUtil.get_blueprint_detail(code, token, id)
         pattern = BlueprintUtil.get_pattern_list(code, id, token, project_id)
         history_list = BlueprintHistoryUtil.get_blueprint_history_list(
             code, token, id)
@@ -265,7 +265,7 @@ def blueprintBuild(request, id):
         # -- URL and data set
         BlueprintUtil.create_bluepritn_build(code, token, id)
 
-        return redirect(Path.blueprintList)
+        return redirect(Path.blueprintDetail(id))
     except Exception as ex:
         log.error(FuncCode.blueprintDelete.value, None, ex)
 
@@ -274,27 +274,27 @@ def blueprintBuild(request, id):
                        'history_list': history_list, 'message': ex})
 
 
-# def blueprintHistoryDetail(request, id, ver):
-#     code = FuncCode.blueprintHistoryDetail.value
-#     history = None
-#     try:
-#         if not SessionUtil.check_login(request):
-#             return redirect(Path.logout)
-#         if not SessionUtil.check_permission(request, 'blueprint_history',
-#                                                      'read'):
-#             return render_to_response(Html.error_403)
-#
-#         token = request.session['auth_token']
-#         project_id = request.session['project_id']
-#
-#         # -- blueprint DetailAPI call, get a response
-#         history = BlueprintHistoryUtil.get_blueprint_history_detail(
-#             code, token, id, ver)
-#
-#         return render(request, Html.blueprintHistoryDetail,
-#                       {'history': history,  'message': ''})
-#     except Exception as ex:
-#         log.error(FuncCode.blueprintDetail.value, None, ex)
-#
-#         return render(request, Html.blueprintHistoryDetail,
-#                       {'history': history, 'message': str(ex)})
+def blueprintHistoryDetail(request, id, ver):
+    code = FuncCode.blueprintHistoryDetail.value
+    history = None
+    try:
+        if not SessionUtil.check_login(request):
+            return redirect(Path.logout)
+        if not SessionUtil.check_permission(request, 'blueprint_history',
+                                                     'read'):
+            return render_to_response(Html.error_403)
+
+        token = request.session['auth_token']
+        project_id = request.session['project_id']
+
+        # -- blueprint DetailAPI call, get a response
+        history = BlueprintHistoryUtil.get_blueprint_history_detail2(
+            code, token, id, ver)
+
+        return render(request, Html.blueprintHistoryDetail,
+                      {'history': history,  'message': ''})
+    except Exception as ex:
+        log.error(FuncCode.blueprintDetail.value, None, ex)
+
+        return render(request, Html.blueprintHistoryDetail,
+                      {'history': history, 'message': str(ex)})

@@ -18,7 +18,7 @@
 	{% if blueprint.id %}
 	{% if request.session.blueprint_history.manage or request.session.blueprint_history.create %}
 		<div class="button_center2">
-			<button type="button" class="btn btn-info btn-sm" onclick="location.href='#'">
+			<button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#build">
 			<span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>
 			 &nbsp;&nbsp;build
 			</button>
@@ -26,7 +26,7 @@
 	{% if request.session.blueprint.manage or request.session.blueprint.update %}
 			<span class="delete_btn">
 			<button type="button" class="btn btn-success btn-sm" onclick="location.href='{% url 'app:blueprintEdit' blueprint.id %}'">
-				<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>&nbsp;　edit
+				<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>&nbsp;&nbsp;edit
 			</button>
 			</span>
 		</div>
@@ -78,7 +78,7 @@
 		{% endif %}
 		{% endif %}
 	</div>
-
+{% if blueprint.id %}
 <!-- Button trigger modal -->
 <!-- Modal -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -95,15 +95,15 @@
         <button type="button" class="btn btn-default" data-dismiss="modal">
         	<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
 		</button>
-		{% if blueprint.id %}
         <button type="button" class="btn btn-danger" onclick="location.href='{% url 'app:blueprintDelete' blueprint.id %}'">
 			<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
 		</button>
-		{% endif %}
       </div>
     </div>
   </div>
 </div>
+{% include "gui_app/blueprint/includes/blueprintBuildPopup.html" %}
+{% endif %}
 
 {% else %}
 	There is no blueprint.

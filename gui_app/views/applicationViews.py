@@ -150,11 +150,7 @@ def applicationEdit(request, id):
 
         token = request.session['auth_token']
         project_id = request.session['project_id']
-
         systems = SystemUtil.get_system_list(code, token, project_id)
-
-#       history = ApplicationHistoryUtil.get_history_detail(
-#                 code, token, id, newhis.get('id'))
 
         if request.method == "GET":
             app = ApplicationUtil.get_application_detail(code, token, id)
@@ -183,8 +179,7 @@ def applicationEdit(request, id):
             app = ApplicationUtil.edit_application(code, token, id, form.data)
 
             # -- 2.Edit a applicationhistory, api call
-            ApplicationHistoryUtil.edit_history(
-                code, token, id, p.get('history_id'), form.data)
+            ApplicationHistoryUtil.create_history(code, token, id, form.data)
 
             return redirect(Path.applicationList)
     except Exception as ex:
@@ -221,7 +216,7 @@ def applicationDelete(request, id):
 
 
 def applicationHistoryDetail(request, id, hid):
-    code = FuncCode.applicationDetail.value
+    code = FuncCode.applicationHistoryDetail.value
     app = None
     history_list = None
     try:
@@ -232,16 +227,73 @@ def applicationHistoryDetail(request, id, hid):
 
         # -- application DetailAPI call, get a response
         token = request.session['auth_token']
-        app = ApplicationUtil.get_application_detail(code, token, id)
-        history_list = ApplicationHistoryUtil.get_history_list(code,
-                                                               token, id)
+        history = ApplicationHistoryUtil.get_history_detail(code, token,
+                                                                 id, hid)
 
         return render(request, Html.applicationHistoryDetail,
-                      {'app': app, 'history_list': history_list,
-                       'message': ''})
+                      {'history': history, 'message': ''})
     except Exception as ex:
         log.error(FuncCode.applicationDetail.value, None, ex)
 
         return render(request, Html.applicationHistoryDetail,
                       {'app': app, 'history_list': history_list,
                        'message': str(ex)})
+
+
+def applicationHistoryEdit(request, id, hid):
+    code = FuncCode.systemList.value
+    apptype = list(ApplicaionType)
+    protocol = list(ProtocolType)
+    systems = None
+    newhis = None
+    history = None
+    app = None
+
+    try:
+        if not SessionUtil.check_login(request):
+            return redirect(Path.logout)
+        if not SessionUtil.check_permission(request, 'application', 'update'):
+            return render_to_response(Html.error_403)
+
+        token = request.session['auth_token']
+        project_id = request.session['project_id']
+        systems = SystemUtil.get_system_list(code, token, project_id)
+
+        if request.method == "GET":
+            app = ApplicationUtil.get_application_detail(code, token, id)
+            newhis = ApplicationHistoryUtil.get_new_history(code, token, id)
+            app.update({'history_id': newhis.get('id')})
+
+            return render(request, Html.applicationEdit,
+                          {'app': app, 'history': newhis, 'form': '',
+                           'apptype': apptype, 'protocol': protocol,
+                           'message': '', 'systems': systems, 'save': True})
+        else:
+            # -- Get a value from a form
+            msg = ''
+            p = request.POST
+            # -- Validate check
+            form = applicationForm(p)
+            form.full_clean()
+            if not form.is_valid():
+
+                return render(request, Html.applicationEdit,
+                              {'app': p, 'history': p, 'apptype': apptype,
+                               'protocol': protocol, 'form': form,
+                               'message': '',
+                               'systems': systems, 'save': True})
+            # -- 1.Edit a application, api call
+            app = ApplicationUtil.edit_application(code, token, id, form.data)
+
+            # -- 2.Edit a applicationhistory, api call
+            ApplicationHistoryUtil.create_history(code, token, id, form.data)
+
+            return redirect(Path.applicationList)
+    except Exception as ex:
+        log.error(FuncCode.applicationEdit.value, None, ex)
+
+        return render(request, Html.applicationEdit,
+                      {'app': request.POST, 'history': request.POST,
+                       'apptype': apptype, 'protocol': protocol,
+                       'form': '', 'message': str(ex), 'systems': systems,
+                       'save': True})

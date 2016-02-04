@@ -17,10 +17,8 @@ def get_role_list(code, token, project_id=None, account_id=None):
         'auth_token': token,
     }
     if StringUtil.isNotEmpty(project_id):
-        #         data.update({'project_id': project_id})
         data['project_id'] = project_id
     elif StringUtil.isNotEmpty(project_id):
-        #         data.update({'account_id': account_id})
         data['account_id'] = account_id
     list = ApiUtil.requestGet(url, code, data)
 
@@ -177,9 +175,6 @@ def get_role_detail(code, token, id):
 
 def get_account_role(code, token, project_id, account_id):
 
-    if StringUtil.isEmpty(code):
-        return None
-
     if StringUtil.isEmpty(token):
         return None
 
@@ -200,19 +195,25 @@ def get_account_role(code, token, project_id, account_id):
     if not roles:
         return None
 
-    role = {}
+    role = None
     for r in roles:
-        role['id'] = r.get('id')
-        role['name'] = r.get('name')
-        role['preset'] = r.get('preset')
-        role['project_id'] = r.get('project_id')
-        role['description'] = r.get('description')
-        role['created_at'] = r.get('created_at')
-        role['updated_at'] = r.get('updated_at')
-
+        role = r
         break
 
     return role
+
+
+def delete_role(code, token, id):
+
+    if StringUtil.isEmpty(code):
+        return None
+
+    if StringUtil.isEmpty(token):
+        return None
+
+    url = Url.roleDelete(id, Url.url)
+    data = {'auth_token': request.session['auth_token']}
+    ApiUtil.requestDelete(url, FuncCode.roleDelete.value, data)
 
 
 # def add_session_role(session, role, permissions):

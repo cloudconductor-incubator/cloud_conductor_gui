@@ -14,10 +14,10 @@
 <div class="cc-title">Environment Create</div>
 <br>
 	<form method="post" action="{% url 'app:mkappEnvironmentCreate' %}">
-		{% include "gui_app/environment/includes/formEnvironment.html" %}
+		{% include "gui_app/makeApplication/includes/formEnvironment.html" %}
 
 		<div class="button_left">
-			<button type="button" class="btn btn-primary btn-sm" onclick="location.href='{% url 'app:mkappSystemSelect' %}'" >
+			<button type="button" class="btn btn-primary btn-sm" onclick="location.href='{% url 'app:mkappEnvironmentSelect' %}'" >
 				<span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
 				 &nbsp;　back
 			</button>

@@ -1,0 +1,14 @@
+<html>
+<body>
+{% for bp in blueprints %}
+<label></label>
+	  <div class="form-group">
+	  	{% for key, value in bp.items %}
+		    <label>{{ key }}</label>
+		    <div class="discription">{{ value.Description }}</div>
+		    <input type="text" value="{{ value.Default}}" maxlength="{{ value.MaxLength }}" minlength="{{ value.MinLength }}" class="form-control" name="json/{{ key }}">
+		  </div>
+	  	{% endfor %}
+{% endfor %}
+</body>
+</html>

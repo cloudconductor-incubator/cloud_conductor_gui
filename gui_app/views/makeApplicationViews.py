@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,HttpResponse
 import json
 import ast
 from ..forms import w_applicationForm
 from ..forms import w_environmentForm
+from ..forms import environmentForm
 from ..forms import environmentSelectForm
 from ..forms import systemForm
 from ..utils import ApiUtil
@@ -191,23 +192,49 @@ def environmentCreate(request):
             return render(request, Html.newapp_environmentCreate,
                           {'clouds': clouds, 'systems': systems,
                            'blueprints': blueprints, 'env': environment,
+                           'create':True,
                            'message': ''})
+
         elif request.method == "POST":
-            param = request.POST
+            p = request.POST
+            if p.get("env_id"):
+                env = EnvironmentUtil.get_environment_detail(FuncCode.newapp_environment.value, request.session.get('auth_token'), p.get("env_id"))
+                ret = 0
+                if env["status"] == 'ERROR' :
+                    ret = 1
+                elif env["status"] == 'CREATE_COMPLETE':
+                    ret = 2
+
+                return HttpResponse(json.dumps({'ret' : ret}), content_type="application/json")
+
             # -- Validate check
-            form = w_environmentForm(param)
+            cpPost = p.copy()
+            param = putBlueprint(cpPost)
+            form = environmentForm(param)
+
             if not form.is_valid():
 
                 return render(request, Html.newapp_environmentCreate,
                               {'clouds': clouds, 'systems': systems,
                                'blueprints': blueprints, 'env': param,
-                               'message': form.errors})
+                               'form':form,
+                               'create':True,
+                               'message': ''})
 
             # -- Session add
-            application = applicationPut(param)
-            request.session['w_env_create'] = environment
 
-            return redirect(Path.newapp_environmentCreate)
+            environment = EnvironmentUtil.create_environment(code, param, request.session)
+
+            env = {}
+            env = {"id":environment["id"],"name":environment["name"]}
+            request.session['w_env_select'] = {"id":str(env) }
+
+            return render(request, Html.newapp_environmentCreate,
+                          {'clouds': clouds, 'systems': systems,
+                           'blueprints': blueprints, 'env': param,
+                           'env_id':environment.get("id"),'create':True,
+                           'message': ''})
+
     except Exception as ex:
         log.error(FuncCode.newapp_environment.value, None, ex)
 
@@ -253,6 +280,9 @@ def confirm(request):
                     code, token, env.get('id'),
                     app_id, history.get('id'))
 
+            # -- application deploy
+            ApplicationUtil.deploy_application(code, token, env.get('id'), app_id)
+
             # -- session delete
             sessionDelete(session)
 
@@ -277,6 +307,22 @@ def putEnvironment(param):
 
     return param
 
+def putCreateEnvironment(param,env):
+    param['id'] = env.get('id')
+    param['name'] = env.get('name')
+
+    return param
+
+def putBlueprint(param):
+
+    blueprint = param.get('blueprint', None)
+    if blueprint is not None and blueprint != '':
+        blueprint = ast.literal_eval(blueprint)
+
+        param['blueprint_id'] = blueprint.get('id')
+        param['version'] = blueprint.get('version')
+
+    return param
 
 def putSystem(param):
 
@@ -341,3 +387,25 @@ def sessionDelete(session):
 
     if 'w_app_create' in session:
         del session['w_app_create']
+
+def environmentAjaxBlueprint(request):
+    try:
+        p = request.GET
+        bp = putBlueprint(p.copy())
+
+        code = FuncCode.environmentCreate.value
+        token = request.session['auth_token']
+        param = BlueprintHistoryUtil.get_blueprint_parameters(
+            code, token, bp['blueprint_id'], bp['version'])
+
+        ff = createForm(param, 'json')
+        key = param.keys()
+        value = param.values()
+
+        return render(request, Html.environmentAjaxBlueprint,
+                      {'name': key, 'blueprints': param})
+
+    except Exception as ex:
+        log.error(code, None, ex)
+
+        return render(request, Html.environmentAjaxBlueprint, {})

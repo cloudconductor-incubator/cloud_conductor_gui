@@ -3,6 +3,7 @@ from collections import OrderedDict
 from ..utils import RoleUtil
 from ..utils import ApiUtil
 from ..utils import StringUtil
+from ..utils import BlueprintUtil
 from ..utils.ApiUtil import Url
 from ..enum import ResponseType
 from ..enum.FunctionCode import FuncCode
@@ -75,18 +76,42 @@ def get_blueprint_history_parameters(code, token, blueprint_id, history_id):
     return param
 
 
-def get_blueprint_history_detail(code, token, id, version):
-    if StringUtil.isEmpty(code):
+def get_blueprint_history_detail(code, token, blueprint_id, version):
+    if StringUtil.isEmpty(token):
         return None
 
-    if StringUtil.isEmpty(token):
+    if StringUtil.isEmpty(blueprint_id):
+        return None
+
+    if StringUtil.isEmpty(version):
         return None
 
     data = {
         'auth_token': token,
     }
 
-    url = Url.blueprintHistoriesDetail(id, his_id, Url.url)
+    url = Url.blueprintHistoriesDetail(blueprint_id, version, Url.url)
     history = ApiUtil.requestGet(url, code, data)
+
+    return history
+
+
+def get_blueprint_history_detail2(code, token, blueprint_id, version):
+    if StringUtil.isEmpty(token):
+        return None
+
+    if StringUtil.isEmpty(blueprint_id):
+        return None
+
+    if StringUtil.isEmpty(version):
+        return None
+
+    history = None
+
+    history = get_blueprint_history_detail(code, token, blueprint_id, version)
+
+    blueprint = BlueprintUtil.get_blueprint_detail(code, token, blueprint_id)
+
+    history['blueprint_name'] = blueprint.get('name')
 
     return history

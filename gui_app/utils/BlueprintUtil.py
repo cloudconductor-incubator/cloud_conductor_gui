@@ -47,7 +47,7 @@ def get_blueprint_list2(code, token, project_id=None):
     return list
 
 
-def get_bluepritn_detail(code, token, id):
+def get_blueprint_detail(code, token, id):
 
     if StringUtil.isEmpty(token):
         return None

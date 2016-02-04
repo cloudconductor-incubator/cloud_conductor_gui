@@ -36,8 +36,6 @@ urlpatterns = [
     url('^project/add/$', projectViews.projectEdit, name="projectAdd"),
     url('^project/(?P<id>\d+)/edit/$',
         projectViews.projectEdit, name="projectEdit"),
-    url('^project/(?P<id>\d+)/projectAddUser/$',
-        projectViews.projectAddUser, name="projectAddUser"),
     url('^project/(?P<id>\d+)/project/change/$',
         projectViews.projectChange, name="projectChange"),
 
@@ -97,7 +95,7 @@ urlpatterns = [
         applicationViews.applicationDelete, name="applicationDelete"),
 
     url('^application/(?P<id>\d+)/history/(?P<hid>\d+)/detail/',
-        applicationViews.applicationDetail, name="applicationHistoryDetail"),
+        applicationViews.applicationHistoryDetail, name="applicationHistoryDetail"),
 
     url('^blueprint/list', blueprintViews.blueprintList,
         name="blueprintList"),
@@ -110,11 +108,11 @@ urlpatterns = [
     url('^blueprint/(?P<id>\d+)/delete/',
         blueprintViews.blueprintDelete, name="blueprintDelete"),
 
-    # url('^blueprint/(?P<id>\d+)/build', blueprintViews.blueprintBuild,
-    #     name="blueprintBuild"),
-    # url('^blueprint/(?P<id>\d+)/history/(?P<ver>\d+)detail/',
-    #     blueprintViews.blueprintHistoryDetail,
-    #     name="blueprintHistoryDetail"),
+    url('^blueprint/(?P<id>\d+)/build', blueprintViews.blueprintBuild,
+        name="blueprintBuild"),
+    url('^blueprint/(?P<id>\d+)/history/(?P<ver>\d+)/detail/',
+        blueprintViews.blueprintHistoryDetail,
+        name="blueprintHistoryDetail"),
 
     url('^pattern/list', patternViews.patternList, name="patternList"),
     url('^pattern/(?P<id>\d+)/detail/',
