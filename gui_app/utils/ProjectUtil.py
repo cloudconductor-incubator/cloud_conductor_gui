@@ -94,7 +94,6 @@ def get_project_detail(code, token, id):
         'id': id,
     }
     project = ApiUtil.requestGet(url, code, data)
-    project['id'] = str(project.get('id'))
 
     return StringUtil.deleteNullDict(project)
 

@@ -13,11 +13,11 @@
 {% block content %}
 <div class="cc-title">Application Create</div>
 <br>
-	<form method="post" action="{% url 'app:mkappApplicationCreate' %}">
-		{% include "gui_app/application/includes/formApplication.html" %}
+	<form method="post" action="{% url 'app:appdeployApplicationCreate' %}">
+		{% include "gui_app/applicationDeploy/includes/formApplication.html" %}
 
 		<div class="button_left">
-			<button type="button" class="btn btn-primary btn-sm" onclick="location.href='{% url 'app:mkappSystemSelect' %}'" >
+			<button type="button" class="btn btn-primary btn-sm" onclick="location.href='{% url 'app:appdeployApplicationSelect' %}'" >
 				<span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
 				 &nbsp;　back
 			</button>

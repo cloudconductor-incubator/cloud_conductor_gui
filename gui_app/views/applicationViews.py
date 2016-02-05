@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect, render_to_response
 import json
 import requests
 from ..forms import applicationForm
+from ..forms import applicationHistoryForm
 from ..utils import ApiUtil
 from ..utils import ApplicationUtil
 from ..utils import SystemUtil
@@ -19,6 +20,7 @@ from ..logs import log
 
 
 def applicationList(request):
+    apps = None
     try:
         if not SessionUtil.check_login(request):
             return redirect(Path.logout)
@@ -43,10 +45,7 @@ def applicationList(request):
         log.error(FuncCode.applicationList.value, None, ex)
 
         return render(request, Html.applicationList,
-                      {"application": '', 'message': str(ex)})
-
-    return render(request, Html.applicationList,
-                  {'apps': '', 'baseImage': '', 'message': ex})
+                      {"application": apps, 'message': str(ex)})
 
 
 def applicationDetail(request, id):
@@ -134,7 +133,7 @@ def applicationCreate(request):
 
 
 def applicationEdit(request, id):
-    code = FuncCode.systemList.value
+    code = FuncCode.applicationEdit.value
     apptype = list(ApplicaionType)
     protocol = list(ProtocolType)
     systems = None
@@ -228,7 +227,7 @@ def applicationHistoryDetail(request, id, hid):
         # -- application DetailAPI call, get a response
         token = request.session['auth_token']
         history = ApplicationHistoryUtil.get_history_detail(code, token,
-                                                                 id, hid)
+                                                            id, hid)
 
         return render(request, Html.applicationHistoryDetail,
                       {'history': history, 'message': ''})
@@ -240,14 +239,84 @@ def applicationHistoryDetail(request, id, hid):
                        'message': str(ex)})
 
 
-def applicationHistoryEdit(request, id, hid):
-    code = FuncCode.systemList.value
+def applicationDeploy(request, id):
+    code = FuncCode.applicationDeploy.value
+    blueprint = None
+    pattern = None
+    history_list = None
+    try:
+        if not SessionUtil.check_login(request):
+            return redirect(Path.logout)
+        if not SessionUtil.check_permission(request, 'blueprint', 'create'):
+            return render_to_response(Html.error_403)
+
+        token = request.session['auth_token']
+        project_id = request.session['project_id']
+
+        # -- URL and data set
+        ApplicationUtil.create_bluepritn_build(code, token, id)
+
+        return redirect(Path.blueprintDetail(id))
+    except Exception as ex:
+        log.error(code, None, ex)
+
+        return render(request, Html.blueprintDetail,
+                      {'blueprint': blueprint, 'pattern': pattern,
+                       'history_list': history_list, 'message': ex})
+
+
+def applicationHistoryCreate(request, id):
+    code = FuncCode.applicationHistoryEdit.value
     apptype = list(ApplicaionType)
     protocol = list(ProtocolType)
-    systems = None
-    newhis = None
     history = None
-    app = None
+
+    try:
+        if not SessionUtil.check_login(request):
+            return redirect(Path.logout)
+        if not SessionUtil.check_permission(request, 'application', 'create'):
+            return render_to_response(Html.error_403)
+
+        token = request.session['auth_token']
+
+        if request.method == "GET":
+            data = {'application_id': id}
+
+            return render(request, Html.applicationHistoryCreate,
+                          {'history': data, 'form': '', 'apptype': apptype,
+                           'protocol': protocol, 'message': ''})
+        else:
+            # -- Get a value from a form
+            msg = ''
+            p = request.POST
+            # -- Validate check
+            form = applicationHistoryForm(p)
+            form.full_clean()
+            if not form.is_valid():
+
+                return render(request, Html.applicationHistoryCreate,
+                              {'history': p, 'apptype': apptype,
+                               'protocol': protocol, 'form': form,
+                               'message': ''})
+
+            # -- 1.Edit a applicationhistory, api call
+            ApplicationHistoryUtil.create_history(
+                code, token, id, form.data)
+
+            return redirect(Path.applicationDetail(id))
+    except Exception as ex:
+        log.error(code, None, ex)
+
+        return render(request, Html.applicationHistoryCreate,
+                      {'history': request.POST, 'apptype': apptype,
+                       'protocol': protocol, 'form': '', 'message': str(ex)})
+
+
+def applicationHistoryEdit(request, id, hid):
+    code = FuncCode.applicationHistoryEdit.value
+    apptype = list(ApplicaionType)
+    protocol = list(ProtocolType)
+    history = None
 
     try:
         if not SessionUtil.check_login(request):
@@ -256,44 +325,37 @@ def applicationHistoryEdit(request, id, hid):
             return render_to_response(Html.error_403)
 
         token = request.session['auth_token']
-        project_id = request.session['project_id']
-        systems = SystemUtil.get_system_list(code, token, project_id)
 
         if request.method == "GET":
-            app = ApplicationUtil.get_application_detail(code, token, id)
-            newhis = ApplicationHistoryUtil.get_new_history(code, token, id)
-            app.update({'history_id': newhis.get('id')})
-
-            return render(request, Html.applicationEdit,
-                          {'app': app, 'history': newhis, 'form': '',
-                           'apptype': apptype, 'protocol': protocol,
-                           'message': '', 'systems': systems, 'save': True})
+            history = ApplicationHistoryUtil.get_history_detail(
+                code, token, id, hid)
+            v = Html.applicationHistoryEdit
+            return render(request, Html.applicationHistoryEdit,
+                          {'history': history, 'form': '', 'apptype': apptype,
+                           'protocol': protocol, 'message': '', 'save': True})
         else:
             # -- Get a value from a form
             msg = ''
             p = request.POST
             # -- Validate check
-            form = applicationForm(p)
+            form = applicationHistoryForm(p)
             form.full_clean()
             if not form.is_valid():
 
-                return render(request, Html.applicationEdit,
-                              {'app': p, 'history': p, 'apptype': apptype,
+                return render(request, Html.applicationHistoryEdit,
+                              {'history': p, 'apptype': apptype,
                                'protocol': protocol, 'form': form,
-                               'message': '',
-                               'systems': systems, 'save': True})
-            # -- 1.Edit a application, api call
-            app = ApplicationUtil.edit_application(code, token, id, form.data)
+                               'message': '', 'save': True})
 
-            # -- 2.Edit a applicationhistory, api call
-            ApplicationHistoryUtil.create_history(code, token, id, form.data)
+            # -- 1.Edit a applicationhistory, api call
+            ApplicationHistoryUtil.edit_history(
+                code, token, id, hid, form.data)
 
-            return redirect(Path.applicationList)
+            return redirect(Path.applicationDetail(id))
     except Exception as ex:
         log.error(FuncCode.applicationEdit.value, None, ex)
 
-        return render(request, Html.applicationEdit,
-                      {'app': request.POST, 'history': request.POST,
-                       'apptype': apptype, 'protocol': protocol,
-                       'form': '', 'message': str(ex), 'systems': systems,
+        return render(request, Html.applicationHistoryEdit,
+                      {'history': request.POST, 'apptype': apptype,
+                       'protocol': protocol, 'form': '', 'message': str(ex),
                        'save': True})

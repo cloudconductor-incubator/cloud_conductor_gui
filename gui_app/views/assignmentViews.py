@@ -136,15 +136,21 @@ def assignmentEdit(request, id=None):
                 accountList = ApiUtil.requestGet(
                     url, FuncCode.projectDetail.value, data)
                 accountName = ""
+                email = ""
+                admin = ""
                 for item in accountList:
                     if item["id"] == assignment["account_id"]:
                         accountName = item["name"]
+                        email = item["email"]
+                        admin = item["admin"]
                         break
 
                 assignmentList.append({
                     'id': assignment["id"],
                     'account_id': assignment["account_id"],
                     'name': accountName,
+                    'email': email,
+                    'admin': admin,
                     'role': role,
                 })
 

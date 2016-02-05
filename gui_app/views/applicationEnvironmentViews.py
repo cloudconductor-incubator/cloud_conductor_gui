@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.shortcuts import render, redirect, render_to_response
+from django.shortcuts import render, redirect, render_to_response, HttpResponse
 import json
 import requests
 import ast
@@ -7,15 +7,22 @@ from collections import OrderedDict
 from ..forms import w_appenv_environmentForm
 from ..forms import systemSelectForm
 from ..forms import blueprintSelectForm
+from ..forms import blueprintForm
+from ..forms import systemForm
 from ..utils import ApiUtil
 from ..utils import SystemUtil
 from ..utils import EnvironmentUtil
 from ..utils import BlueprintUtil
+from ..utils import BlueprintHistoryUtil
+from ..utils import BlueprintPatternUtil
 from ..utils.BlueprintUtil import get_blueprint_version
 from ..utils import StringUtil
 from ..utils.PathUtil import Path
 from ..utils.PathUtil import Html
 from ..utils.ApiUtil import Url
+from ..utils import SessionUtil
+from ..utils import PatternUtil
+from ..enum.OSVersion import OSVersion
 from ..enum.FunctionCode import FuncCode
 from ..enum.MessageCode import Info
 from ..logs import log
@@ -60,6 +67,41 @@ def systemSelect(request):
                        'wizard_code': Info.WizardSystem.value})
 
 
+def systemCreate(request):
+    try:
+        code = FuncCode.newapp_system.value
+        if request.method == "GET":
+
+            return render(request, Html.envapp_systemCreate,
+                          {'message': ''})
+        elif request.method == "POST":
+            param = request.POST
+
+            # -- Validate check
+            form = systemForm(param)
+            if not form.is_valid():
+
+                return render(request, Html.envapp_systemCreate,
+                              {"system": param, 'form': form, 'message': ''})
+
+            system = SystemUtil.create_system(code,
+                                              request.session.get(
+                                                'auth_token'),
+                                              request.session.get(
+                                                'project_id'),
+                                              form.data)
+
+            request.session['w_sys_select'] = {
+                "id": system.get("id"), "name": system.get("name")}
+
+            return redirect(Path.envapp_bluprintSelect)
+    except Exception as ex:
+        log.error(FuncCode.newapp_system.value, None, ex)
+
+        return render(request, Html.envapp_systemCreate,
+                      {"application": '', 'message': str(ex)})
+
+
 def blueprintSelect(request):
     try:
         code = FuncCode.appenv_blueprint.value
@@ -99,6 +141,90 @@ def blueprintSelect(request):
                        'wizard_code': Info.WizardSystem.value})
 
 
+def blueprintCreate(request):
+    code = FuncCode.blueprintCreate.value
+    osversion = list(OSVersion)
+    patterns = ''
+    my_pattern = ''
+    try:
+        if not SessionUtil.check_login(request):
+            return redirect(Path.logout)
+        if not SessionUtil.check_permission(request, 'blueprint', 'create'):
+            return render_to_response(Html.error_403)
+
+        project_id = request.session['project_id']
+        token = request.session['auth_token']
+        patterns = PatternUtil.get_pattern_list(code, token, project_id)
+
+        if request.method == "GET":
+
+            return render(request, Html.envapp_blueprintCreate,
+                          {'blueprint': '', 'patterns': patterns,
+                           'osversion': osversion, 'form': '', 'message': ''})
+        else:
+            # -- Get a value from a form
+            msg = ''
+            p = request.POST
+            my_pattern = BlueprintPatternUtil.dic_pattern_list(
+                p.getlist('os_version'), p.getlist('pattern_id'))
+
+            if p.get("blueprint_id"):
+                bp = BlueprintHistoryUtil.get_new_blueprint_history(
+                    FuncCode.newapp_environment.value,
+                    request.session.get('auth_token'), p.get("blueprint_id"))
+                ret = 0
+                if bp["status"] == 'ERROR':
+                    ret = 1
+                elif bp["status"] == 'CREATE_COMPLETE':
+                    ret = 2
+
+                return HttpResponse(json.dumps({'ret': ret}),
+                                    content_type="application/json")
+
+            # -- Validate check
+            form = blueprintForm(p)
+            if not form.is_valid():
+
+                return render(request, Html.envapp_blueprintCreate,
+                              {'blueprint': p, 'patterns': patterns,
+                               'my_pattern': my_pattern,
+                               'osversion': osversion,
+                               'form': form, 'message': ''})
+
+            # -- 1.Create a blueprint, api call
+            blueprint = BlueprintUtil.create_blueprint(
+                code, token, project_id, form.data)
+
+            # -- 2. Add a Pattern, api call
+            BlueprintPatternUtil.add_blueprint_pattern_list(
+                code, token, blueprint.get('id'),
+                p.getlist('os_version'), p.getlist('pattern_id'))
+
+            BlueprintUtil.create_bluepritn_build(
+                code, token, blueprint.get('id'))
+
+            bp = {}
+            bp = {"id": blueprint["id"], "name": blueprint["name"]}
+            request.session['w_bp_select'] = bp
+
+            # -- 3. BlueprintBuild, api call
+            return render(request, Html.envapp_blueprintCreate,
+                          {'blueprint': p, 'patterns': patterns,
+                           'my_pattern': my_pattern,
+                           'osversion': osversion,
+                           'blueprint_id': blueprint.get("id"),
+                           'form': form, 'message': ''})
+
+            return redirect(Path.blueprintList)
+    except Exception as ex:
+        log.error(code, None, ex)
+
+        return render(request, Html.envapp_blueprintCreate,
+                      {'blueprint': request.POST, 'patterns': patterns,
+                       'my_pattern': my_pattern, 'osversion': osversion,
+                       'form': '', 'message': str(ex)})
+
+
 def environmentCreate(request):
     try:
         code = FuncCode.newapp_environment.value
@@ -113,11 +239,11 @@ def environmentCreate(request):
         blueprints = get_blueprint_version(code, data)
 
         if request.method == "GET":
-            environment = request.session.get('w_env_create')
+            # environment = request.session.get('w_env_create')
 
             return render(request, Html.envapp_environmentCreate,
                           {'clouds': clouds, 'systems': None,
-                           'blueprints': blueprints, 'env': environment,
+                           'blueprints': blueprints,
                            'message': '', 'create': True})
         elif request.method == "POST":
             param = request.POST

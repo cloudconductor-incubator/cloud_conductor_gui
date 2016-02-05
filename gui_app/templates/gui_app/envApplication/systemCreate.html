@@ -1,5 +1,5 @@
 {% extends "gui_app/base.html" %}
-{% block title %}Make new application{% endblock %}
+{% block title %}Application Environment{% endblock %}
 {% block headerscript %}
 {% endblock %}
 
@@ -10,14 +10,14 @@
 	<li>Make new application</li>
 {% endblock %}
 {% block content %}
-<div class="cc-title">Make new application</div>
+<div class="cc-title">Application Environment</div>
 <br>
-	<form method="post" action="{% url 'app:mkappSystemCreate' %}">
+	<form method="post" action="{% url 'app:envapp_systemCreate' %}">
 		<h3>System select</h3>
 		{% include "gui_app/system/includes/formSystem.html" %}
 
 		<div class="button_left">
-			<button type="button" class="btn btn-primary btn-sm" onclick="location.href='{% url 'app:mkappSystemSelect' %}'" >
+			<button type="button" class="btn btn-primary btn-sm" onclick="location.href='{% url 'app:envapp_systemSelect' %}'" >
 				<span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
 				 &nbsp;　back
 			</button>

@@ -26,9 +26,11 @@
     	<table class="table table-hover">
 			<thead>
 				<tr>
-					<th>Check</th>
+					<th>Project<br/>Assign</th>
 					<th>No</th>
 					<th>Account Name</th>
+					<th>Email</th>
+					<th>Admin</th>
 					<th>Role</th>
 					<th></th>
 				</tr>
@@ -38,6 +40,8 @@
             		<td><input name="chk-{{assignment.id}}" id="chk-{{assignment.id}}" checked type="checkbox" {% if  assignment.account_id == account_id %} onclick="return false;" {%endif%}></td>
 					<td>{{assignment.id}}</td>
 					<td>{{ assignment.name }}</td>
+					<td>{{ assignment.email }}</td>
+					<td>{{ assignment.admin }}</td>
 					<td>
 					{% if  assignment.account_id != account_id %}
 					<select class="form-control" name="sel-{{assignment.id}}" id="sel-{{assignment.id}}"   >
@@ -49,7 +53,7 @@
 						{% endfor %}
 				    </select>
 				    {% else %}
-				    <select class="form-control" name="sel-{{assignment.id}}" id="sel-{{assignment.id}}" disabled="disabled"  >
+				    <select class="form-control" name="sel-{{assignment.id}}" id="sel-{{assignment.id}}">
 				        <option value=""></option>
 				        {% for r in roleList %}
 						   <option value="{{ r.id }}" {% if  assignment.role == r.id %} selected="selected" {% endif %}>
@@ -65,13 +69,17 @@
 				</tr>
         {% endfor %}
         		</table>
+	        		<div class="button_center">
+						<a type=button class="btn btn-success btn-sm" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>&nbsp;　Save</a>
+					</div>
+					{% include "gui_app/assignment/includes/assignmentPopup.html" %}
+</form>
+
+
     {% else %}
         There is no assignment.
     {% endif %}
-	<div class="button_center">
-		<button class="btn btn-success btn-sm" type="submit"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>&nbsp;　Save</button>
-	</div>
-</form>
+
 {% endblock %}
 
 {% block bodyscript %}{% endblock %}

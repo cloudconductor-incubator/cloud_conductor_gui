@@ -26,9 +26,65 @@
 			<ul class="nav">
 				<li class="active">
 					<a href="{% url 'app:top' %}" id="var-menu">
-						<span class="glyphicon glyphicon-home cc-icon" aria-hidden="true"></span>　Home
+						<span class="glyphicon glyphicon-home cc-icon" aria-hidden="true"></span>&nbsp;&nbsp;Home
 					</a>
 				</li>
+			</ul>
+			<div class="var-heading">Project</div>
+			<ul class="nav">
+					</li>
+				{% if request.session.role.m_role %}
+					<li>
+						<a href="{% url 'app:roleList' %}" id="var-menu" >
+						<span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp;&nbsp;Role</a>
+					</li>
+				{% endif %}
+				{% if request.session.cloud.m_cloud %}
+					<li>
+						<a href="{% url 'app:cloudList' %}" id="var-menu" >
+						<span class="glyphicon glyphicon-cloud cc-icon" aria-hidden="true"></span>&nbsp;&nbsp;Cloud</a>
+					</li>
+				{% endif %}
+				{% if request.session.role.m_role %}
+					<li>
+						<a href="{% url 'app:patternList' %}" id="var-menu" >
+						<span class="glyphicon glyphicon-cloud cc-icon" aria-hidden="true"></span>&nbsp;&nbsp;Pattern</a>
+					</li>
+				{% endif %}
+				{% if request.session.blueprint.m_blueprint %}
+					<li>
+						<a href="{% url 'app:blueprintList' %}" id="var-menu" >
+						<span class="glyphicon glyphicon-cloud cc-icon" aria-hidden="true"></span>&nbsp;&nbsp;Blueprint</a>
+					</li>
+				{% endif %}
+				{% if request.session.system.m_system %}
+					<li>
+						<a href="{% url 'app:systemList' %}" id="var-menu" >
+						<span class="glyphicon glyphicon-cloud cc-icon" aria-hidden="true"></span>&nbsp;&nbsp;System</a>
+					</li>
+				{% endif %}
+				{% if request.session.environment.m_environment %}
+					<li>
+						<a href="{% url 'app:environmentList' %}" id="var-menu" >
+						<span class="glyphicon glyphicon-cloud cc-icon" aria-hidden="true"></span>&nbsp;&nbsp;Environment</a>
+					</li>
+				{% endif %}
+				{% if request.session.application.m_application %}
+					<li>
+						<a href="{% url 'app:applicationList' %}" id="var-menu" >
+						<span class="glyphicon glyphicon-cloud cc-icon" aria-hidden="true"></span>&nbsp;&nbsp;Application</a>
+					</li>
+				{% endif %}
+
+					<li class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" href="#supportThree" href="#" id="var-menu"><span class="glyphicon glyphicon-cog cc-icon" aria-hidden="true"></span>&nbsp;&nbsp;Setting wizards</a></li>
+					<div id="supportThree" class="collapse menu-menu">
+						<ul class="nav spacer navbar-static-top">
+							<li><a href="{% url 'app:cloudregistCloud'%}" id="var-menu">Cloud registration</a></li>
+							<li><a href="{% url 'app:mkappSystemSelect'%}" id="var-menu">Make new application</a></li>
+							<li><a href="{% url 'app:envapp_systemSelect'%}" id="var-menu">Application environment</a></li>
+							<li><a href="{% url 'app:appdeployApplicationSelect'%}" id="var-menu">Deploying applications</a></li>
+						</ul>
+					</div>
 			</ul>
 			<div class="var-heading">Management</div>
 			<ul class="nav">
@@ -36,79 +92,16 @@
 				{% if request.session.project.m_project %}
 					<li>
 						<a href="{% url 'app:projectList' %}" id="var-menu" >
-						<span class="glyphicon glyphicon-folder-close cc-icon" aria-hidden="true"></span>　Project</a>
+						<span class="glyphicon glyphicon-folder-close cc-icon" aria-hidden="true"></span>&nbsp;&nbsp;Project</a>
 					</li>
 				{% endif %}
-				{% if request.session.cloud.m_cloud %}
+				{% if request.session.account.m_account %}
 					<li>
-						<a href="{% url 'app:cloudList' %}" id="var-menu" >
-						<span class="glyphicon glyphicon-cloud cc-icon" aria-hidden="true"></span>　Cloud</a>
+						<a href="{% url 'app:accountList' %}" id="var-menu" >
+						<span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp;&nbsp;Account</a>
 					</li>
 				{% endif %}
-				{% if request.session.system.m_system or request.session.environment.m_environment or request.session.application.m_application or request.session.blueprint.m_blueprint or request.session.pattern.m_patterm %}
-					<li class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" href="#proviThree" href="#" id="var-menu"><span class="glyphicon glyphicon-th-large cc-icon" aria-hidden="true"></span>　Provisionning</a></li>
-					<div id="proviThree" class="collapse menu-menu">
-						<ul class="nav spacer navbar-static-top">
-							{% if request.session.system.m_system %}
-								<li><a href="{% url 'app:systemList' %}" id="var-menu">System</a></li>
-							{% endif %}
-							{% if request.session.environment.m_environment %}
-								<li><a href="{% url 'app:environmentList' %}" id="var-menu">Environment</a></li>
-							{% endif %}
-							{% if request.session.application.m_application %}
-								<li><a href="{% url 'app:applicationList' %}" id="var-menu">Application</a></li>
-							{% endif %}
-							{% if request.session.blueprint.m_blueprint %}
-								<li><a href="{% url 'app:blueprintList' %}" id="var-menu">Blueprint</a></li>
-							{% endif %}
-							{% if request.session.pattern.m_pattern %}
-								<li><a href="{% url 'app:patternList' %}" id="var-menu">pattern</a></li>
-							{% endif %}
-						</ul>
-					</div>
-				{% endif %}
-				{% if request.session.account.m_account or request.session.role.m_role %}
-					<li class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" href="#supportThree" href="#" id="var-menu"><span class="glyphicon glyphicon-cog cc-icon" aria-hidden="true"></span>　Support</a></li>
-					<div id="supportThree" class="collapse menu-menu">
-						<ul class="nav spacer navbar-static-top">
-							{% if request.session.account.m_account %}
-								<li><a href="{% url 'app:accountList' %}" id="var-menu">Account</a></li>
-							{% endif %}
-							{% if request.session.role.m_role %}
-								<li><a href="{% url 'app:roleList' %}" id="var-menu">Role</a></li>
-							{% endif %}
-						</ul>
-					</div>
-				{% endif %}
 			</ul>
-			<div class="var-heading">Various settings</div>
-			<ul class="nav">
-					<li><a href="{% url 'app:cloudregistCloud'%}" id="var-menu">Cloud registration</a></li>
-					<li><a href="{% url 'app:mkappSystemSelect'%}" id="var-menu">Make new application</a></li>
-					<li><a href="{% url 'app:envapp_systemSelect'%}" id="var-menu">Application environment</a></li>
-					<li><a href="{% url 'app:appdeployApplicationSelect'%}" id="var-menu">Deploying applications</a></li>
-			</ul>
-<!--
-			auth_token:{{ request.session.auth_token }}<br>
-			project_id:{{ request.session.project_id }}<br>
-			account_id:{{ request.session.account_id }}<br>
-			account_name:{{ request.session.account_name }}<br>
-
-			rolesession:{{request.session.project}}<br>
-			project:{{request.session.project}}<br>
-			account:{{request.session.account}}<br>
-			project:{{request.session.project}}<br>
-			role:{{request.session.role}}<br>
-			cloud:{{request.session.cloud}}<br>
-			baseimage:{{request.session.baseimage}}<br>
-			pattern:{{request.session.pattern}}<br>
-			blueprint:{{request.session.blueprint}}<br>
-			system:{{request.session.system}}<br>
-			environment:{{request.session.environment}}<br>
-			application:{{request.session.application}}<br>
-			application_history:{{request.session.application_history}}<br>
-			deployment:{{request.session.deployment}}<br>
--->
 		</nav>
 	</div>
 </aside>

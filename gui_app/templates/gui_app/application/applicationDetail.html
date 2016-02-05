@@ -16,14 +16,24 @@
 {% include "gui_app/includes/message.html" %}
 {% if app %}
 	{% if app.id %}
-	{% if request.session.application.manage or request.session.application.update %}
-	<div class="btn_group_top">
+	<div class="button_center2">
+
+		<button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#deploy">
+			<span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>
+			 &nbsp;&nbsp;deploy
+		</button>
+
+		{% if request.session.application.manage or request.session.application.update %}
+		<span class="delete_btn">
 		<button type="button" class="btn btn-success btn-sm" onclick="location.href='{% url 'app:applicationEdit' app.id %}'">
 			<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>&nbsp;　edit
 		</button>
+		</span>
+		{% endif %}
 	</div>
 	{% endif %}
-	{% endif %}
+
+
 	<table class="table table-hover">
 			<tr>
 				<th>ID</th><td>{{ app.id }}</td>
@@ -48,7 +58,7 @@
 			</tr>
 	</table>
 
-	<!-- blueprint history -->
+	<!-- application history -->
 	{% if history_list %}
 	{% include "gui_app/application/includes/applicationHistoryList.html" %}
 	{% else %}
@@ -70,7 +80,7 @@
 		{% endif %}
 		{% endif %}
 	</div>
-
+{% include "gui_app/blueprint/includes/blueprintBuildPopup.html" %}
 <!-- Button trigger modal -->
 <!-- Modal -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.shortcuts import render, redirect,HttpResponse
+from django.shortcuts import render, redirect, HttpResponse
 import json
 import ast
 from ..forms import w_applicationForm
@@ -67,10 +67,9 @@ def systemCreate(request):
     try:
         code = FuncCode.newapp_system.value
         if request.method == "GET":
-            system = request.session.get('w_sys_create')
 
             return render(request, Html.newapp_systemCreate,
-                          {"system": system, 'message': ''})
+                          {'message': ''})
         elif request.method == "POST":
             param = request.POST
 
@@ -81,9 +80,15 @@ def systemCreate(request):
                 return render(request, Html.newapp_systemCreate,
                               {"system": param, 'form': form, 'message': ''})
 
+            system = SystemUtil.create_system(
+                                code, request.session.get('auth_token'),
+                                request.session.get('project_id'),
+                                form.data)
+
             # -- Session add
-            system = systemPut(param)
-            request.session['w_sys_create'] = system
+
+            request.session['w_sys_select'] = {
+                "id": system.get("id"), "name": system.get("name")}
 
             return redirect(Path.newapp_applicationCreate)
     except Exception as ex:
@@ -187,25 +192,28 @@ def environmentCreate(request):
         blueprints = get_blueprint_version(code, data)
 
         if request.method == "GET":
-            environment = request.session.get('w_env_create')
+            # environment = request.session.get('w_env_create')
 
             return render(request, Html.newapp_environmentCreate,
                           {'clouds': clouds, 'systems': systems,
-                           'blueprints': blueprints, 'env': environment,
-                           'create':True,
+                           'blueprints': blueprints,
+                           'create': True,
                            'message': ''})
 
         elif request.method == "POST":
             p = request.POST
             if p.get("env_id"):
-                env = EnvironmentUtil.get_environment_detail(FuncCode.newapp_environment.value, request.session.get('auth_token'), p.get("env_id"))
+                env = EnvironmentUtil.get_environment_detail(
+                    FuncCode.newapp_environment.value,
+                    request.session.get('auth_token'), p.get("env_id"))
                 ret = 0
-                if env["status"] == 'ERROR' :
+                if env["status"] == 'ERROR':
                     ret = 1
                 elif env["status"] == 'CREATE_COMPLETE':
                     ret = 2
 
-                return HttpResponse(json.dumps({'ret' : ret}), content_type="application/json")
+                return HttpResponse(json.dumps({'ret': ret}),
+                                    content_type="application/json")
 
             # -- Validate check
             cpPost = p.copy()
@@ -217,22 +225,23 @@ def environmentCreate(request):
                 return render(request, Html.newapp_environmentCreate,
                               {'clouds': clouds, 'systems': systems,
                                'blueprints': blueprints, 'env': param,
-                               'form':form,
-                               'create':True,
+                               'form': form,
+                               'create': True,
                                'message': ''})
 
             # -- Session add
 
-            environment = EnvironmentUtil.create_environment(code, param, request.session)
+            environment = EnvironmentUtil.create_environment(
+                code, param, request.session)
 
             env = {}
-            env = {"id":environment["id"],"name":environment["name"]}
-            request.session['w_env_select'] = {"id":str(env) }
+            env = {"id": environment["id"], "name": environment["name"]}
+            request.session['w_env_select'] = {"id": str(env)}
 
             return render(request, Html.newapp_environmentCreate,
                           {'clouds': clouds, 'systems': systems,
                            'blueprints': blueprints, 'env': param,
-                           'env_id':environment.get("id"),'create':True,
+                           'env_id': environment.get("id"), 'create': True,
                            'message': ''})
 
     except Exception as ex:
@@ -272,16 +281,17 @@ def confirm(request):
             # -- applicationHistory create
             app_id = application.get('id')
             history = ApplicationHistoryUtil.create_history(
-                    code, token, application.get('id'), app_session)
+                code, token, application.get('id'), app_session)
 
             # -- application deploy
             env = ast.literal_eval(env_session["id"])
             deploy = ApplicationUtil.deploy_application(
-                    code, token, env.get('id'),
-                    app_id, history.get('id'))
+                code, token, env.get('id'),
+                app_id, history.get('id'))
 
             # -- application deploy
-            ApplicationUtil.deploy_application(code, token, env.get('id'), app_id)
+            ApplicationUtil.deploy_application(
+                code, token, env.get('id'), app_id)
 
             # -- session delete
             sessionDelete(session)
@@ -307,11 +317,13 @@ def putEnvironment(param):
 
     return param
 
-def putCreateEnvironment(param,env):
+
+def putCreateEnvironment(param, env):
     param['id'] = env.get('id')
     param['name'] = env.get('name')
 
     return param
+
 
 def putBlueprint(param):
 
@@ -323,6 +335,7 @@ def putBlueprint(param):
         param['version'] = blueprint.get('version')
 
     return param
+
 
 def putSystem(param):
 
@@ -387,6 +400,7 @@ def sessionDelete(session):
 
     if 'w_app_create' in session:
         del session['w_app_create']
+
 
 def environmentAjaxBlueprint(request):
     try:

@@ -26,11 +26,7 @@ def projectList(request):
         # -- Get a project list, API call
         code = FuncCode.projectList.value
         token = request.session['auth_token']
-        if request.session.get("account_admin"):
-            projects = ProjectUtil.get_project_list_admin(
-                code, token, request.session.get("account_id"))
-        else:
-            projects = ProjectUtil.get_project_list(code, token)
+        projects = ProjectUtil.get_project_list(code, token)
 
         return render(request, Html.projectList,
                       {'projects': projects, 'message': ''})
@@ -149,6 +145,7 @@ def projectDetail(request, id):
 
         # -- project DetailAPI call, get a response
         project = ProjectUtil.get_project_detail(code, token, id)
+
         # -- AccountAPI call, get a response
         accountList = AccountUtil.get_assginment_account(code, token, id)
 

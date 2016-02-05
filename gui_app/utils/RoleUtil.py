@@ -212,8 +212,8 @@ def delete_role(code, token, id):
         return None
 
     url = Url.roleDelete(id, Url.url)
-    data = {'auth_token': request.session['auth_token']}
-    ApiUtil.requestDelete(url, FuncCode.roleDelete.value, data)
+    data = {'auth_token': token}
+    ApiUtil.requestDelete(url, code, data)
 
 
 # def add_session_role(session, role, permissions):

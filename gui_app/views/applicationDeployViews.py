@@ -3,13 +3,19 @@ from django.shortcuts import render, redirect, render_to_response
 import ast
 from collections import OrderedDict
 from ..forms import selecttForm
+from ..forms import applicationForm
 from ..utils import ApplicationUtil
+from ..utils import ApplicationHistoryUtil
 from ..utils import EnvironmentUtil
 from ..utils import StringUtil
 from ..utils.PathUtil import Path
 from ..utils.PathUtil import Html
 from ..utils.ApiUtil import Url
 from ..enum.FunctionCode import FuncCode
+from ..enum.ApplicationType import ApplicaionType
+from ..enum.ProtocolType import ProtocolType
+from ..utils import SessionUtil
+from ..utils import SystemUtil
 from ..logs import log
 
 
@@ -53,6 +59,67 @@ def applicationSelect(request):
         return render(request, Html.appdeploy_applicationSelect,
                       {'list': list, 'application': application,
                        'message': str(ex)})
+
+
+def applicationCreate(request):
+    code = FuncCode.applicationCreate.value
+    apptype = list(ApplicaionType)
+    protocol = list(ProtocolType)
+    systems = None
+    try:
+        if not SessionUtil.check_login(request):
+            return redirect(Path.logout)
+        if not SessionUtil.check_permission(request, 'application', 'create'):
+            return render_to_response(Html.error_403)
+
+        token = request.session['auth_token']
+        project_id = request.session['project_id']
+
+        systems = SystemUtil.get_system_list2(code, token, project_id)
+
+        if request.method == "GET":
+
+            return render(request, Html.appdeploy_applicationCreate,
+                          {'app': '', 'history': '', 'apptype': apptype,
+                           'protocol': protocol, 'message': '',
+                           'systems': systems, 'save': True})
+        else:
+            # -- Get a value from a form
+            msg = ''
+            p = request.POST
+            cpPost = p.copy()
+
+            # -- Validate check
+            form = applicationForm(p)
+            form.full_clean()
+            if not form.is_valid():
+
+                return render(request, Html.appdeploy_applicationCreate,
+                              {'app': cpPost, 'history': cpPost,
+                               'apptype': apptype,
+                               'protocol': protocol, 'form': form,
+                               'message': '', 'systems': systems,
+                               'save': True})
+
+            # -- 1.Create a application, api call
+            app = ApplicationUtil.create_application(code, token, form.data)
+
+            # -- 2.Create a applicationhistory, api call
+            ApplicationHistoryUtil.create_history(
+                code, token, app.get('id'), form.data)
+
+            request.session['w_app_select'] = {"id": app.get("id"),
+                                               "name": app.get("name")}
+
+            return redirect(Path.appdeploy_environmentSelect)
+    except Exception as ex:
+        log.error(FuncCode.applicationCreate.value, None, ex)
+
+        return render(request, Html.appdeploy_applicationCreate,
+                      {'app': request.POST, 'history': request.POST,
+                       'apptype': apptype,
+                       'protocol': protocol, 'form': '',
+                       'systems': systems, 'message': str(ex), 'save': True})
 
 
 def environmentSelect(request):

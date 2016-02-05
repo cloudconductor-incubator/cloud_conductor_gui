@@ -69,6 +69,9 @@ class Path():
     def applicationHistoryDetail(id, his_id):
         return "/ccgui/application/{0}/history/{1}/detail".format(id, his_id)
 
+    def applicationHistoryEdit(id, his_id):
+        return "/ccgui/application/{0}/history/{1}/edit".format(id, his_id)
+
     blueprintList = "/ccgui/blueprint/list/"
     blueprintCreate = "/ccgui/blueprint/create/"
 
@@ -125,13 +128,14 @@ class Path():
     newapp_confirm = "/ccgui/newapp/confirm/"
 
     envapp_systemSelect = "/ccgui/envapp/system/select/"
-#     envapp_systemCreate = "/ccgui/envapp/system/create/"
+    envapp_systemCreate = "/ccgui/envapp/system/create/"
     envapp_bluprintSelect = "/ccgui/envapp/blueprint/select/"
-#     envapp_environmentSelect = "/ccgui/envapp/environment/select/"
+    envapp_blueprintCreate = "/ccgui/envapp/blueprint/create/"
     envapp_environmentCreate = "/ccgui/envapp/environment/create/"
     envapp_confirm = "/ccgui/envapp/confirm/"
 
     appdeploy_applicationSelect = "/ccgui/appdeploy/application/select/"
+    appdeploy_applicationCreate = "/ccgui/appdeploy/application/create/"
     appdeploy_environmentSelect = "/ccgui/appdeploy/environment/select/"
     appdeploy_confirm = "/ccgui/appdeploy/confirm/"
 
@@ -176,8 +180,12 @@ class Html():
 
     applicationList = "gui_app/application/applicationList.html"
     applicationDetail = "gui_app/application/applicationDetail.html"
+    applicationHistoryCreate = "gui_app/" + \
+                               "application/applicationHistoryCreate.html"
     applicationHistoryDetail = "gui_app/" + \
                                "application/applicationHistoryDetail.html"
+    applicationHistoryEdit = "gui_app/" + \
+                             "application/applicationHistoryEdit.html"
     applicationCreate = "gui_app/application/applicationCreate.html"
     applicationEdit = "gui_app/application/applicationEdit.html"
 
@@ -223,12 +231,16 @@ class Html():
     newapp_confirm = "gui_app/makeApplication/confirm.html"
 
     envapp_systemSelect = "gui_app/envApplication/systemSelect.html"
+    envapp_systemCreate = "gui_app/envApplication/systemCreate.html"
     envapp_bluprintSelect = "gui_app/envApplication/blueprintSelect.html"
+    envapp_blueprintCreate = "gui_app/envApplication/blueprintCreate.html"
     envapp_environmentCreate = "gui_app/envApplication/environmentCreate.html"
     envapp_confirm = "gui_app/envApplication/confirm.html"
 
     appdeploy_applicationSelect = \
         "gui_app/applicationDeploy/applicationSelect.html"
+    appdeploy_applicationCreate = \
+        "gui_app/applicationDeploy/applicationCreate.html"
     appdeploy_environmentSelect = \
         "gui_app/applicationDeploy/environmentSelect.html"
     appdeploy_confirm = "gui_app/applicationDeploy/confirm.html"

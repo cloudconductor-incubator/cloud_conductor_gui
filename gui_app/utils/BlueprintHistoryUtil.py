@@ -27,6 +27,24 @@ def get_blueprint_history_list(code, token, id):
     return list
 
 
+def get_new_blueprint_history(code, token, id):
+
+    if StringUtil.isEmpty(token):
+        return None
+
+    if StringUtil.isEmpty(id):
+        return None
+
+    list = get_blueprint_history_list(code, token, id)
+
+    new_his = {}
+    for his in list:
+        if new_his.get('version', 0) < his.get('version'):
+            new_his = his
+
+    return new_his
+
+
 def get_blueprint_parameters(code, token, blueprint_id, version):
 
     if StringUtil.isEmpty(code):

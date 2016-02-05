@@ -23,6 +23,8 @@
 </div>
 {% endif %}
     {% if roles %}
+    <form method="post" action="" id="form">
+    {% csrf_token %}
     	<table class="table table-hover">
 			<thead>
 				<tr>
@@ -45,7 +47,7 @@
 					{% if role.id %}
 						{% if request.session.role.manage or request.session.role.destroy %}
 						<div class="btn_group_bottom">
-							<button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#myModal" onclick="location.href='#'">
+							<button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#myModal" onclick="deleteRole('{{role.id}}')">
 								<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>&nbsp;&nbsp;delete
 							</button>
 						</div>
@@ -55,10 +57,28 @@
 				</tr>
         {% endfor %}
         		</table>
+<script>
+function deleteRole(obj){
+
+$("#form").attr("action","/ccgui/role/"  + obj + "/delete/");
+//$(this).attr("href","#myModal");
+}
+
+function deleteSubmit(){
+
+$("#form").submit();
+}
+
+
+</script>
+	</form>
     {% else %}
         There is no role.
     {% endif %}
 {% include "gui_app/role/includes/rolePopup.html" %}
+
+
+
 {% endblock %}
 
 {% block bodyscript %}{% endblock %}

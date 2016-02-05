@@ -198,7 +198,18 @@ class applicationForm(forms.Form):
     revision = forms.CharField(required=False, max_length=500)
     pre_deploy = forms.CharField(required=False, max_length=500)
     post_deploy = forms.CharField(required=False, max_length=500)
-    parameters = forms.CharField(required=False, max_length=500)
+    parameters = forms.CharField(required=False, max_length=1500)
+
+
+class applicationHistoryForm(forms.Form):
+    id = forms.IntegerField(required=False)
+    url = forms.URLField(max_length=500)
+    type = forms.CharField(required=False, max_length=500)
+    protocol = forms.CharField(required=False, max_length=500)
+    revision = forms.CharField(required=False, max_length=500)
+    pre_deploy = forms.CharField(required=False, max_length=500)
+    post_deploy = forms.CharField(required=False, max_length=500)
+    parameters = forms.CharField(required=False, max_length=1500)
 
 
 class w_applicationForm(forms.Form):
@@ -211,7 +222,7 @@ class w_applicationForm(forms.Form):
     revision = forms.CharField(required=False, max_length=500)
     pre_deploy = forms.CharField(required=False, max_length=500)
     post_deploy = forms.CharField(required=False, max_length=500)
-    parameters = forms.CharField(required=False, max_length=500)
+    parameters = forms.CharField(required=False, max_length=1500)
 
 
 class blueprintForm(forms.Form):
