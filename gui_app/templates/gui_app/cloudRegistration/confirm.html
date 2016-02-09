@@ -28,7 +28,9 @@
 						<tr><th>Cloud type</th><td>{{ cloud.type }}</td></tr>
 						<tr><th>Region name</th><td>{{ cloud.entry_point }}</td></tr>
 						<tr><th>Decription</th><td>{{ cloud.description }}</td></tr>
+						{% if  cloud.type == 'openstack' %}
 						<tr><th>Tenant name</th><td>{{ cloud.tenant_name }}</td></tr>
+						{% endif %}
 					</tbody>
 				</table>
 				<h3>BaseImage</h3>

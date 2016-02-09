@@ -101,7 +101,6 @@ def assignmentEdit(request, id=None):
         return redirect('/ccgui/logout')
 
     try:
-        test = FileUtil.getUrlPath()
         code = FuncCode.projectEdit.value
         token = request.session['auth_token']
         account_id = request.session['account_id']

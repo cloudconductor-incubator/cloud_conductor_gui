@@ -38,8 +38,8 @@
 			        <td>
 			        	<a href="{% url 'app:environmentDetail' e.id %}">{{ e.name }}</a>
 			        </td>
-			        <td>{{ e.system_id }}</td>
-			        <td>{{ e.blueprint_id }}</td>
+			        <td>{{ e.system_name }}</td>
+			        <td>{{ e.bp_name }}</td>
 			        <td>{{ e.created_at }}</td>
 			      </tr>
 			{% endfor %}

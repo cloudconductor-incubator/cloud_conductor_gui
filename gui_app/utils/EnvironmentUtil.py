@@ -62,26 +62,48 @@ def get_environment_detail(code, token, id):
     return StringUtil.deleteNullDict(environment)
 
 
-def edit_environment(code, token, id, form, temp_param):
-    # -- Create a project, api call
+# def edit_environment(code, token, id, form, temp_param):
+#     # -- Create a project, api call
+#     url = Url.environmentEdit(id, Url.url)
+#     data = {
+#         'auth_token': token,
+#         'name': form.get('name'),
+#         'description': form.get('description')
+#     }
+#
+#     if form.get("user_attributes"):
+#         data["user_attributes"] = form.get("user_attributes")
+#
+#     if temp_param:
+#         print(str(temp_param).replace('\'', '\"'))
+#         data["template_parameters"] = str(temp_param).replace('\'', '\"')
+#
+#     # -- API call, get a response
+#     project = ApiUtil.requestPut(url, code, StringUtil.deleteNullDict(data))
+#
+#     return project
+
+
+def edit_environment(code, id, form, session):
+    if StringUtil.isEmpty(code):
+        return None
+
+    if StringUtil.isEmpty(form):
+        return None
+
+    if StringUtil.isEmpty(session.get('auth_token')):
+        return None
+
+    param = putBlueprint(form)
+    inputs = createJson(param)
+    env = addEnvironmentParam(form, inputs, session)
+    # -- Create a environment, api call
     url = Url.environmentEdit(id, Url.url)
-    data = {
-        'auth_token': token,
-        'name': form.get('name'),
-        'description': form.get('description')
-    }
-
-    if form.get("user_attributes"):
-        data["user_attributes"] = form.get("user_attributes")
-
-    if temp_param:
-        print(str(temp_param).replace('\'', '\"'))
-        data["template_parameters"] = str(temp_param).replace('\'', '\"')
-
     # -- API call, get a response
-    project = ApiUtil.requestPut(url, code, StringUtil.deleteNullDict(data))
+    environment = ApiUtil.requestPut(url, code,
+                                     StringUtil.deleteNullDict(env))
 
-    return project
+    return environment
 
 
 def create_environment(code, form, session):

@@ -37,7 +37,7 @@
 			</thead>
         {% for assignment in assignments %}
             	<tr>
-            		<td><input name="chk-{{assignment.id}}" id="chk-{{assignment.id}}" checked type="checkbox" {% if  assignment.account_id == account_id %} onclick="return false;" {%endif%}></td>
+            		<td><input name="chk-{{assignment.id}}" id="chk-{{assignment.id}}" checked type="checkbox"></td>
 					<td>{{assignment.id}}</td>
 					<td>{{ assignment.name }}</td>
 					<td>{{ assignment.email }}</td>
@@ -61,7 +61,7 @@
 						   </option>
 						{% endfor %}
 				    </select>
-				    <input name="sel-{{assignment.id}}" id="sel_old-{{assignment.id}}" value="{{ assignment.role }}" type="hidden">
+				    <input name="myself" id="myself" value="chk-{{assignment.id}}" type="hidden">
 				    {% endif %}
 				    <input name="sel_old-{{assignment.id}}" id="sel_old-{{assignment.id}}" value="{{ assignment.role }}" type="hidden">
 					</td>
@@ -70,7 +70,7 @@
         {% endfor %}
         		</table>
 	        		<div class="button_center">
-						<a type=button class="btn btn-success btn-sm" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>&nbsp;　Save</a>
+						<a type=button class="btn btn-success btn-sm" data-toggle="modal" onclick="checkRole()" id="modalLink" data-target="#myModal"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>&nbsp;　Save</a>
 					</div>
 					{% include "gui_app/assignment/includes/assignmentPopup.html" %}
 </form>
@@ -79,6 +79,33 @@
     {% else %}
         There is no assignment.
     {% endif %}
+
+<script>
+function checkRole(){
+	var role=true;
+	$("select").each(function(){
+	    if($(this).val() == ''){
+	    	role=false;
+	    }
+	  });
+	if(role == false){
+		$("#modal-body").html("Please select a roll.");
+		$("#submit").hide();
+	}else{
+		if(!$("#" + $("#myself").val()).is(':checked')){
+			$("#modal-body").html("You will not be able to access the project from the next time. is it OK ?");
+			$("#submit").show();
+		}else{
+			$("#modalLink").attr("data-target","");
+			$("#submit").click();
+
+		}
+
+	}
+
+}
+
+</script>
 
 {% endblock %}
 

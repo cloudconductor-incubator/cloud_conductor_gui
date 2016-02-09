@@ -11,9 +11,7 @@ from ..utils.ErrorUtil import ApiError
 
 
 class Url():
-    # url = settings.CLOUDCONDUCTOR_URL
-    url = FileUtil.getUrlPath()
-
+    url = settings.CLOUDCONDUCTOR_URL
     token = url + 'tokens'
 
     projectList = url + 'projects'

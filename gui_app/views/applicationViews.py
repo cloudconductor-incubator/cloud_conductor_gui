@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect, render_to_response
 import json
 import requests
 from ..forms import applicationForm
+from ..forms import applicationForm2
 from ..forms import applicationHistoryForm
 from ..utils import ApiUtil
 from ..utils import ApplicationUtil
@@ -39,6 +40,13 @@ def applicationList(request):
         }
         apps = ApiUtil.requestGet(url, FuncCode.applicationList.value, data)
 
+        list = []
+        for app in apps:
+            system = SystemUtil.get_system_detail(
+                        FuncCode.applicationList.value,
+                        request.session['auth_token'], app.get("system_id"))
+            app["system_name"] = system.get("name")
+
         return render(request, Html.applicationList,
                       {'apps': apps, 'message': ''})
     except Exception as ex:
@@ -61,6 +69,11 @@ def applicationDetail(request, id):
         # -- application DetailAPI call, get a response
         token = request.session['auth_token']
         app = ApplicationUtil.get_application_detail(code, token, id)
+        system = SystemUtil.get_system_detail(
+                    FuncCode.applicationList.value,
+                    request.session['auth_token'], app.get("system_id"))
+        app["system_name"] = system.get("name")
+
         history_list = ApplicationHistoryUtil.get_history_list(code, token, id)
 
         return render(request, Html.applicationDetail,
@@ -134,11 +147,7 @@ def applicationCreate(request):
 
 def applicationEdit(request, id):
     code = FuncCode.applicationEdit.value
-    apptype = list(ApplicaionType)
-    protocol = list(ProtocolType)
     systems = None
-    newhis = None
-    history = None
     app = None
 
     try:
@@ -153,42 +162,32 @@ def applicationEdit(request, id):
 
         if request.method == "GET":
             app = ApplicationUtil.get_application_detail(code, token, id)
-            newhis = ApplicationHistoryUtil.get_new_history(code, token, id)
-            app.update({'history_id': newhis.get('id')})
 
             return render(request, Html.applicationEdit,
-                          {'app': app, 'history': newhis, 'form': '',
-                           'apptype': apptype, 'protocol': protocol,
-                           'message': '', 'systems': systems, 'save': True})
+                          {'app': app, 'form': '', 'message': '',
+                           'systems': systems, 'save': True})
         else:
             # -- Get a value from a form
             msg = ''
             p = request.POST
             # -- Validate check
-            form = applicationForm(p)
+            form = applicationForm2(p)
             form.full_clean()
             if not form.is_valid():
 
                 return render(request, Html.applicationEdit,
-                              {'app': p, 'history': p, 'apptype': apptype,
-                               'protocol': protocol, 'form': form,
-                               'message': '',
+                              {'app': p, 'form': form, 'message': '',
                                'systems': systems, 'save': True})
             # -- 1.Edit a application, api call
             app = ApplicationUtil.edit_application(code, token, id, form.data)
-
-            # -- 2.Edit a applicationhistory, api call
-            ApplicationHistoryUtil.create_history(code, token, id, form.data)
 
             return redirect(Path.applicationList)
     except Exception as ex:
         log.error(FuncCode.applicationEdit.value, None, ex)
 
         return render(request, Html.applicationEdit,
-                      {'app': request.POST, 'history': request.POST,
-                       'apptype': apptype, 'protocol': protocol,
-                       'form': '', 'message': str(ex), 'systems': systems,
-                       'save': True})
+                      {'app': request.POST, 'form': '', 'message': str(ex),
+                       'systems': systems, 'save': True})
 
 
 def applicationDelete(request, id):

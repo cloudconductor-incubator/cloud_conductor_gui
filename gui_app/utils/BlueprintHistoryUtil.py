@@ -133,3 +133,36 @@ def get_blueprint_history_detail2(code, token, blueprint_id, version):
     history['blueprint_name'] = blueprint.get('name')
 
     return history
+
+
+def get_blueprint_history_list_id(code, token, project_id, history_id):
+
+    if StringUtil.isEmpty(token):
+        return None
+
+    if StringUtil.isEmpty(project_id):
+        return None
+
+    if StringUtil.isEmpty(history_id):
+        return None
+
+    bplist = BlueprintUtil.get_blueprint_list(code, token, project_id)
+    if StringUtil.isEmpty(bplist):
+        return None
+
+    list = None
+    history = None
+    get_bp = False
+    for bp in bplist:
+        list = []
+        list = get_blueprint_history_list(code, token, bp.get('id'))
+        for his in list:
+            if his.get('id') == history_id:
+                history = his
+                history.update(bp)
+                get_bp = True
+
+        if get_bp:
+            break
+
+    return history

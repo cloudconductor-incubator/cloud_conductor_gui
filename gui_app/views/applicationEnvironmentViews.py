@@ -108,7 +108,14 @@ def blueprintSelect(request):
         session = request.session
         token = session['auth_token']
         project_id = session['project_id']
-        list = BlueprintUtil.get_blueprint_list(code, token, project_id)
+        # list = BlueprintUtil.get_blueprint_list(code, token, project_id)
+
+        data = {
+            'auth_token': token,
+            'project_id': project_id
+        }
+        list = get_blueprint_version(code, data)
+
         print(list)
 
         if request.method == "GET":
@@ -236,14 +243,20 @@ def environmentCreate(request):
 
         clouds = ApiUtil.requestGet(Url.cloudList, code, data)
         systems = ApiUtil.requestGet(Url.systemList, code, data)
-        blueprints = get_blueprint_version(code, data)
+        # blueprints = get_blueprint_version(code, data)
+
+        blueprints = BlueprintHistoryUtil.get_blueprint_parameters(
+            code, session.get('auth_token'),
+            request.session['w_bp_select'].get('id'),
+            request.session['w_bp_select'].get('version'))
 
         if request.method == "GET":
-            # environment = request.session.get('w_env_create')
+            environment = request.session.get('w_env_create')
 
             return render(request, Html.envapp_environmentCreate,
                           {'clouds': clouds, 'systems': None,
                            'blueprints': blueprints,
+                           'env': environment,
                            'message': '', 'create': True})
         elif request.method == "POST":
             param = request.POST
@@ -286,8 +299,9 @@ def confirm(request):
             session = request.session
             code = FuncCode.appenv_confirm.value
 
-            env_session.update(bp_session)
-            env_session.update(sys_session)
+            env_session['system_id'] = sys_session.get('id')
+            env_session['blueprint_id'] = bp_session.get('id')
+            env_session['version'] = bp_session.get('version')
 
             EnvironmentUtil.create_environment(code, env_session,
                                                request.session)
@@ -313,6 +327,7 @@ def putBlueprint(param):
         blueprint = ast.literal_eval(blueprint)
 
         param['id'] = str(blueprint.get('id'))
+        param['version'] = blueprint.get('version')
         param['name'] = blueprint.get('name')
 
     return param
@@ -360,7 +375,25 @@ def environmentPut(req):
     environment = {
         'id': req.get('id'),
         'name': req.get('name'),
+        'candidates_attributes_1': req.get('candidates_attributes_1'),
+        'candidates_attributes_2': req.get('candidates_attributes_2'),
+        'candidates_attributes_3': req.get('candidates_attributes_3'),
+        'json/tomcat_pattern/SSHLocation':
+            req.get('json/tomcat_pattern/SSHLocation'),
+        'json/tomcat_pattern/WebInstanceType':
+            req.get('json/tomcat_pattern/WebInstanceType'),
+        'json/tomcat_pattern/DbInstanceType':
+            req.get('json/tomcat_pattern/DbInstanceType'),
+        'json/tomcat_pattern/CloudConductorLocation':
+            req.get('json/tomcat_pattern/CloudConductorLocation'),
+        'json/tomcat_pattern/KeyName':
+            req.get('json/tomcat_pattern/KeyName'),
+        'json/tomcat_pattern/ApInstanceType':
+            req.get('json/tomcat_pattern/ApInstanceType'),
+        'user_attributes': req.get('user_attributes'),
+        'description': req.get('description'),
     }
+
     return environment
 
 

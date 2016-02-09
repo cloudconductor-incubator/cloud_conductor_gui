@@ -11,7 +11,7 @@
 {% block content %}
 <div class="cc-title">Confirm</div>
 <br>
-	<form method="post" action="{% url 'app:mkappConfirm'%}">
+	<form method="post" action="{% url 'app:envapp_confirm'%}">
 	{% csrf_token %}
 	{% include "gui_app/includes/message.html" %}
 		<div class="cc-select">

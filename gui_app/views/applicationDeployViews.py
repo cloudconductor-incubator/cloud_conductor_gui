@@ -28,7 +28,7 @@ def applicationSelect(request):
         application = ''
         list = ''
 
-        list = ApplicationUtil.get_application_list(
+        list = ApplicationUtil.get_application_version(
             code, token, project_id)
         print(list)
 
@@ -181,8 +181,6 @@ def confirm(request):
 
             env_id = env_session.get('id')
             app_id = app_session.get('id')
-
-            # -- environment create
 
             # -- application deploy
             ApplicationUtil.deploy_application(code, token, env_id, app_id)

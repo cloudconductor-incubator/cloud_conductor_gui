@@ -9,6 +9,7 @@ from ..utils import StringUtil
 from ..utils import BlueprintHistoryUtil
 from ..utils import EnvironmentUtil
 from ..utils import SessionUtil
+from ..utils import SystemUtil
 from ..utils.PathUtil import Path
 from ..utils.PathUtil import Html
 from ..utils.ApiUtil import Url
@@ -36,6 +37,17 @@ def environmentList(request):
         }
         envs = ApiUtil.requestGet(url, FuncCode.environmentList.value, data)
 
+        for env in envs:
+            system = SystemUtil.get_system_detail(
+                FuncCode.environmentList.value, request.session['auth_token'],
+                env.get("system_id"))
+            bp = BlueprintHistoryUtil.get_blueprint_history_list_id(
+                FuncCode.environmentList.value, request.session['auth_token'],
+                request.session['project_id'], env.get("blueprint_history_id"))
+
+            env["system_name"] = system.get("system_name")
+            env["bp_name"] = bp.get("name")
+
         return render(request, Html.environmentList,
                       {'envs': envs, 'message': ''})
     except Exception as ex:
@@ -57,6 +69,13 @@ def environmentDetail(request, id):
         # -- environment DetailAPI call, get a response
         token = request.session['auth_token']
         env = EnvironmentUtil.get_environment_detail(code, token, id)
+        system = SystemUtil.get_system_detail(
+            code, request.session['auth_token'], env.get("system_id"))
+        bp = BlueprintHistoryUtil.get_blueprint_history_list_id(
+                FuncCode.environmentList.value, request.session['auth_token'],
+                request.session['project_id'], env.get("blueprint_history_id"))
+        env["system_name"] = system.get("name")
+        env["bp_name"] = bp.get("name")
 
         return render(request, Html.environmentDetail,
                       {'env': env, 'message': ''})
@@ -129,39 +148,30 @@ def environmentCreate(request):
 
 
 def environmentEdit(request, id):
+    code = FuncCode.environmentEdit.value
+    env = None
+    blueprints = None
     try:
         if not SessionUtil.check_login(request):
             return redirect(Path.logout)
         if not SessionUtil.check_permission(request, 'environment', 'update'):
             return render_to_response(Html.error_403)
 
-        code = FuncCode.environmentEdit.value
         token = request.session['auth_token']
-        data = {
-            'auth_token': request.session['auth_token'],
-            'project_id': request.session['project_id']
-        }
+        project_id = request.session['project_id']
 
-        url = Url.environmentDetail(id, Url.url)
-        p = ApiUtil.requestGet(url, code, data)
-        p.update(data)
+        env = EnvironmentUtil.get_environment_detail(code, token, id)
+        history = BlueprintHistoryUtil.get_blueprint_history_list_id(
+            code, token, project_id, env.get('blueprint_history_id'))
 
-#         env = EnvironmentUtil.get_environment_detail(code, token, id)
-#         temp_param = BlueprintHistoryUtil.get_blueprint_history_parameters(
-#                  code, token, blueprint_id, env.get('blueprint_history_id'))
-
-#         bphistory = BlueprintHistoryUtil.get_blueprint_history_list(
-#             code, token, bp['blueprint_id'], bp['version'])
-#         blueprints = get_blueprint_version(code, data)
-
-#         temp_param = BlueprintHistoryUtil.get_blueprint_history_detail(
-#                  code, token, id, env.get('blueprint_history_id'))
+        blueprints = BlueprintHistoryUtil.get_blueprint_parameters(
+            code, token, history.get('blueprint_id'), history.get('version'))
 
         if request.method == "GET":
 
             return render(request, Html.environmentEdit,
-                          {'env': env, 'form': '', 'message': '',
-                           'save': True})
+                          {'env': env, 'blueprints': blueprints, 'form': '',
+                           'message': '', 'save': True})
         else:
             # -- Get a value from a form
             msg = ''
@@ -172,19 +182,23 @@ def environmentEdit(request, id):
             if not form.is_valid():
 
                 return render(request, Html.environmentEdit,
-                              {'env': cpPost, 'form': form, 'message': '',
-                               'save': True})
+                              {'env': cpPost, 'blueprints': blueprints,
+                               'form': form, 'message': '', 'save': True})
 
             # -- Create a environment, api call
-            environment = EnvironmentUtil.edit_environment(
-                code, token, id, form.data, temp_param=None)
+#             environment = EnvironmentUtil.edit_environment(
+#                 code, token, id, form.data, temp_param=None)
+
+            environment = EnvironmentUtil.edit_environment(code, id, cpPost,
+                                                           request.session)
 
             return redirect(Path.environmentList)
     except Exception as ex:
         log.error(code, None, ex)
 
         return render(request, Html.environmentEdit,
-                      {'env': request.POST, 'message': str(ex), 'save': True})
+                      {'env': request.POST, 'blueprints': blueprints,
+                       'message': str(ex), 'save': True})
 
 
 def environmentDelete(request, id):

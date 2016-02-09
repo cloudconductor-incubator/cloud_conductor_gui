@@ -24,16 +24,17 @@
 		{% include "gui_app/includes/message.html" %}
 		<h3>Blueprint select</h3>
 		<div class="form-group">
-	    	<label><span id="req">*</span>Blueprint</label>
+	    	<label><span id="req">*</span>Blueprint&nbsp;:&nbsp;Version</label>
 			<select class="form-control" name="id" id="id">
 		        <option value=""></option>
-				{% for bp in list %}
-					<option value="{'id': {{ bp.id }}, 'name': '{{ bp.name }}'}" {% if bp.id|add:"0" == blueprint.id|add:"0" %} selected="selected" {% endif %}
-					data-name="{{ bp.name }}" data-description="{{ bp.description }}"
-					>
-					{{ bp.name }}
-					</option>
+				{% for b in list %}
+				<option value="{'id': {{ b.id }}, 'version': {{ b.version }}, 'name': '{{ b.name }}'}" {% ifequal b.id|add:"0"  blueprint.id|add:"0" %}{% ifequal b.version|add:"0"  blueprint.version|add:"0" %} selected="selected"{% endifequal %}{% endifequal %}
+				data-name="{{ b.name }}" data-description="{{ b.description }}"
+				>
+					{{ b.name }}&nbsp;:&nbsp;{{ b.version }}
+				</option>
 				{% endfor %}
+
 		    </select>
 		    {{ form.id.errors }}
 	    </div>

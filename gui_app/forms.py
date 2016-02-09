@@ -201,6 +201,14 @@ class applicationForm(forms.Form):
     parameters = forms.CharField(required=False, max_length=1500)
 
 
+class applicationForm2(forms.Form):
+    id = forms.IntegerField(required=False)
+    system_id = forms.CharField()
+    name = forms.CharField(max_length=500)
+    description = forms.CharField(required=False, max_length=500)
+    domain = forms.CharField(required=False, max_length=500)
+
+
 class applicationHistoryForm(forms.Form):
     id = forms.IntegerField(required=False)
     url = forms.URLField(max_length=500)

@@ -104,7 +104,7 @@ def edit_cloud(code, token, id, form):
         'auth_token': token,
     }
 
-    form.update(data)
+    data.update(form)
     # -- API call, get a response
     response = ApiUtil.requestPut(url, code, StringUtil.deleteNullDict(data))
 

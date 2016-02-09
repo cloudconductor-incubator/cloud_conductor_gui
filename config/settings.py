@@ -193,3 +193,5 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 COVERAGE_REPORT_HTML_OUTPUT_DIR = '.cover'
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 NOSE_ARGS = ['--with-coverage','--with-xunit','--cover-package=gui_app\tests','--cover-xml','--cover-html',]
+
+CLOUDCONDUCTOR_URL=''

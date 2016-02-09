@@ -13,4 +13,4 @@ class Error(Enum):
 
 
 class Info(Enum):
-    WizardSystem = 'Wizard is terminated. Do you want to move to New?'
+    WizardSystem = 'And transition to the new creation screen. is it OK??'

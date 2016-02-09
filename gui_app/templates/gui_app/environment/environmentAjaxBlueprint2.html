@@ -1,14 +1,11 @@
-<html>
-<body>
-{% for bp in blueprints %}
-<label></label>
+{% for key, value in blueprints.items %}
+<label>{{ key }}</label>
 	  <div class="form-group">
-	  	{% for key, value in bp.items %}
-		    <label>{{ key }}</label>
-		    <div class="discription">{{ value.Description }}</div>
-		    <input type="text" value="{{ value.Default}}" maxlength="{{ value.MaxLength }}" minlength="{{ value.MinLength }}" class="form-control" name="json/{{ key }}">
-		  </div>
+	  	{% for key2, value2 in value.items %}
+		    <label>{{ key2 }}</label>
+		    <div class="discription">{{ value2.Description }}</div>
+		    <input type="text" value="{{ value2.Default}}" maxlength="{{ value2.MaxLength }}" minlength="{{ value2.MinLength }}" class="form-control" name="json/{{ key }}/{{ key2 }}">
 	  	{% endfor %}
+	  </div>
+
 {% endfor %}
-</body>
-</html>

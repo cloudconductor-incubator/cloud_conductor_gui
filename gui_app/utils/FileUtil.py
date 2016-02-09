@@ -6,16 +6,16 @@ from django.core.files import File
 from django.http import *
 
 
-def download(request):
-
-    print("fileUtil now")
-    output = io.StringIO()
-    output.write("First line.\n")
-    response = HttpResponse(output.getvalue(), content_type="text/plain")
-    response["Content-Disposition"] = "filename=text.txt"
-    print("return now")
-
-    return response
+# def download(request):
+#
+#     print("fileUtil now")
+#     output = io.StringIO()
+#     output.write("First line.\n")
+#     response = HttpResponse(output.getvalue(), content_type="text/plain")
+#     response["Content-Disposition"] = "filename=text.txt"
+#     print("return now")
+#
+#     return response
 
 
 def download_file(request):
@@ -24,13 +24,3 @@ def download_file(request):
         open('/path/to/downloadfile', 'rb').read(), mimetype='text/plain')
     response['Content-Disposition'] = 'filename=text.txt'
     return response
-
-
-def getUrlPath():
-
-    url = settings.URL_PATH
-    f = open(url, 'r')
-    line = f.readline()
-    f.close()
-
-    return line

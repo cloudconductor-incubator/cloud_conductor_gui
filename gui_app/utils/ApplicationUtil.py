@@ -4,6 +4,7 @@ from ..utils import RoleUtil
 from ..utils import ApiUtil
 from ..utils import StringUtil
 from ..utils.ApiUtil import Url
+from ..utils import ApplicationHistoryUtil
 from ..enum import ResponseType
 from ..enum.FunctionCode import FuncCode
 from ..logs import log
@@ -23,6 +24,47 @@ def get_application_list(code, token, project_id=None):
 
     url = Url.applicationList
     list = ApiUtil.requestGet(url, code, data)
+    return list
+
+
+def get_application_version(code, token, project_id=None):
+
+    if StringUtil.isEmpty(code):
+        return None
+
+    if StringUtil.isEmpty(token):
+        return None
+
+    data = {
+        'auth_token': token,
+        'project_id': project_id,
+    }
+
+    # Get a Blueprint List
+    url = Url.applicationList
+    applications = ApiUtil.requestGet(url, code, data)
+
+    if applications is None:
+        return None
+
+    # Create a custom blueprint list
+    dic = {}
+    list = []
+    for app in applications:
+
+        histories = ApplicationHistoryUtil.get_history_list(code, token,
+                                                            app.get('id'))
+
+        if histories is not None:
+            for history in histories:
+                dic['id'] = history.get('id')
+                dic['name'] = app.get('name')
+                dic['version'] = history.get('version')
+                dic['system_id'] = app.get('system_id')
+                dic['description'] = app.get('description')
+                dic['domain'] = app.get('domain')
+                list.append(dic.copy())
+
     return list
 
 
