@@ -72,12 +72,6 @@ def add_blueprint_pattern(code, token, id, pattern_id, revison, os_version):
     if StringUtil.isEmpty(id):
         return None
 
-    if StringUtil.isEmpty(revison):
-        return None
-
-    if StringUtil.isEmpty(os_version):
-        return None
-
     if StringUtil.isEmpty(pattern_id):
         return None
 
@@ -89,7 +83,7 @@ def add_blueprint_pattern(code, token, id, pattern_id, revison, os_version):
         'os_version': os_version,
     }
 
-    bp = ApiUtil.requestPost(url, code, data)
+    bp = ApiUtil.requestPost(url, code, StringUtil.deleteNullDict(data))
 
     return bp
 
