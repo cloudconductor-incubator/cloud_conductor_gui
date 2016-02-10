@@ -10,6 +10,7 @@ from ..utils import ApiUtil
 from ..utils.PathUtil import Path
 from ..utils.PathUtil import Html
 from ..utils.ApiUtil import Url
+from ..utils import PermissionUtil
 from ..utils import SessionUtil
 from ..enum.FunctionCode import FuncCode
 from ..logs import log
@@ -200,6 +201,22 @@ def roleEdit(request, id):
             RoleUtil.edit_role(code, request.session['auth_token'], id,
                                request.POST.get('name'),
                                request.POST.get('description'), request.POST)
+
+            role = RoleUtil.get_account_role(
+                code, request.session['auth_token'], id, request.session['account_id'])
+
+            if not role:
+                raise(Error.Authentication.value)
+            # -- PermissionListAPI call, get a response
+            permissions = PermissionUtil.get_permission_list(
+                code, request.session['auth_token'], role.get('id'))
+
+            if not permissions:
+                raise(Error.Authentication.value)
+
+            RoleUtil.delete_session_role(request.session)
+            RoleUtil.add_session_role(request.session, role, permissions)
+
             return redirect(Path.roleList)
 
     except Exception as ex:

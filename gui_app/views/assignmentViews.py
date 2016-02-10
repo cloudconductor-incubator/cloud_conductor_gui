@@ -7,6 +7,7 @@ from ..utils import RoleUtil
 from ..utils import ValiUtil
 from ..utils import ApiUtil
 from ..utils import FileUtil
+from ..utils import AccountUtil
 from ..utils import SessionUtil
 from ..utils import PermissionUtil
 from ..utils.PathUtil import Path
@@ -60,6 +61,10 @@ def assignmentAdd(request, id=None):
             for account in accountsByProject:
                 accounts.remove(account)
 
+            if request.session.get('select_account'):
+                for account in request.session['select_account']:
+                    accounts.remove(account)
+
             return render(request, Html.assignmentAdd,
                           {'accounts': accounts, 'project_id': id,
                            'message': '', 'save': True})
@@ -67,24 +72,22 @@ def assignmentAdd(request, id=None):
             # -- Get a value from a form
             msg = ''
             p = request.POST
-            # -- Validate check
-            # form = assignmentAddForm(p)
-            #     if not form.is_valid():
-            #        msg = ValiUtil.valiCheck(form)
-            # return render(request, Html.projectCreate, {'project': p,
-            # 'message': msg, 'save': True})
 
             # -- Create a project, api call
             url = Url.assignmentAdd
+            accounts = []
             for param in p:
                 if 'chk-' in param:
-                    data = {
-                        'auth_token': token,
-                        'project_id': id,
-                        'account_id': param.split('-')[1],
-                    }
-                    permission = ApiUtil.requestPost(
-                        url, FuncCode.projectDetail.value, data)
+                    account = AccountUtil.get_account_detail(
+                        FuncCode.projectDetail.value, token, param.split('-')[1])
+                    accounts.append(account)
+
+            if request.session.get('select_account'):
+                for account in request.session['select_account']:
+                    accounts.append(account)
+                    request.session['select_account'] = accounts
+            else:
+                request.session['select_account'] = accounts
 
             return redirect(Path.assignmentEdit(id))
     except Exception as ex:
@@ -152,6 +155,17 @@ def assignmentEdit(request, id=None):
                     'admin': admin,
                     'role': role,
                 })
+
+            if request.session.get('select_account'):
+                for account in request.session['select_account']:
+                    assignmentList.append({
+                        'id': "",
+                        'account_id': account["id"],
+                        'name': account["name"],
+                        'email': account["email"],
+                        'admin': account["admin"],
+                        'role': "",
+                    })
 
             url = Url.roleList
             data = {
@@ -290,9 +304,34 @@ def assignmentEdit(request, id=None):
                     }
                     ApiUtil.requestDelete(url, code, data)
 
+            if request.session.get('select_account'):
+                for account in request.session['select_account']:
+                    if 'chk--' + str(account['id']) in p:
+                        data = {
+                            'auth_token': token,
+                            'project_id': id,
+                            'account_id': account["id"],
+                        }
+                        url = Url.assignmentAdd
+                        assi = ApiUtil.requestPost(
+                            url, FuncCode.projectDetail.value, data)
+
+                        url = Url.assignmentRoleAdd(
+                            str(assi['id']), Url.url)
+                        data = {
+                            'auth_token': token,
+                            'role_id': p['sel--' + str(account['id'])],
+                        }
+                        ApiUtil.requestPost(
+                            url, FuncCode.projectDetail.value, data)
+
+                del request.session['select_account']
+
             return redirect(Path.projectDetail(id))
     except Exception as ex:
         log.error(FuncCode.projectEdit.value, None, ex)
+        if request.session.get('select_account'):
+            del request.session['select_account']
 
         return render(request, Html.assignmentEdit, {'project': request.POST,
                                                      'project_id': id,

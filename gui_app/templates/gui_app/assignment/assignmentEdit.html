@@ -37,23 +37,13 @@
 			</thead>
         {% for assignment in assignments %}
             	<tr>
-            		<td><input name="chk-{{assignment.id}}" id="chk-{{assignment.id}}" checked type="checkbox"></td>
+            		<td><input name="chk-{{assignment.id}}{% if  assignment.id == '' %}-{{assignment.account_id}}{% endif %}" id="chk-{{assignment.id}}{% if  assignment.id == '' %}-{{assignment.account_id}}{% endif %}" checked type="checkbox"></td>
 					<td>{{assignment.id}}</td>
 					<td>{{ assignment.name }}</td>
 					<td>{{ assignment.email }}</td>
 					<td>{{ assignment.admin }}</td>
 					<td>
-					{% if  assignment.account_id != account_id %}
-					<select class="form-control" name="sel-{{assignment.id}}" id="sel-{{assignment.id}}"   >
-				        <option value=""></option>
-				        {% for r in roleList %}
-						   <option value="{{ r.id }}" {% if  assignment.role == r.id %} selected="selected" {% endif %}>
-						       {{ r.name }}
-						   </option>
-						{% endfor %}
-				    </select>
-				    {% else %}
-				    <select class="form-control" name="sel-{{assignment.id}}" id="sel-{{assignment.id}}">
+				    <select class="form-control" name="sel-{{assignment.id}}{% if  assignment.id == '' %}-{{assignment.account_id}}{% endif %}" id="sel-{{assignment.id}}{% if  assignment.id == '' %}-{{assignment.account_id}}{% endif %}">
 				        <option value=""></option>
 				        {% for r in roleList %}
 						   <option value="{{ r.id }}" {% if  assignment.role == r.id %} selected="selected" {% endif %}>
@@ -62,8 +52,8 @@
 						{% endfor %}
 				    </select>
 				    <input name="myself" id="myself" value="chk-{{assignment.id}}" type="hidden">
-				    {% endif %}
 				    <input name="sel_old-{{assignment.id}}" id="sel_old-{{assignment.id}}" value="{{ assignment.role }}" type="hidden">
+
 					</td>
 					<td>　</td>
 				</tr>
@@ -84,7 +74,7 @@
 function checkRole(){
 	var role=true;
 	$("select").each(function(){
-	    if($(this).val() == ''){
+	    if($(this).val() == '' ){
 	    	role=false;
 	    }
 	  });

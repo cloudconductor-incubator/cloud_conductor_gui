@@ -40,7 +40,7 @@ def deleteNullDict(dic):
             del diccopy['csrfmiddlewaretoken']
 
         for key, value in dic.items():
-            if isEmpty(value) or value == 'None':
+            if isEmpty(value) or value == 'None' or value == '':
                 del diccopy[key]
         dic = diccopy
 

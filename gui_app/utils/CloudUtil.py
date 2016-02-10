@@ -102,9 +102,16 @@ def edit_cloud(code, token, id, form):
     # -- Set the value to the form
     data = {
         'auth_token': token,
+        'name': form.get('name'),
+        'type': form.get('type'),
+        'key': form.get('key'),
+        'secret': form.get('secret'),
+        'entry_point': form.get('entry_point'),
+        'tenant_name': form.get('tenant_name'),
+        'description': form.get('description')
     }
 
-    data.update(form)
+#     data.update(form)
     # -- API call, get a response
     response = ApiUtil.requestPut(url, code, StringUtil.deleteNullDict(data))
 
