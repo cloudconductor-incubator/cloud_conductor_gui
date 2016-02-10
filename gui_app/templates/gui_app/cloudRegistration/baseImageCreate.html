@@ -12,12 +12,12 @@
 <br>
 	<form method="post" action="{% url 'app:cloudregistBaseimage' %}">
 		<input id="auth_token" type="hidden" name="auth_token" value="{{ baseImage.auth_token }}">
-		{% include "gui_app/baseImage/includes/formbaseImage.html" %}
+		{% include "gui_app/baseImage/includes/formBaseImage.html" %}
 
 		<div class="button_left">
 			<button type="button" class="btn btn-primary btn-sm" onclick="location.href='{% url 'app:cloudregistCloud' %}'" >
 				<span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
-				 &nbsp;　back
+				 &nbsp;&nbsp;back
 			</button>
 			<span class="delete_btn">
 				<button type="submit" class="btn btn-primary btn-sm">

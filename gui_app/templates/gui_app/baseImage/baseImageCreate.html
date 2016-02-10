@@ -12,7 +12,7 @@
 <br>
 	<form method="post" action="{% url 'app:baseImageCreate' baseImage.cloud_id %}">
 		<input id="auth_token" type="hidden" name="auth_token" value="{{ baseImage.auth_token }}">
-		{% include "gui_app/baseImage/includes/formbaseImage.html" %}
+		{% include "gui_app/baseImage/includes/formBaseImage.html" %}
 	</form>
 {% endblock %}
 

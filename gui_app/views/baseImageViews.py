@@ -151,7 +151,7 @@ def baseImageDelete(request, id):
         if not SessionUtil.check_permission(request, 'baseimage', 'destroy'):
             return render_to_response(Html.error_403)
 
-#         token = request.session.get('auth_token')
+        token = request.session.get('auth_token')
         # -- Get a baseImage, api call
         baseimage = BaseimageUtil.get_baseimage_detail(code, token, id)
         cloud_id = baseimage.get('cloud_id')
