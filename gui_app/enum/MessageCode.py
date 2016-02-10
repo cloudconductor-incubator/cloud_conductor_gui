@@ -10,6 +10,7 @@ class Error(Enum):
     NoAssginment = 'This account is not assigned to the project.'
     NoRole = 'This account does not have Role is assigned.'
     Required = 'This field is required.'
+    PatternRequired = 'Pattern Please select one or more.'
 
 
 class Info(Enum):

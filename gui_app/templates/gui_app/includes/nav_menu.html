@@ -3,7 +3,7 @@
 <aside class="aside">
 	<div class="aside-inner">
 		<nav class="sidebar" data-sidebar-anyclick-close="">
-			{% if request.session.project_list|length > 1 %}
+
 				<div class="btn-group" role="group">
 			    <button type="button" class="btn dropdown-toggle " style="width: 214px;" data-toggle="dropdown" aria-expanded="false">
 			       &nbsp; {{ request.session.project_name }}
@@ -15,12 +15,6 @@
 				{% endfor %}
 			    </ul>
 			  </div>
-
-			{% else %}
-				{% for p in request.session.project_list %}
-					{{ p.name }}
-				{% endfor %}
-			{% endif %}
 
 			<div class="menu-menu"></div>
 			<ul class="nav">

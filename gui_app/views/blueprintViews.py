@@ -14,6 +14,7 @@ from ..utils.PathUtil import Html
 from ..utils.ApiUtil import Url
 from ..enum.FunctionCode import FuncCode
 from ..enum.OSVersion import OSVersion
+from ..enum.MessageCode import Error
 from ..logs import log
 
 
@@ -107,6 +108,17 @@ def blueprintCreate(request):
                                'osversion': osversion,
                                'form': form, 'message': ''})
 
+            checkbox = False
+            if request.POST.get('pattern_id'):
+                checkbox = True
+
+            if not checkbox:
+                return render(request, Html.blueprintCreate,
+                              {'blueprint': p, 'patterns': patterns,
+                               'my_pattern': my_pattern,
+                               'osversion': osversion, 'form': form,
+                               'message': Error.PatternRequired.value})
+
             # -- 1.Create a blueprint, api call
             blueprint = BlueprintUtil.create_blueprint(
                 code, token, project_id, form.data)
@@ -175,6 +187,17 @@ def blueprintEdit(request, id):
                                'osversion': osversion, 'form': form,
                                'message': ''})
 
+            checkbox = False
+            if request.POST.get('pattern_id'):
+                checkbox = True
+
+            if not checkbox:
+                return render(request, Html.blueprintEdit,
+                              {'blueprint': p, 'patterns': patterns,
+                               'my_pattern': my_pattern,
+                               'osversion': osversion, 'form': form,
+                               'message': Error.PatternRequired.value})
+
             # -- 1.Edit a blueprint, api call
             blueprint = BlueprintUtil.edit_blueprint(
                 code, token, id, form.data)
@@ -196,10 +219,6 @@ def blueprintEdit(request, id):
             # -- 3. Delete a Pattern, api call
             BlueprintPatternUtil.delete_blueprint_pattern_list(
                 code, token, id, p.getlist('os_version'), delete_list)
-
-            # -- 4. BlueprintBuild, api call
-            BlueprintUtil.create_bluepritn_build(
-                code, token, blueprint.get('id'))
 
             return redirect(Path.blueprintList)
     except Exception as ex:
@@ -292,7 +311,7 @@ def blueprintHistoryDetail(request, id, ver):
             code, token, id, ver)
 
         return render(request, Html.blueprintHistoryDetail,
-                      {'history': history,  'message': ''})
+                      {'history': history, 'message': ''})
     except Exception as ex:
         log.error(FuncCode.blueprintDetail.value, None, ex)
 

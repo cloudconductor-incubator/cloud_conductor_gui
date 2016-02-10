@@ -39,7 +39,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'bootstrapform',  # django-bootstrap-form
     'gui_app',
-#     'django_nose'
+    #     'django_nose'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -120,7 +120,7 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
 
-URL_PATH =  os.path.join(BASE_DIR, 'url.txt')
+URL_PATH = os.path.join(BASE_DIR, 'url.txt')
 
 LOGGING = {
     'version': 1,
@@ -132,8 +132,8 @@ LOGGING = {
     },
     'formatters': {
         'verbose': {
-        'format': "[%(asctime)s], %(levelname)s, %(message)s",
-#             'format': "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s process:%(process)d thread:%(thread)d",
+            'format': "[%(asctime)s], %(levelname)s, %(message)s",
+            #             'format': "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s process:%(process)d thread:%(thread)d",
         },
         'simple': {
             'format': '[%(levelname)-7s] %(asctime)s - %(message)s'
@@ -152,7 +152,7 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
-            'maxBytes': 1024*1024*10,  # 10 MB
+            'maxBytes': 1024 * 1024 * 10,  # 10 MB
             'backupCount': 10,
             'filename': 'C:\\temp\\app.log',
             'formatter': 'verbose'
@@ -192,6 +192,7 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
 COVERAGE_REPORT_HTML_OUTPUT_DIR = '.cover'
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
-NOSE_ARGS = ['--with-coverage','--with-xunit','--cover-package=gui_app\tests','--cover-xml','--cover-html',]
+NOSE_ARGS = ['--with-coverage', '--with-xunit',
+             '--cover-package=gui_app\tests', '--cover-xml', '--cover-html', ]
 
-CLOUDCONDUCTOR_URL=''
+CLOUDCONDUCTOR_URL = ''
