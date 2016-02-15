@@ -41,7 +41,7 @@ def applicationSelect(request):
             param = request.POST
 
             # -- Session add
-            application = StringUtil.stringToDict(param.get('id'))
+            application = selectPut(param)
             form = selecttForm(application)
             if not form.is_valid():
 
@@ -130,9 +130,12 @@ def environmentSelect(request):
         token = session['auth_token']
         project_id = session['project_id']
 
+        w_app = session.get('w_app_select')
+        app = ApplicationUtil.get_application_detail(
+            code, token, session.get('w_app_select').get('id'))
+
         list = EnvironmentUtil.get_environment_list_system_id(
-            code, token, project_id,
-            session.get('w_app_select').get("system_id"))
+            code, token, project_id, app.get("system_id"))
 
         if request.method == "GET":
 
@@ -142,7 +145,7 @@ def environmentSelect(request):
         elif request.method == "POST":
             param = request.POST
 
-            environment = environmentPut(param)
+            environment = selectPut(param)
 
             form = selecttForm(environment)
             if not form.is_valid():
@@ -199,21 +202,21 @@ def confirm(request):
                        'message': str(ex)})
 
 
-def environmentPut(req):
+def selectPut(req):
     if StringUtil.isEmpty(req):
         return None
 
-    env = req.get('id', None)
-    if StringUtil.isNotEmpty(env):
-        env = ast.literal_eval(env)
+    select_param = req.get('id', None)
+    if StringUtil.isNotEmpty(select_param):
+        select_param = ast.literal_eval(select_param)
 
-        environment = {
-            'id': str(env.get('id')),
-            'name': env.get('name'),
+        param = {
+            'id': str(select_param.get('id')),
+            'name': select_param.get('name'),
         }
-        return environment
+        return param
     else:
-        return env
+        return select_param
 
 
 def putBlueprint(param):

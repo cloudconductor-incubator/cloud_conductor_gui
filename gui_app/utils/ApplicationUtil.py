@@ -57,7 +57,7 @@ def get_application_version(code, token, project_id=None):
 
         if histories is not None:
             for history in histories:
-                dic['id'] = history.get('id')
+                dic['id'] = app.get('id')
                 dic['name'] = app.get('name')
                 dic['version'] = history.get('version')
                 dic['system_id'] = app.get('system_id')
