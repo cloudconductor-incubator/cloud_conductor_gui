@@ -169,6 +169,7 @@ def roleEdit(request, id):
         role = RoleUtil.get_role_detail(code, token, id)
 
         if request.method == "GET":
+            RoleUtil.get_role_detail(code, token, id)
             return render(request, Html.roleEdit,
                           {'message': '', 'role': role["role"],
                            'items': role["check_items"], 'save': True},)

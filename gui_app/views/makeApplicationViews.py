@@ -10,6 +10,7 @@ from ..utils import ApiUtil
 from ..utils import SystemUtil
 from ..utils import ApplicationUtil
 from ..utils import EnvironmentUtil
+from ..utils import ApplicationHistoryUtil
 from ..utils.BlueprintUtil import get_blueprint_version
 from ..utils import StringUtil
 from ..utils.PathUtil import Path
@@ -146,8 +147,8 @@ def environmentSelect(request):
             environment = session.get('w_env_select')
 
             env = None
-            if environment is not None:
-                env = environment.get("id")
+#             if environment is not None:
+            env = environment.get("id")
 
             return render(request, Html.newapp_environmentSelect,
                           {"list": list, 'environment': env,
@@ -278,9 +279,14 @@ def confirm(request):
 
             # -- applicationHistory create
             app_id = application.get('id')
+            history = ApplicationHistoryUtil.create_history(code, token,
+                                                  application.get('id'),
+                                                  app_session)
 
             # -- application deploy
             env = ast.literal_eval(env_session["id"])
+            ApplicationUtil.deploy_application(code, token, env.get('id'),
+                                               app_id, history.get('id'))
 
             # -- application deploy
             ApplicationUtil.deploy_application(
@@ -314,7 +320,7 @@ def putEnvironment(param):
 def putSystem(param):
 
     system = param.get('id', None)
-    if system is not None and system != '':
+    if system is not None or system != '':
         system = ast.literal_eval(system)
 
         param['id'] = str(system.get('id'))
@@ -333,36 +339,13 @@ def putCreateEnvironment(param, env):
 def putBlueprint(param):
 
     blueprint = param.get('blueprint', None)
-    if blueprint is not None and blueprint != '':
+    if blueprint is not None or blueprint != '':
         blueprint = ast.literal_eval(blueprint)
 
         param['blueprint_id'] = blueprint.get('id')
         param['version'] = blueprint.get('version')
 
     return param
-
-
-def putSystem(param):
-
-    system = param.get('id', None)
-    if system is not None and system != '':
-        system = ast.literal_eval(system)
-
-        param['id'] = system.get('id')
-        param['name'] = system.get('name')
-
-    return param
-
-
-def systemPut(req):
-    if StringUtil.isEmpty(req):
-        return None
-
-    system = {
-        'id': req.get('id'),
-        'name': req.get('name'),
-    }
-    return system
 
 
 def applicationPut(req):

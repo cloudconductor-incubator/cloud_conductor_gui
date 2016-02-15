@@ -180,6 +180,9 @@ def environmentEdit(request, id):
                               {'env': cpPost, 'blueprints': blueprints,
                                'form': form, 'message': '', 'save': True})
 
+            EnvironmentUtil.edit_environment(code, id, cpPost,
+                                             request.session)
+
             return redirect(Path.environmentList)
     except Exception as ex:
         log.error(code, None, ex)

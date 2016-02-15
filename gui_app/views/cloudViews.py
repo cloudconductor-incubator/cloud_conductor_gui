@@ -16,6 +16,7 @@ clouds = None
 # Create your views here.
 def cloudList(request):
     try:
+
         if not SessionUtil.check_login(request):
             return redirect(Path.logout)
         if not SessionUtil.check_permission(request, 'cloud', 'list'):
@@ -71,6 +72,10 @@ def cloudCreate(request):
 
         cloudType = list(CloudType)
 
+        token = request.session['auth_token']
+        code = FuncCode.cloudList.value
+        project_id = request.session['project_id']
+
         if request.method == "GET":
 
             return render(request, Html.cloudCreate,
@@ -90,6 +95,9 @@ def cloudCreate(request):
                               {'cloud': p, 'form': form, 'message': '',
                                'cloudType': cloudType, 'save': True,
                                'create': True})
+            # -- Create a cloud, api call
+            CloudUtil.create_cloud2(code, token, project_id, form.data.copy())
+
 
             return redirect(Path.cloudList)
 

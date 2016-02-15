@@ -1,6 +1,8 @@
 import ast
 from ..utils import ApiUtil
 from ..utils import StringUtil
+from ..utils import SystemUtil
+from ..utils import BlueprintHistoryUtil
 from ..utils.ApiUtil import Url
 from ..enum.StatusCode import Environment
 PATRITION = '/'
@@ -53,6 +55,11 @@ def get_environment_list_system_id(code, token, project_id, system_id):
         if env.get('status') == Environment.CREATE_COMPLETE.value and\
                 env.get('system_id') == system_id:
             dic = env
+            system = SystemUtil.get_system_detail(code, token, system_id)
+            blueprint = BlueprintHistoryUtil.get_blueprint_history_list_id(
+                code, token, project_id, env.get('blueprint_history_id'))
+            dic['system_id'] = system.get('name')
+            dic['blueprint_history_id'] = blueprint.get('name')
             dic['id'] = str(env.get('id'))
             list.append(dic.copy())
 

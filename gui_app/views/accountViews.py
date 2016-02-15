@@ -65,6 +65,9 @@ def accountCreate(request):
         if not SessionUtil.check_permission(request, 'account', 'create'):
             return render_to_response(Html.error_403)
 
+        token = request.session['auth_token']
+        code = FuncCode.accountCreate.value
+
         if request.method == "GET":
             return render(request, Html.accountCreate,
                           {'account': '', 'form': '', 'message': ''})
@@ -77,6 +80,10 @@ def accountCreate(request):
             if not form.is_valid():
                 return render(request, Html.accountCreate,
                               {'account': p, 'form': form, 'message': ''})
+
+            # -- AccountCreateAPI call, get a response
+            AccountUtil.get_account_create(code, token, p['name'], p['email'],
+                p['password'], p['repassword'], p['admin'])
 
             return redirect(Path.accountList)
 
