@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render, redirect, render_to_response
-import json
 from ..forms import projectForm
 from ..utils import RoleUtil
 from ..utils import ProjectUtil
@@ -8,6 +7,7 @@ from ..utils import AccountUtil
 from ..utils import ApiUtil
 from ..utils import PermissionUtil
 from ..utils import SessionUtil
+from ..enum.MessageCode import Error
 from ..utils.PathUtil import Path
 from ..utils.PathUtil import Html
 from ..utils.ApiUtil import Url
@@ -46,10 +46,8 @@ def projectCreate(request):
 
         code = FuncCode.projectCreate.value
         token = request.session['auth_token']
-        s = request.session
 
         if request.method == "GET":
-
             return render(request, Html.projectCreate,
                           {'project': '', 'form': '', 'message': '',
                            'save': True})
@@ -106,7 +104,6 @@ def projectEdit(request, id):
         else:
             # -- Get a value from a form
             p = request.POST
-            msg = ''
             # -- Validate check
             form = projectForm(request.POST)
             form.full_clean()

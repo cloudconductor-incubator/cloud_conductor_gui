@@ -1,4 +1,3 @@
-from collections import OrderedDict
 from ..utils import ApiUtil
 from ..utils import StringUtil
 from ..utils.ApiUtil import Url
@@ -65,17 +64,6 @@ def create_system(code, token, project_id, form):
     system = ApiUtil.requestPost(url, code, StringUtil.deleteNullDict(form))
 
     return system
-
-
-def put_system(token, project_id, form):
-
-    data = {
-        'auth_token': token,
-        'project_id': project_id,
-        'name': form.get('name'),
-        'description': form.get('description'),
-        'domain': form.get('domain'),
-    }
 
 
 def edit_system(code, token, id, form):

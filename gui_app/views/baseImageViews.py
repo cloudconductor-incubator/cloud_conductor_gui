@@ -1,17 +1,8 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render, redirect, render_to_response
-import django.contrib.auth as auth
-import json
-import requests
-from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
-from django.contrib import messages
 from ..forms import baseImageForm
-from ..enum import ResponseType
 from ..enum.FunctionCode import FuncCode
-from ..enum.CloudType import CloudType
 from ..enum.OSVersion import OSVersion
-from ..utils import ValiUtil
 from ..utils import ApiUtil
 from ..utils.PathUtil import Path
 from ..utils.PathUtil import Html
@@ -63,12 +54,10 @@ def baseImageCreate(request, cid):
                            'form': '', 'message': '', 'save': True})
         else:
             # -- Get a value from a form
-            msg = ''
             p = request.POST
             # -- Validate check
             form = baseImageForm(p)
             if not form.is_valid():
-                msg = ValiUtil.valiCheck(form)
                 cpPost = p.copy()
 
                 return render(request, Html.baseImageCreate,
@@ -108,12 +97,9 @@ def baseImageEdit(request, id):
         else:
             # -- Get a value from a form
             p = request.POST
-            msg = ''
             # -- Validate check
             form = baseImageForm(request.POST)
             if not form.is_valid():
-                msg = ValiUtil.valiCheck(form)
-                cpPost = p.copy()
 
                 return render(request, Html.baseImageEdit,
                               {'baseImage': p, 'osversion': osversion,

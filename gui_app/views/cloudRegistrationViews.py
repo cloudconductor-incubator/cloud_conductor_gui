@@ -1,17 +1,11 @@
 # -*- coding: utf-8 -*-
-from django.shortcuts import render, redirect, render_to_response
-import json
-from collections import OrderedDict
-from ..forms import projectForm
+from django.shortcuts import render, redirect
 from ..forms import cloudForm
 from ..forms import baseImageForm
-from ..utils import ProjectUtil
 from ..utils import CloudUtil
-from ..utils import BaseimageUtil
 from ..utils import StringUtil
 from ..utils.PathUtil import Path
 from ..utils.PathUtil import Html
-from ..utils import SessionUtil
 from ..enum.CloudType import CloudType
 from ..enum.OSVersion import OSVersion
 from ..enum.FunctionCode import FuncCode
@@ -121,7 +115,6 @@ def confirm(request):
 
             # -- baseimage Create
             bi_session['cloud_id'] = cloud.get('id')
-            baseimage = BaseimageUtil.create_baseimage(code, token, bi_session)
 
             # -- session delete
             sessionDelete(session)

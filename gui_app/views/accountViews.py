@@ -1,12 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render, redirect, render_to_response
-import json
-import requests
-from django.shortcuts import redirect
 from ..forms import accountForm
 from ..utils import AccountUtil
-from ..utils import RoleUtil
-from ..utils import ValiUtil
 from ..utils import ApiUtil
 from ..utils import SessionUtil
 from ..utils.PathUtil import Path
@@ -25,7 +20,6 @@ def accountList(request):
 
         code = FuncCode.accountList.value
         token = request.session.get('auth_token')
-        project_id = request.session.get('project_id')
 
         # -- Get a  list, API call
         accounts = AccountUtil.get_account_list(code, token)
@@ -50,7 +44,6 @@ def accountDetail(request, id):
 
         # -- account DetailAPI call, get a response
         token = request.session['auth_token']
-        project_id = request.session['project_id']
         code = FuncCode.accountDetail.value
 
         account = AccountUtil.get_account_detail(code, token, id)
@@ -72,28 +65,18 @@ def accountCreate(request):
         if not SessionUtil.check_permission(request, 'account', 'create'):
             return render_to_response(Html.error_403)
 
-        token = request.session['auth_token']
-        code = FuncCode.accountCreate.value
-
         if request.method == "GET":
-
             return render(request, Html.accountCreate,
                           {'account': '', 'form': '', 'message': ''})
         else:
             # -- Get a value from a form
             p = request.POST
-            msg = ''
             # -- Validate check
             form = accountForm(request.POST)
             form.full_clean()
             if not form.is_valid():
-
                 return render(request, Html.accountCreate,
                               {'account': p, 'form': form, 'message': ''})
-            # -- AccountCreateAPI call, get a response
-            response = AccountUtil.get_account_create(
-                code, token, p['name'], p['email'],
-                p['password'], p['repassword'], p['admin'])
 
             return redirect(Path.accountList)
 
@@ -128,7 +111,6 @@ def accountEdit(request, id):
         else:
             # -- Get a value from a form
             p = request.POST
-            msg = ''
             # -- Validate check
             form = accountForm(request.POST)
             form.full_clean()
@@ -171,7 +153,6 @@ def accountDelete(request, id):
             return render_to_response(Html.error_403)
 
         token = request.session['auth_token']
-        project_id = request.session['project_id']
 
         account = AccountUtil.get_account_detail(code, token, id)
 

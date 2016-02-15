@@ -1,14 +1,8 @@
-import re
 import ast
-from collections import OrderedDict
-from ..utils import RoleUtil
 from ..utils import ApiUtil
 from ..utils import StringUtil
 from ..utils.ApiUtil import Url
-from ..enum import ResponseType
-from ..enum.FunctionCode import FuncCode
 from ..enum.StatusCode import Environment
-from ..logs import log
 PATRITION = '/'
 
 
@@ -58,8 +52,8 @@ def get_environment_list_system_id(code, token, project_id, system_id):
     for env in environments:
         if env.get('status') == Environment.CREATE_COMPLETE.value and\
                 env.get('system_id') == system_id:
+            dic = env
             dic['id'] = str(env.get('id'))
-            dic['name'] = env.get('name')
             list.append(dic.copy())
 
     return list

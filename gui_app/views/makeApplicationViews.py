@@ -3,7 +3,6 @@ from django.shortcuts import render, redirect, HttpResponse
 import json
 import ast
 from ..forms import w_applicationForm
-from ..forms import w_environmentForm
 from ..forms import environmentForm
 from ..forms import environmentSelectForm
 from ..forms import systemForm
@@ -11,13 +10,11 @@ from ..utils import ApiUtil
 from ..utils import SystemUtil
 from ..utils import ApplicationUtil
 from ..utils import EnvironmentUtil
-from ..utils import ApplicationHistoryUtil
 from ..utils.BlueprintUtil import get_blueprint_version
 from ..utils import StringUtil
 from ..utils.PathUtil import Path
 from ..utils.PathUtil import Html
 from ..utils.ApiUtil import Url
-from ..utils import SessionUtil
 from ..enum.FunctionCode import FuncCode
 from ..enum.ApplicationType import ApplicaionType
 from ..enum.ProtocolType import ProtocolType
@@ -100,7 +97,6 @@ def systemCreate(request):
 
 def applicationCreate(request):
     try:
-        code = FuncCode.newapp_application.value
         if request.method == "GET":
             application = request.session.get('w_app_create')
 
@@ -137,6 +133,7 @@ def applicationCreate(request):
 
 
 def environmentSelect(request):
+    environment = None
     try:
         code = FuncCode.newapp_environment.value
         session = request.session
@@ -150,12 +147,13 @@ def environmentSelect(request):
 
             env = None
             if environment is not None:
-                env = ast.literal_eval(environment["id"])
+                env = environment.get("id")
 
             return render(request, Html.newapp_environmentSelect,
                           {"list": list, 'environment': env,
                            'message': '',
                            'wizard_code': Info.WizardSystem.value})
+
         elif request.method == "POST":
             p = request.POST
             cpPost = p.copy()
@@ -272,7 +270,6 @@ def confirm(request):
             session = request.session
             code = FuncCode.newapp_confirm.value
             token = session.get('auth_token')
-            project_id = ''
 
             # -- application createt
             app_session['system_id'] = sys_session.get('id')
@@ -281,14 +278,9 @@ def confirm(request):
 
             # -- applicationHistory create
             app_id = application.get('id')
-            history = ApplicationHistoryUtil.create_history(
-                code, token, application.get('id'), app_session)
 
             # -- application deploy
             env = ast.literal_eval(env_session["id"])
-            deploy = ApplicationUtil.deploy_application(
-                code, token, env.get('id'),
-                app_id, history.get('id'))
 
             # -- application deploy
             ApplicationUtil.deploy_application(
@@ -309,12 +301,24 @@ def confirm(request):
 
 def putEnvironment(param):
 
-    environment = param.get('environment', None)
-    if environment is not None and environment != '':
+    environment = param.get('id', None)
+    if environment is not None or environment != '':
         environment = ast.literal_eval(environment)
 
-        param['id'] = blueprint.get('id')
-        param['name'] = blueprint.get('name')
+        param['id'] = environment.get('id')
+        param['name'] = environment.get('name')
+
+    return param
+
+
+def putSystem(param):
+
+    system = param.get('id', None)
+    if system is not None and system != '':
+        system = ast.literal_eval(system)
+
+        param['id'] = str(system.get('id'))
+        param['name'] = system.get('name')
 
     return param
 
@@ -361,17 +365,6 @@ def systemPut(req):
     return system
 
 
-def environmentPut(req):
-    if StringUtil.isEmpty(req):
-        return None
-
-    environment = {
-        'id': req.get('id'),
-        'name': req.get('name'),
-    }
-    return environment
-
-
 def applicationPut(req):
     if StringUtil.isEmpty(req):
         return None
@@ -401,26 +394,3 @@ def sessionDelete(session):
 
     if 'w_app_create' in session:
         del session['w_app_create']
-
-
-def environmentAjaxBlueprint(request):
-    try:
-        p = request.GET
-        bp = putBlueprint(p.copy())
-
-        code = FuncCode.environmentCreate.value
-        token = request.session['auth_token']
-        param = BlueprintHistoryUtil.get_blueprint_parameters(
-            code, token, bp['blueprint_id'], bp['version'])
-
-        ff = createForm(param, 'json')
-        key = param.keys()
-        value = param.values()
-
-        return render(request, Html.environmentAjaxBlueprint,
-                      {'name': key, 'blueprints': param})
-
-    except Exception as ex:
-        log.error(code, None, ex)
-
-        return render(request, Html.environmentAjaxBlueprint, {})

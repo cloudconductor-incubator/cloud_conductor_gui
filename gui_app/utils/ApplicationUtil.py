@@ -1,13 +1,7 @@
-import re
-from collections import OrderedDict
-from ..utils import RoleUtil
 from ..utils import ApiUtil
 from ..utils import StringUtil
 from ..utils.ApiUtil import Url
 from ..utils import ApplicationHistoryUtil
-from ..enum import ResponseType
-from ..enum.FunctionCode import FuncCode
-from ..logs import log
 
 
 def get_application_list(code, token, project_id=None):

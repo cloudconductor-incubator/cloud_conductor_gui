@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render, redirect, render_to_response
-import json
 import ast
 from ..forms import environmentForm
 from ..forms import edit_environmentForm
 from ..utils import ApiUtil
-from ..utils import StringUtil
 from ..utils import BlueprintHistoryUtil
 from ..utils import EnvironmentUtil
 from ..utils import SessionUtil
@@ -117,7 +115,6 @@ def environmentCreate(request):
                            'create': True, 'save': True})
         else:
             # -- Get a value from a form
-            msg = ''
             p = request.POST
             # -- Validate check
             cpPost = p.copy()
@@ -173,7 +170,6 @@ def environmentEdit(request, id):
                            'message': '', 'save': True})
         else:
             # -- Get a value from a form
-            msg = ''
             p = request.POST
             cpPost = p.copy()
             # -- Validate check
@@ -183,9 +179,6 @@ def environmentEdit(request, id):
                 return render(request, Html.environmentEdit,
                               {'env': cpPost, 'blueprints': blueprints,
                                'form': form, 'message': '', 'save': True})
-
-            environment = EnvironmentUtil.edit_environment(code, id, cpPost,
-                                                           request.session)
 
             return redirect(Path.environmentList)
     except Exception as ex:

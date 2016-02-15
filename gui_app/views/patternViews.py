@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render, redirect, render_to_response
-import json
-from collections import OrderedDict
 from ..forms import patternForm
 from ..utils import ApiUtil
 from ..utils import SessionUtil
@@ -81,7 +79,6 @@ def patternCreate(request):
                           {'pattern': p, 'form': '', 'message': ''})
         else:
             # -- Get a value from a form
-            msg = ''
             p = request.POST
             # -- Validate check
             form = patternForm(p)
@@ -133,7 +130,6 @@ def patternEdit(request, id):
                           {'pattern': p, 'form': '', 'message': ''})
         else:
             # -- Get a value from a form
-            msg = ''
             p = request.POST
             # -- Validate check
             form = patternForm(p)

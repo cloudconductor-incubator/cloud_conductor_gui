@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render, redirect
-import json
 from ..forms import loginForm
 from ..enum.FunctionCode import FuncCode
 from ..enum.MessageCode import Error
 from ..utils.PathUtil import Path
 from ..utils.PathUtil import Html
 from ..utils import ValiUtil
-from ..utils import ApiUtil
 from ..utils import TokenUtil
 from ..utils import AccountUtil
 from ..utils import ProjectUtil
@@ -20,7 +18,6 @@ from ..logs import log
 
 
 def login(request):
-    count = None
     try:
         if request.method == "GET":
             return render(request, Html.login, {'message': ''})

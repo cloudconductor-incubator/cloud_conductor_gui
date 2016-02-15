@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import cgi
 from django import forms
 from .enum.MessageCode import Error
 from .enum.CloudType import CloudType
@@ -180,10 +179,6 @@ class w_appenv_environmentForm(forms.Form):
                 raise forms.ValidationError(Error.DuplicationCloud.value)
 
         return self.cleaned_data
-
-
-class environmentSelectForm(forms.Form):
-    id = forms.CharField()
 
 
 class applicationForm(forms.Form):

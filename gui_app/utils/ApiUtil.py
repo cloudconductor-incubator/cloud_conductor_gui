@@ -1,4 +1,3 @@
-import re
 import json
 import requests
 from ..logs import log
@@ -142,9 +141,6 @@ class Url():
     def blueprintHistoriesDetail(id, id2, id3):
         return id3 + 'blueprints/{0}/histories/{1}'.format(id, id2)
 
-    def blueprintHistoriesDetail(id, id2, id3):
-        return id3 + 'blueprints/{0}/histories/{1}'.format(id, id2)
-
     patternList = url + 'patterns'
     patternCreate = url + 'patterns/'
 
@@ -209,17 +205,11 @@ class Url():
     def assignmentRoleDelete(id, id2, id3):
         return id3 + 'assignments/{0}/roles/{1}'.format(id, id2)
 
-    def assignmentRoleList(id, id2):
-        return id2 + 'assignments/{0}/roles'.format(id)
-
     def assignmentRoleDetail(id, id2, id3):
         return id3 + 'assignments/{0}/roles/{1}'.format(id, id2)
 
     def assignmentRoleCreate(id, id2):
         return id2 + 'assignments/{0}/roles'.format(id)
-
-    def assignmentRoleDetail(id, id2, id3):
-        return id3 + 'assignments/{0}/roles/{1}'.format(id, id2)
 
 
 def requestGet(url, scid, payload):
@@ -240,9 +230,7 @@ def requestGet(url, scid, payload):
 
 def requestPost(url, scid, payload):  # -- change post
     if payload is not None:
-        data = json.dumps(payload)
         r = requests.post(url, data=json.dumps(payload))
-#         r = requests.post(url, data=payload)
     else:
         r = requests.post(url)
     log.info(scid, r, None, Message.api_url.value)
@@ -258,7 +246,6 @@ def requestPost(url, scid, payload):  # -- change post
 
 def requestPut(url, scid, payload):  # -- change post
     if payload is not None:
-        data = json.dumps(payload)
         r = requests.put(url, data=json.dumps(payload))
     else:
         r = requests.put(url)
@@ -291,12 +278,3 @@ def requestDelete(url, scid, payload):  # -- change post
     else:
         raise ApiError(log.errorMessage(r, None))
 
-
-def request(req, scid, code):
-    if req.status_code == code:
-        log.info(scid, None, req.text, Message.api_response.value)
-        param = json.loads(r.text)
-        return param
-    else:
-        log.error(scid, req, None)  # -- nasi
-        raise ApiError(log.errorMessage(r, None))

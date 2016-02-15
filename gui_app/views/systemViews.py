@@ -1,19 +1,12 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render, redirect, render_to_response
-import json
-import requests
 from ..forms import systemForm
-from ..utils import RoleUtil
-from ..utils import ValiUtil
 from ..utils import ApiUtil
 from ..utils import SystemUtil
 from ..utils import SessionUtil
 from ..utils.PathUtil import Path
 from ..utils.PathUtil import Html
 from ..utils.ApiUtil import Url
-from ..utils.ErrorUtil import ApiError
-from ..enum import ResponseType
-from ..enum.LogType import Message
 from ..enum.FunctionCode import FuncCode
 from ..logs import log
 
@@ -84,7 +77,6 @@ def systemCreate(request):
                            'message': '', 'save': True})
         else:
             # -- Get a value from a form
-            msg = ''
             p = request.POST
             # -- Validate check
             form = systemForm(p)
@@ -126,7 +118,6 @@ def systemEdit(request, id):
                           {'system': system, 'message': '', 'save': True})
         else:
             # -- Get a value from a form
-            msg = ''
             p = request.POST
             # -- Validate check
             form = systemForm(p)

@@ -1,11 +1,7 @@
-from collections import OrderedDict
 from ..utils import RoleUtil
-from ..utils import ApiUtil
 from ..utils import StringUtil
 from ..utils import ProjectUtil
 from ..utils import PermissionUtil
-from django.template.base import Token
-from django.template.context_processors import request
 
 
 def edit_project_session(code, token, session, id=None, name=None):

@@ -1,31 +1,29 @@
 # -*- coding: utf-8 -*-
-from django.shortcuts import render, redirect, render_to_response, HttpResponse
-import json
-import requests
 import ast
-from collections import OrderedDict
-from ..forms import w_appenv_environmentForm
-from ..forms import systemSelectForm
-from ..forms import blueprintSelectForm
-from ..forms import blueprintForm
-from ..forms import systemForm
-from ..utils import ApiUtil
-from ..utils import SystemUtil
-from ..utils import EnvironmentUtil
-from ..utils import BlueprintUtil
-from ..utils import BlueprintHistoryUtil
-from ..utils import BlueprintPatternUtil
-from ..utils import StringUtil
-from ..utils.PathUtil import Path
-from ..utils.PathUtil import Html
-from ..utils.ApiUtil import Url
-from ..utils import SessionUtil
-from ..utils import PatternUtil
-from ..enum.OSVersion import OSVersion
+import json
+from django.shortcuts import render, redirect, render_to_response, HttpResponse
 from ..enum.FunctionCode import FuncCode
 from ..enum.MessageCode import Info
+from ..enum.OSVersion import OSVersion
 from ..enum.StatusCode import Blueprint
+from ..forms import blueprintForm
+from ..forms import blueprintSelectForm
+from ..forms import systemForm
+from ..forms import systemSelectForm
+from ..forms import w_appenv_environmentForm
 from ..logs import log
+from ..utils import ApiUtil
+from ..utils import BlueprintHistoryUtil
+from ..utils import BlueprintPatternUtil
+from ..utils import BlueprintUtil
+from ..utils import EnvironmentUtil
+from ..utils import PatternUtil
+from ..utils import SessionUtil
+from ..utils import StringUtil
+from ..utils import SystemUtil
+from ..utils.ApiUtil import Url
+from ..utils.PathUtil import Html
+from ..utils.PathUtil import Path
 
 
 def systemSelect(request):
@@ -170,23 +168,25 @@ def blueprintCreate(request):
                            'osversion': osversion, 'form': '', 'message': ''})
         else:
             # -- Get a value from a form
-            msg = ''
             p = request.POST
             my_pattern = BlueprintPatternUtil.dic_pattern_list(
                 p.getlist('os_version'), p.getlist('pattern_id'))
 
-            if p.get("blueprint_id"):
+            if p.get('blueprint_id'):
                 bp = BlueprintHistoryUtil.get_new_blueprint_history(
                     FuncCode.newapp_environment.value,
-                    request.session.get('auth_token'), p.get("blueprint_id"))
+                    request.session.get('auth_token'), p.get('blueprint_id'))
                 ret = 0
-                if bp["status"] == Blueprint.ERROR.value:
+                if bp['status'] == Blueprint.ERROR.value:
                     ret = 1
-                elif bp["status"] == Blueprint.CREATE_COMPLETE.value:
+                elif bp['status'] == Blueprint.CREATE_COMPLETE.value:
                     ret = 2
+                    bp = {'id': p.get('blueprint_id'),
+                          'version': bp.get('version')}
+                    request.session['w_bp_select'] = bp
 
                 return HttpResponse(json.dumps({'ret': ret}),
-                                    content_type="application/json")
+                                    content_type='application/json')
 
             # -- Validate check
             form = blueprintForm(p)
@@ -207,14 +207,10 @@ def blueprintCreate(request):
                 code, token, blueprint.get('id'),
                 p.getlist('os_version'), p.getlist('pattern_id'))
 
+            # -- 3. BlueprintBuild, api call
             BlueprintUtil.create_bluepritn_build(
                 code, token, blueprint.get('id'))
 
-            bp = {}
-            bp = {"id": blueprint["id"], "name": blueprint["name"]}
-            request.session['w_bp_select'] = bp
-
-            # -- 3. BlueprintBuild, api call
             return render(request, Html.envapp_blueprintCreate,
                           {'blueprint': p, 'patterns': patterns,
                            'my_pattern': my_pattern,

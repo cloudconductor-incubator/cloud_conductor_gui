@@ -1,19 +1,11 @@
 # -*- coding: utf-8 -*-
-from django.shortcuts import render, redirect, render_to_response
-import json
-import requests
-from django.shortcuts import redirect
-from ..utils import RoleUtil
-from ..utils import PermissionUtil
-from ..utils import ValiUtil
+from django.shortcuts import render, redirect
 from ..utils import ApiUtil
 from ..utils import AccountUtil
 from ..utils import SessionUtil
-from ..utils import PermissionUtil
 from ..utils.PathUtil import Path
 from ..utils.PathUtil import Html
 from ..utils.ApiUtil import Url
-from ..utils import SessionUtil
 from ..enum.FunctionCode import FuncCode
 from ..enum.MessageCode import Error
 from ..logs import log
@@ -68,7 +60,6 @@ def assignmentAdd(request, id=None):
                            'message': '', 'save': True})
         else:
             # -- Get a value from a form
-            msg = ''
             p = request.POST
 
             # -- Create a project, api call
@@ -179,7 +170,6 @@ def assignmentEdit(request, id=None):
         else:
             # -- Get a value from a form
             p = request.POST
-            msg = ''
             # -- Validate check
 
             url = Url.assignmentEdit

@@ -1,12 +1,6 @@
-import re
-from collections import OrderedDict
-from ..utils import RoleUtil
 from ..utils import ApiUtil
 from ..utils import StringUtil
 from ..utils.ApiUtil import Url
-from ..enum import ResponseType
-from ..enum.FunctionCode import FuncCode
-from ..logs import log
 
 
 def get_blueprint_pattern_list(code, token, blueprint_id):
@@ -62,7 +56,6 @@ def get_blueprint_pattern_list3(code, token, id):
 
     list = []
     for bp in blueprints:
-        dic = {}
         list.append(str(bp['pattern_id']))
 
     return list

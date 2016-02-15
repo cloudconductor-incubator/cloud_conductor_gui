@@ -1,4 +1,3 @@
-from collections import OrderedDict
 from ..utils import ApiUtil
 from ..utils import RoleUtil
 from ..utils import StringUtil

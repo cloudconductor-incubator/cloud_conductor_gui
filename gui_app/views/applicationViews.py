@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render, redirect, render_to_response
-import json
-import requests
 from ..forms import applicationForm
 from ..forms import applicationForm2
 from ..forms import applicationHistoryForm
@@ -12,7 +10,6 @@ from ..utils import ApplicationHistoryUtil
 from ..utils.PathUtil import Path
 from ..utils.PathUtil import Html
 from ..utils.ApiUtil import Url
-from ..utils.ErrorUtil import ApiError
 from ..utils import SessionUtil
 from ..enum.FunctionCode import FuncCode
 from ..enum.ApplicationType import ApplicaionType
@@ -29,7 +26,6 @@ def applicationList(request):
                                             'application', 'list'):
             return render_to_response(Html.error_403)
 
-        applications = None
         # -- Get a application list, API call
         url = Url.applicationList
 
@@ -39,7 +35,6 @@ def applicationList(request):
         }
         apps = ApiUtil.requestGet(url, FuncCode.applicationList.value, data)
 
-        list = []
         for app in apps:
             system = SystemUtil.get_system_detail(
                 FuncCode.applicationList.value,
@@ -110,7 +105,6 @@ def applicationCreate(request):
                            'systems': systems, 'save': True})
         else:
             # -- Get a value from a form
-            msg = ''
             p = request.POST
             cpPost = p.copy()
 
@@ -167,7 +161,6 @@ def applicationEdit(request, id):
                            'systems': systems, 'save': True})
         else:
             # -- Get a value from a form
-            msg = ''
             p = request.POST
             # -- Validate check
             form = applicationForm2(p)
@@ -249,7 +242,6 @@ def applicationDeploy(request, id):
             return render_to_response(Html.error_403)
 
         token = request.session['auth_token']
-        project_id = request.session['project_id']
 
         # -- URL and data set
         ApplicationUtil.create_bluepritn_build(code, token, id)
@@ -267,7 +259,6 @@ def applicationHistoryCreate(request, id):
     code = FuncCode.applicationHistoryEdit.value
     apptype = list(ApplicaionType)
     protocol = list(ProtocolType)
-    history = None
 
     try:
         if not SessionUtil.check_login(request):
@@ -285,7 +276,6 @@ def applicationHistoryCreate(request, id):
                            'protocol': protocol, 'message': ''})
         else:
             # -- Get a value from a form
-            msg = ''
             p = request.POST
             # -- Validate check
             form = applicationHistoryForm(p)
@@ -327,13 +317,11 @@ def applicationHistoryEdit(request, id, hid):
         if request.method == "GET":
             history = ApplicationHistoryUtil.get_history_detail(
                 code, token, id, hid)
-            v = Html.applicationHistoryEdit
             return render(request, Html.applicationHistoryEdit,
                           {'history': history, 'form': '', 'apptype': apptype,
                            'protocol': protocol, 'message': '', 'save': True})
         else:
             # -- Get a value from a form
-            msg = ''
             p = request.POST
             # -- Validate check
             form = applicationHistoryForm(p)

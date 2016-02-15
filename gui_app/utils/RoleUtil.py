@@ -1,4 +1,3 @@
-from collections import OrderedDict
 from ..utils import ApiUtil
 from ..utils import StringUtil
 from ..utils.ApiUtil import Url
@@ -47,7 +46,6 @@ def create_role(code, token, project_id, name, description, params):
                     'action': param.split('-')[1],
                     'model': param.split('-')[0],
                 }
-                permission = ApiUtil.requestPost(url, code, data)
 
     return role
 
@@ -67,12 +65,10 @@ def edit_role(code, token, id, name, description, params):
     url = Url.permissionList(id, Url.url)
     permissions = ApiUtil.requestGet(url, code, data)
     old_value = []
-    old_id = []
     for permission in permissions:
         old_value.append(permission["model"] + "-" + permission["action"])
         pass
 
-    i = 0
     for param in params:
         if '-' in param:
             if param.split('-')[1] in \
@@ -243,35 +239,34 @@ def add_session_role(session, role, permissions):
 
 
 def w_cloud_registrarion(session):
-    if not 'cloud' in session:
+    if 'cloud' not in session:
         return None
 
-    if not 'base_image' in session:
+    if 'base_image' not in session:
         return None
 
     cloud = session.get('cloud')
     baseimage = session.get('base_image')
 
-    if cloud.get('manage') or cloud.get('create') and\
-            baseimage.get('manage') or baseimage.get('create'):
+    if (cloud.get('manage') or cloud.get('create')) and\
+            (baseimage.get('manage') or baseimage.get('create')):
 
         return True
-
     else:
         return False
 
 
 def w_make_new_app(session):
-    if not 'system' in session:
+    if 'system' not in session:
         return None
 
-    if not 'application' in session:
+    if 'application' not in session:
         return None
 
-    if not 'application_history' in session:
+    if 'application_history' not in session:
         return None
 
-    if not 'environment' in session:
+    if 'environment' not in session:
         return None
 
     system = session.get('system')
@@ -279,31 +274,30 @@ def w_make_new_app(session):
     app_his = session.get('application_history')
     environment = session.get('environment')
 
-    if system.get('manage') or system.get('create') and\
-            application.get('manage') or application.get('create') and\
-            app_his.get('manage') or app_his.get('create') and\
-            environment.get('manage') or environment.get('create'):
+    if (system.get('manage') or system.get('create')) and\
+            (application.get('manage') or application.get('create')) and\
+            (app_his.get('manage') or app_his.get('create')) and\
+            (environment.get('manage') or environment.get('create')):
 
         return True
-
     else:
         return False
 
 
 def w_app_env(session):
-    if not 'system' in session:
+    if 'system' not in session:
         return None
 
-    if not 'application' in session:
+    if 'application' not in session:
         return None
 
-    if not 'application_history' in session:
+    if 'application_history' not in session:
         return None
 
-    if not 'environment' in session:
+    if 'environment' not in session:
         return None
 
-    if not 'cloud' in session:
+    if 'cloud' not in session:
         return None
 
     system = session.get('system')
@@ -312,30 +306,29 @@ def w_app_env(session):
     environment = session.get('environment')
     cloud = session.get('cloud')
 
-    if system.get('manage') or system.get('create') and\
-            blueprint.get('manage') or blueprint.get('create') and\
-            bp_his.get('manage') or bp_his.get('create') and\
-            environment.get('manage') or environment.get('create') and\
-            cloud.get('manage') or cloud.get('create'):
+    if (system.get('manage') or system.get('create')) and\
+            (blueprint.get('manage') or blueprint.get('create')) and\
+            (bp_his.get('manage') or bp_his.get('create')) and\
+            (environment.get('manage') or environment.get('create')) and\
+            (cloud.get('manage') or cloud.get('create')):
 
         return True
-
     else:
         return False
 
 
 def w_deploying_app(session):
 
-    if not 'application' in session:
+    if 'application' not in session:
         return None
 
-    if not 'application_history' in session:
+    if 'application_history' not in session:
         return None
 
-    if not 'environment' in session:
+    if 'environment' not in session:
         return None
 
-    if not 'deployment' in session:
+    if 'deployment' not in session:
         return None
 
     application = session.get('application')
@@ -343,13 +336,12 @@ def w_deploying_app(session):
     environment = session.get('environment')
     deployment = session.get('deployment')
 
-    if  application.get('manage') or application.get('create') and\
-            app_his.get('manage') or app_his.get('create') and\
-            environment.get('manage') or environment.get('create') and\
+    if (application.get('manage') or application.get('create')) and\
+            (app_his.get('manage') or app_his.get('create')) and\
+            (environment.get('manage') or environment.get('create')) and\
             deployment.get('manage'):
 
         return True
-
     else:
         return False
 

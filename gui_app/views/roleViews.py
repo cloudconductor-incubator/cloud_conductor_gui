@@ -1,16 +1,10 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render, redirect, render_to_response
-import json
-from collections import OrderedDict
 from ..forms import roleForm
 from ..utils import RoleUtil
-from ..utils import ValiUtil
 from ..enum.MessageCode import Error
-from ..utils import ApiUtil
 from ..utils.PathUtil import Path
 from ..utils.PathUtil import Html
-from ..utils.ApiUtil import Url
-from ..utils import PermissionUtil
 from ..utils import SessionUtil
 from ..enum.FunctionCode import FuncCode
 from ..logs import log
@@ -126,12 +120,10 @@ def roleCreate(request):
                            'items': check_items, 'save': True})
         else:
             # -- Get a value from a form
-            msg = ''
             p = request.POST
 
             form = roleForm(request.POST)
             if not form.is_valid():
-                msg = ValiUtil.valiCheck(form)
                 return render(request, Html.roleCreate,
                               {'role': p, 'form': form, 'items': check_items,
                                'save': True})
@@ -173,17 +165,15 @@ def roleEdit(request, id):
             return render_to_response(Html.error_403)
 
         token = request.session.get('auth_token')
-        account_id = request.session.get('account_id')
         code = FuncCode.roleEdit.value
+        role = RoleUtil.get_role_detail(code, token, id)
+
         if request.method == "GET":
-
-            role = RoleUtil.get_role_detail(
-                code, token, id)
-
             return render(request, Html.roleEdit,
                           {'message': '', 'role': role["role"],
                            'items': role["check_items"], 'save': True},)
         else:
+            p = request.POST
 
             checkbox = False
             for param in request.POST:
@@ -197,7 +187,7 @@ def roleEdit(request, id):
                 return render(request, Html.roleCreate,
                               {'role': p,
                                'message': Error.CheckboxNotSelected.value,
-                               'items': check_items, 'save': True})
+                               'items': role["check_items"], 'save': True})
 
             # -- Get a value from a form
             RoleUtil.edit_role(code, token, id,

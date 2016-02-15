@@ -1,4 +1,3 @@
-from collections import OrderedDict
 from ..utils import ApiUtil
 from ..utils import StringUtil
 from ..utils.ApiUtil import Url

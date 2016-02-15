@@ -1,17 +1,14 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render, redirect, render_to_response
-import json
 from ..forms import cloudForm
 from ..forms import cloudForm2
 from ..enum.CloudType import CloudType
 from ..enum.FunctionCode import FuncCode
-from ..utils import ApiUtil
 from ..utils import CloudUtil
 from ..utils import BaseimageUtil
 from ..utils import SessionUtil
 from ..utils.PathUtil import Path
 from ..utils.PathUtil import Html
-from ..utils.ApiUtil import Url
 from ..logs import log
 clouds = None
 
@@ -66,15 +63,12 @@ def cloudDetail(request, id):
 
 def cloudCreate(request):
     cloudType = None
-    code = FuncCode.cloudList.value
     try:
         if not SessionUtil.check_login(request):
             return redirect(Path.logout)
         if not SessionUtil.check_permission(request, 'cloud', 'create'):
             return render_to_response(Html.error_403)
 
-        token = request.session['auth_token']
-        project_id = request.session['project_id']
         cloudType = list(CloudType)
 
         if request.method == "GET":
@@ -86,7 +80,6 @@ def cloudCreate(request):
 
         else:
             # -- Get a value from a form
-            msg = ''
             p = request.POST
             # -- Validate check
             form = cloudForm(p)
@@ -97,10 +90,6 @@ def cloudCreate(request):
                               {'cloud': p, 'form': form, 'message': '',
                                'cloudType': cloudType, 'save': True,
                                'create': True})
-
-            # -- Create a cloud, api call
-            cloud = CloudUtil.create_cloud2(
-                code, token, project_id, form.data.copy())
 
             return redirect(Path.cloudList)
 
@@ -124,7 +113,6 @@ def cloudEdit(request, id):
             return render_to_response(Html.error_403)
 
         token = request.session['auth_token']
-        project_id = request.session['project_id']
 
         if request.method == "GET":
             cloud = CloudUtil.get_cloud_detail(code, token, id)
@@ -135,7 +123,6 @@ def cloudEdit(request, id):
         elif request.method == "POST":
             # -- Get a value from a form
             p = request.POST
-            msg = ''
             # -- Validate check
             form = cloudForm2(request.POST)
             form.full_clean()

@@ -1,8 +1,7 @@
-from django.conf.urls import include, url
+from django.conf.urls import url
 from .views import projectViews
 from .views import cloudViews
 from .views import baseImageViews
-from .views import roleViews
 from .views import loginViews
 from .views import accountViews
 from .views import roleViews
@@ -12,7 +11,6 @@ from .views import assignmentViews
 from .views import applicationViews
 from .views import blueprintViews
 from .views import patternViews
-from .views import topViews
 from .views import cloudRegistrationViews
 from .views import makeApplicationViews
 from .views import applicationEnvironmentViews

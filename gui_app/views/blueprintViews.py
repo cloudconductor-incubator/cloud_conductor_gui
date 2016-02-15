@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render, redirect, render_to_response
-import json
-import requests
 from ..forms import blueprintForm
-from ..utils import ApiUtil
 from ..utils import PatternUtil
 from ..utils import BlueprintUtil
 from ..utils import BlueprintPatternUtil
@@ -11,7 +8,6 @@ from ..utils import BlueprintHistoryUtil
 from ..utils import SessionUtil
 from ..utils.PathUtil import Path
 from ..utils.PathUtil import Html
-from ..utils.ApiUtil import Url
 from ..enum.FunctionCode import FuncCode
 from ..enum.OSVersion import OSVersion
 from ..enum.MessageCode import Error
@@ -94,7 +90,6 @@ def blueprintCreate(request):
                            'osversion': osversion, 'form': '', 'message': ''})
         else:
             # -- Get a value from a form
-            msg = ''
             p = request.POST
             my_pattern = BlueprintPatternUtil.dic_pattern_list(
                 p.getlist('os_version'), p.getlist('pattern_id'))
@@ -171,7 +166,6 @@ def blueprintEdit(request, id):
                            'form': '', 'message': ''})
         else:
             # -- Get a value from a form
-            msg = ''
             p = request.POST
             my_pattern = BlueprintPatternUtil.dic_pattern_list(
                 p.getlist('os_version'), p.getlist('pattern_id'))
@@ -304,7 +298,6 @@ def blueprintHistoryDetail(request, id, ver):
             return render_to_response(Html.error_403)
 
         token = request.session['auth_token']
-        project_id = request.session['project_id']
 
         # -- blueprint DetailAPI call, get a response
         history = BlueprintHistoryUtil.get_blueprint_history_detail2(

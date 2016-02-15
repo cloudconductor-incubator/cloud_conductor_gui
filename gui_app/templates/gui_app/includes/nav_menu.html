@@ -39,7 +39,7 @@
 						<span class="glyphicon glyphicon-cloud cc-icon" aria-hidden="true"></span>&nbsp;&nbsp;Cloud</a>
 					</li>
 				{% endif %}
-				{% if request.session.role.m_pattern %}
+				{% if request.session.pattern.m_pattern %}
 					<li>
 						<a href="{% url 'app:patternList' %}" id="var-menu" >
 						<span class="glyphicon glyphicon-cloud cc-icon" aria-hidden="true"></span>&nbsp;&nbsp;Pattern</a>

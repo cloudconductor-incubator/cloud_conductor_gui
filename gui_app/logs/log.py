@@ -37,7 +37,6 @@ def error(scid, res, ex):
 
 
 def errorMessage(res, ex):
-    response = ''
 
     if not res and not ex:
         errormsg = apiErrorMessage(res)

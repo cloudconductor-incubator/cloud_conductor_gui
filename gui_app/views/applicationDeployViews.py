@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render, redirect, render_to_response
 import ast
-from collections import OrderedDict
 from ..forms import selecttForm
 from ..forms import applicationForm
 from ..utils import ApplicationUtil
@@ -10,7 +9,6 @@ from ..utils import EnvironmentUtil
 from ..utils import StringUtil
 from ..utils.PathUtil import Path
 from ..utils.PathUtil import Html
-from ..utils.ApiUtil import Url
 from ..enum.FunctionCode import FuncCode
 from ..enum.ApplicationType import ApplicaionType
 from ..enum.ProtocolType import ProtocolType
@@ -84,7 +82,6 @@ def applicationCreate(request):
                            'systems': systems, 'save': True})
         else:
             # -- Get a value from a form
-            msg = ''
             p = request.POST
             cpPost = p.copy()
 
@@ -130,7 +127,6 @@ def environmentSelect(request):
         token = session['auth_token']
         project_id = session['project_id']
 
-        w_app = session.get('w_app_select')
         app = ApplicationUtil.get_application_detail(
             code, token, session.get('w_app_select').get('id'))
 
@@ -138,13 +134,11 @@ def environmentSelect(request):
             code, token, project_id, app.get("system_id"))
 
         if request.method == "GET":
-
             return render(request, Html.appdeploy_environmentSelect,
                           {"list": list, 'environment': environment,
                            'message': ''})
         elif request.method == "POST":
             param = request.POST
-
             environment = selectPut(param)
 
             form = selecttForm(environment)
@@ -172,7 +166,6 @@ def confirm(request):
         env_session = session.get('w_env_select')
 
         if request.method == "GET":
-
             return render(request, Html.appdeploy_confirm,
                           {'application': app_session,
                            'environment': env_session, 'message': ''})
@@ -180,8 +173,6 @@ def confirm(request):
             session = request.session
             code = FuncCode.newapp_confirm.value
             token = session.get('auth_token')
-            project_id = ''
-
             env_id = env_session.get('id')
             app_id = app_session.get('id')
 
