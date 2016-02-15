@@ -37,9 +37,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'bootstrapform',  # django-bootstrap-form
+    'bootstrapform',
     'gui_app',
-    #     'django_nose'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -99,7 +98,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
-# STATIC_URL = '/static/'
 
 LOGIN_URL = '/ccgui/login/'
 
@@ -111,16 +109,12 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 ALLOWED_HOSTS = ['*']
 
 # Static asset configuration
-import os
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_ROOT = 'staticfiles'
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
-
-URL_PATH = os.path.join(BASE_DIR, 'url.txt')
 
 LOGGING = {
     'version': 1,
@@ -133,7 +127,6 @@ LOGGING = {
     'formatters': {
         'verbose': {
             'format': "[%(asctime)s], %(levelname)s, %(message)s",
-            #             'format': "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s process:%(process)d thread:%(thread)d",
         },
         'simple': {
             'format': '[%(levelname)-7s] %(asctime)s - %(message)s'
@@ -182,11 +175,6 @@ LOGGING = {
     }
 }
 
-# CACHES = {
-#     'default': {
-#         'SESSION_ENGINE': 'django.contrib.sessions.backends.signed_cookies'
-#     }
-# }
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
@@ -194,5 +182,6 @@ COVERAGE_REPORT_HTML_OUTPUT_DIR = '.cover'
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 NOSE_ARGS = ['--with-coverage', '--with-xunit',
              '--cover-package=gui_app\tests', '--cover-xml', '--cover-html', ]
+
 
 CLOUDCONDUCTOR_URL = ''
