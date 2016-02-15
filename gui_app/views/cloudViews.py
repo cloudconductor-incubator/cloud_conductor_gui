@@ -98,7 +98,6 @@ def cloudCreate(request):
             # -- Create a cloud, api call
             CloudUtil.create_cloud2(code, token, project_id, form.data.copy())
 
-
             return redirect(Path.cloudList)
 
     except Exception as ex:

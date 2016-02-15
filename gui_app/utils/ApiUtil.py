@@ -277,4 +277,3 @@ def requestDelete(url, scid, payload):  # -- change post
         return param
     else:
         raise ApiError(log.errorMessage(r, None))
-

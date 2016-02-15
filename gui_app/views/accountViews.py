@@ -83,7 +83,8 @@ def accountCreate(request):
 
             # -- AccountCreateAPI call, get a response
             AccountUtil.get_account_create(code, token, p['name'], p['email'],
-                p['password'], p['repassword'], p['admin'])
+                                           p['password'], p['repassword'],
+                                           p['admin'])
 
             return redirect(Path.accountList)
 

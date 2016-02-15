@@ -299,7 +299,8 @@ def assignmentEdit(request, id=None):
                     }
                     ApiUtil.requestDelete(url, code, data)
                     if request.session["project_id"] == id and \
-                            request.session["account_id"] == assignment['account_id']:
+                            request.session["account_id"] == \
+                            assignment['account_id']:
                         logout = True
 
             if request.session.get('select_account'):

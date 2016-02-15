@@ -4,6 +4,11 @@ body {
     font-size: 13px;
 }
 
+h5{
+	padding: .25em 0 .25em .75em;
+	border-left: 6px solid #ccc;
+}
+
 h3 {
 	color: inherit;
     font-family: inherit;

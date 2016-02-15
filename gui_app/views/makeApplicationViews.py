@@ -279,9 +279,8 @@ def confirm(request):
 
             # -- applicationHistory create
             app_id = application.get('id')
-            history = ApplicationHistoryUtil.create_history(code, token,
-                                                  application.get('id'),
-                                                  app_session)
+            history = ApplicationHistoryUtil.create_history(
+                code, token, application.get('id'), app_session)
 
             # -- application deploy
             env = ast.literal_eval(env_session["id"])
