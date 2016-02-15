@@ -13,7 +13,7 @@
   <div class="cc-title">Application management</div>
 	<br>
 	{% include "gui_app/includes/message.html" %}
-{% if request.session.application.manage or request.session.application.create %}
+{% if request.session.application.manage or request.session.application.create and request.session.application_history.manage or request.session.application_history.create %}
     <button type="button" class="btn btn-primary btn-sm" onclick="location.href='{% url 'app:applicationCreate' %}'" style="float:right">
     	<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;　new
     </button>

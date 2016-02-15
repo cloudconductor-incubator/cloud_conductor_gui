@@ -64,7 +64,7 @@
 		<div class="panel-heading">BaseImage List</div>
 		<div class="panel-body">
 		{% if cloud.id %}
-		{% if request.session.baseimage.manage or request.session.baseimage.create %}
+		{% if request.session.base_image.manage or request.session.base_image.create %}
 			<button type="button" class="btn btn-primary btn-sm" onclick="location.href='{% url 'app:baseImageCreate' cloud.id %}'" style="float:right">
 	  				<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;　new
   			</button>

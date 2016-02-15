@@ -2,9 +2,11 @@
 	<div class="panel-heading">Application History List</div>
 	<div class="panel-body">
 	{% if app.id %}
+	{% if request.session.application_history.manage or request.session.application_history.create %}
 		<button type="button" class="btn btn-primary btn-sm" onclick="location.href='{% url 'app:applicationHistoryCreate' app.id %}'" style="float:right">
 			<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;　new
 		</button>
+	{% endif %}
  	{% endif %}
 		{% if history_list %}
 		<table class="table table-hover">

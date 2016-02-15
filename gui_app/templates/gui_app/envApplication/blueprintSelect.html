@@ -10,7 +10,7 @@
 {% endblock %}
 {% block content %}
 <div class="cc-title">Application Environment</div>
-		{% if request.session.system.manage or request.session.system.create  %}
+		{% if request.session.blueprint.manage or request.session.blueprint.create and request.session.pattern.manage or request.session.pattern.create and request.session.blueprint_history.manage or request.session.blueprint_history.create %}
 		<div>
 			<button class="btn btn-primary btn-sm" style="float:right" data-toggle="modal" data-target="#myModal" type="button">
 				<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;　new
