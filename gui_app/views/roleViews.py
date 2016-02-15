@@ -172,11 +172,13 @@ def roleEdit(request, id):
         if not SessionUtil.check_permission(request, 'role', 'update'):
             return render_to_response(Html.error_403)
 
+        token = request.session.get('auth_token')
+        account_id = request.session.get('account_id')
         code = FuncCode.roleEdit.value
         if request.method == "GET":
 
             role = RoleUtil.get_role_detail(
-                code, request.session['auth_token'], id)
+                code, token, id)
 
             return render(request, Html.roleEdit,
                           {'message': '', 'role': role["role"],
@@ -198,24 +200,11 @@ def roleEdit(request, id):
                                'items': check_items, 'save': True})
 
             # -- Get a value from a form
-            RoleUtil.edit_role(code, request.session['auth_token'], id,
+            RoleUtil.edit_role(code, token, id,
                                request.POST.get('name'),
                                request.POST.get('description'), request.POST)
 
-            role = RoleUtil.get_account_role(
-                code, request.session['auth_token'], id, request.session['account_id'])
-
-            if not role:
-                raise(Error.Authentication.value)
-            # -- PermissionListAPI call, get a response
-            permissions = PermissionUtil.get_permission_list(
-                code, request.session['auth_token'], role.get('id'))
-
-            if not permissions:
-                raise(Error.Authentication.value)
-
-            RoleUtil.delete_session_role(request.session)
-            RoleUtil.add_session_role(request.session, role, permissions)
+            SessionUtil.edit_role_session(code, request.session, id)
 
             return redirect(Path.roleList)
 

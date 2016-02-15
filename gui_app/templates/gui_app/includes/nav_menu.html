@@ -39,7 +39,7 @@
 						<span class="glyphicon glyphicon-cloud cc-icon" aria-hidden="true"></span>&nbsp;&nbsp;Cloud</a>
 					</li>
 				{% endif %}
-				{% if request.session.role.m_role %}
+				{% if request.session.role.m_pattern %}
 					<li>
 						<a href="{% url 'app:patternList' %}" id="var-menu" >
 						<span class="glyphicon glyphicon-cloud cc-icon" aria-hidden="true"></span>&nbsp;&nbsp;Pattern</a>
@@ -73,10 +73,18 @@
 					<li class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" href="#supportThree" href="#" id="var-menu"><span class="glyphicon glyphicon-cog cc-icon" aria-hidden="true"></span>&nbsp;&nbsp;Setting wizards</a></li>
 					<div id="supportThree" class="collapse menu-menu">
 						<ul class="nav spacer navbar-static-top">
+						{% if request.session.w_cloud_registrarion %}
 							<li><a href="{% url 'app:cloudregistCloud'%}" id="var-menu">Cloud registration</a></li>
+						{% endif %}
+						{% if request.session.w_make_new_app %}
 							<li><a href="{% url 'app:mkappSystemSelect'%}" id="var-menu">Make new application</a></li>
+						{% endif %}
+						{% if request.session.w_app_env %}
 							<li><a href="{% url 'app:envapp_systemSelect'%}" id="var-menu">Application environment</a></li>
+						{% endif %}
+						{% if request.session.w_deploying_app %}
 							<li><a href="{% url 'app:appdeployApplicationSelect'%}" id="var-menu">Deploying applications</a></li>
+						{% endif %}
 						</ul>
 					</div>
 			</ul>

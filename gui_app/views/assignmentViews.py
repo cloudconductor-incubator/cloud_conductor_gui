@@ -4,9 +4,9 @@ import json
 import requests
 from django.shortcuts import redirect
 from ..utils import RoleUtil
+from ..utils import PermissionUtil
 from ..utils import ValiUtil
 from ..utils import ApiUtil
-from ..utils import FileUtil
 from ..utils import AccountUtil
 from ..utils import SessionUtil
 from ..utils import PermissionUtil
@@ -18,8 +18,6 @@ from ..enum.FunctionCode import FuncCode
 from ..enum.MessageCode import Error
 from ..logs import log
 
-# CloudConductor add
-
 
 def assignmentList(request):
     try:
@@ -29,7 +27,6 @@ def assignmentList(request):
         url = Url.projectList
         data = {'auth_token': request.session['auth_token']}
         projects = ApiUtil.requestGet(url, FuncCode.projectList.value, data)
-#         projects = p['projects']
 
         return render(request, Html.projectList, {'projects': projects,
                                                   'message': ''})
@@ -41,6 +38,7 @@ def assignmentList(request):
 
 
 def assignmentAdd(request, id=None):
+    code = FuncCode.projectDetail.value
     try:
         token = request.session['auth_token']
         if request.method == "GET":
@@ -50,13 +48,13 @@ def assignmentAdd(request, id=None):
                 'auth_token': token,
             }
             accounts = ApiUtil.requestGet(
-                url, FuncCode.projectDetail.value, data)
+                url, code, data)
             data = {
                 'auth_token': token,
                 'project_id': id,
             }
             accountsByProject = ApiUtil.requestGet(
-                url, FuncCode.projectDetail.value, data)
+                url, code, data)
 
             for account in accountsByProject:
                 accounts.remove(account)
@@ -79,7 +77,7 @@ def assignmentAdd(request, id=None):
             for param in p:
                 if 'chk-' in param:
                     account = AccountUtil.get_account_detail(
-                        FuncCode.projectDetail.value, token, param.split('-')[1])
+                        code, token, param.split('-')[1])
                     accounts.append(account)
 
             if request.session.get('select_account'):
@@ -99,12 +97,11 @@ def assignmentAdd(request, id=None):
 
 
 def assignmentEdit(request, id=None):
-
-    if not SessionUtil.check_login(request):
-        return redirect('/ccgui/logout')
-
+    code = FuncCode.projectEdit.value
     try:
-        code = FuncCode.projectEdit.value
+        if not SessionUtil.check_login(request):
+            return redirect('/ccgui/logout')
+
         token = request.session['auth_token']
         account_id = request.session['account_id']
         if request.method == "GET":
@@ -115,7 +112,7 @@ def assignmentEdit(request, id=None):
                 'project_id': id,
             }
             assignments = ApiUtil.requestGet(
-                url, FuncCode.projectDetail.value, data)
+                url, code, data)
 
             assignmentList = []
             for assignment in assignments:
@@ -126,7 +123,7 @@ def assignmentEdit(request, id=None):
                     'project_id': id
                 }
                 roleList = ApiUtil.requestGet(
-                    url, FuncCode.projectDetail.value, data)
+                    url, code, data)
                 role = ""
                 for item in roleList:
                     role = item["id"]
@@ -136,7 +133,7 @@ def assignmentEdit(request, id=None):
                     'auth_token': token,
                 }
                 accountList = ApiUtil.requestGet(
-                    url, FuncCode.projectDetail.value, data)
+                    url, code, data)
                 accountName = ""
                 email = ""
                 admin = ""
@@ -173,7 +170,7 @@ def assignmentEdit(request, id=None):
                 'project_id': id
             }
             roleList = ApiUtil.requestGet(
-                url, FuncCode.projectDetail.value, data)
+                url, code, data)
 
             return render(request, Html.assignmentEdit,
                           {'assignments': assignmentList, 'message': '',
@@ -191,7 +188,7 @@ def assignmentEdit(request, id=None):
                 'project_id': id,
             }
             assignments = ApiUtil.requestGet(
-                url, FuncCode.projectDetail.value, data)
+                url, code, data)
 
             selected = True
 
@@ -211,7 +208,7 @@ def assignmentEdit(request, id=None):
                         'project_id': id
                     }
                     roleList = ApiUtil.requestGet(
-                        url, FuncCode.projectDetail.value, data)
+                        url, code, data)
                     role = ""
                     for item in roleList:
                         role = item["id"]
@@ -221,7 +218,7 @@ def assignmentEdit(request, id=None):
                         'auth_token': token,
                     }
                     accountList = ApiUtil.requestGet(
-                        url, FuncCode.projectDetail.value, data)
+                        url, code, data)
                     accountName = ""
                     for item in accountList:
                         if item["id"] == assignment["account_id"]:
@@ -241,13 +238,16 @@ def assignmentEdit(request, id=None):
                     'project_id': id
                 }
                 roleList = ApiUtil.requestGet(
-                    url, FuncCode.projectDetail.value, data)
+                    url, code, data)
 
                 return render(request, Html.assignmentEdit,
                               {'assignments': assignmentList,
                                'message': Error.CheckboxNotSelected.value,
                                'roleList': roleList, 'project_id': id,
                                'account_id': account_id, 'save': True})
+
+            logout = False
+            roleid = None
 
             for assignment in assignments:
                 if 'chk-' + str(assignment['id']) in p:
@@ -262,7 +262,7 @@ def assignmentEdit(request, id=None):
                                 'role_id': p['sel-' + str(assignment['id'])],
                             }
                             ApiUtil.requestPost(
-                                url, FuncCode.projectDetail.value, data)
+                                url, code, data)
 
                         else:
 
@@ -272,7 +272,7 @@ def assignmentEdit(request, id=None):
                                 'auth_token': token,
                             }
                             assignmentRoleList = ApiUtil.requestGet(
-                                url, FuncCode.projectDetail.value, data)
+                                url, code, data)
 
                             for assignmentRole in assignmentRoleList:
                                 if p['sel_old-' + str(assignment['id'])] == \
@@ -282,7 +282,7 @@ def assignmentEdit(request, id=None):
                                         assignmentRole["id"], Url.url)
                                     data = {'auth_token': token}
                                     ApiUtil.requestDelete(
-                                        url, FuncCode.projectDetail.value,
+                                        url, code,
                                         {'auth_token': token})
                                     break
 
@@ -295,7 +295,12 @@ def assignmentEdit(request, id=None):
                                                  str(assignment['id'])],
                                 }
                                 ApiUtil.requestPost(
-                                    url, FuncCode.projectDetail.value, data)
+                                    url, code, data)
+
+                                if str(request.session["project_id"]) == id\
+                                        and request.session["account_id"]\
+                                        == assignment['account_id']:
+                                    roleid = p['sel-' + str(assignment['id'])]
 
                 else:
                     url = Url.assignmentDelete(assignment["id"], Url.url)
@@ -303,6 +308,9 @@ def assignmentEdit(request, id=None):
                         'auth_token': token,
                     }
                     ApiUtil.requestDelete(url, code, data)
+                    if request.session["project_id"] == id and \
+                            request.session["account_id"] == assignment['account_id']:
+                        logout = True
 
             if request.session.get('select_account'):
                 for account in request.session['select_account']:
@@ -314,7 +322,7 @@ def assignmentEdit(request, id=None):
                         }
                         url = Url.assignmentAdd
                         assi = ApiUtil.requestPost(
-                            url, FuncCode.projectDetail.value, data)
+                            url, code, data)
 
                         url = Url.assignmentRoleAdd(
                             str(assi['id']), Url.url)
@@ -323,9 +331,16 @@ def assignmentEdit(request, id=None):
                             'role_id': p['sel--' + str(account['id'])],
                         }
                         ApiUtil.requestPost(
-                            url, FuncCode.projectDetail.value, data)
+                            url, code, data)
 
                 del request.session['select_account']
+
+            # role session update
+            if roleid:
+                SessionUtil.edit_role_session(code, request.session, roleid)
+
+            if logout:
+                return redirect('/ccgui/logout')
 
             return redirect(Path.projectDetail(id))
     except Exception as ex:

@@ -48,7 +48,6 @@ def create_role(code, token, project_id, name, description, params):
                     'model': param.split('-')[0],
                 }
                 permission = ApiUtil.requestPost(url, code, data)
-        # ApiUtil.requestPost(url, code, data)
 
     return role
 
@@ -216,357 +215,143 @@ def delete_role(code, token, id):
     ApiUtil.requestDelete(url, code, data)
 
 
-# def add_session_role(session, role, permissions):
-#
-#     list = []
-#     dic = {}
-#     for per in permissions:
-#         dic = {}
-#         if per.get('model') in list:
-#             index = list.index(per.get('model'))
-#             model = list.get(index)
-#             value = model.get(per.get('model'))
-#             if StringUtil.isEmpty(model):
-#                 break
-#
-# #             value.update({per.get('model'): True})
-#             value[per.get('action')]=True
-#
-#             model = value
-#             list[index] = value
-# #             list.insert(index, per.get('action'))
-#         else:
-#             dic[per.get('action')]=True
-#             list.append({per.get('model'): dic})
-# #             list.append(per.get('model'){ per.get('action'):Ture})
-#
-#
-#     print(list)
-
-
 def add_session_role(session, role, permissions):
     session['role_id'] = role.get('id')
 
-    model_bk = ''
-    dic_project = {}
-    dic_account = {}
-    dic_assignment = {}
-    dic_role = {}
-    dic_cloud = {}
-    dic_base_image = {}
-    dic_pattern = {}
-    dic_blueprint = {}
-    dic_system = {}
-    dic_environment = {}
-    dic_application = {}
-    dic_application_history = {}
-    dic_deployment = {}
-
     for per in permissions:
+        dic = {}
+        if per.get('model') in session:
+            dic[per.get('action')] = True
+            session[per.get('model')].update(dic)
+        else:
+            dic[per.get('action')] = True
+            dic['m_' + per.get('model')] = True
+            session[per.get('model')] = dic
 
-        #         dic = {}
-        if per.get("model") == 'project':
+    # -- wizard
+    if w_cloud_registrarion(session):
+        session['w_cloud_registrarion'] = True
 
-            dic_project['m_project'] = True
+    if w_make_new_app(session):
+        session['w_make_new_app'] = True
 
-            if per.get("action") == 'manage':
-                dic_project['manage'] = True
+    if w_app_env(session):
+        session['w_app_env'] = True
 
-            elif per.get("action") == 'read':
-                dic_project['read'] = True
+    if w_deploying_app(session):
+        session['w_deploying_app'] = True
 
-            elif per.get("action") == 'create':
-                dic_project['create'] = True
 
-            elif per.get("action") == 'update':
-                dic_project['update'] = True
+def w_cloud_registrarion(session):
+    if not 'cloud' in session:
+        return None
 
-            elif per.get("action") == 'destroy':
-                dic_project['destroy'] = True
+    if not 'base_image' in session:
+        return None
 
-            session['project'] = dic_project
+    cloud = session.get('cloud')
+    baseimage = session.get('base_image')
 
-        elif per.get("model") == 'account':
+    if cloud.get('manage') or cloud.get('create') and\
+            baseimage.get('manage') or baseimage.get('create'):
 
-            dic_account['m_account'] = True
+        return True
 
-            if per.get("action") == 'manage':
-                dic_account['manage'] = True
+    else:
+        return False
 
-            elif per.get("action") == 'read':
-                dic_account['read'] = True
 
-            elif per.get("action") == 'create':
-                dic_account['create'] = True
+def w_make_new_app(session):
+    if not 'system' in session:
+        return None
 
-            elif per.get("action") == 'update':
-                dic_account['update'] = True
+    if not 'application' in session:
+        return None
 
-            elif per.get("action") == 'destroy':
-                dic_account['destroy'] = True
+    if not 'application_history' in session:
+        return None
 
-            session['account'] = dic_account
+    if not 'environment' in session:
+        return None
 
-        elif per.get("model") == 'assignment':
+    system = session.get('system')
+    application = session.get('application')
+    app_his = session.get('application_history')
+    environment = session.get('environment')
 
-            dic_assignment['m_assignment'] = True
+    if system.get('manage') or system.get('create') and\
+            application.get('manage') or application.get('create') and\
+            app_his.get('manage') or app_his.get('create') and\
+            environment.get('manage') or environment.get('create'):
 
-            if per.get("action") == 'manage':
-                dic_assignment['manage'] = True
+        return True
 
-            elif per.get("action") == 'read':
-                dic_assignment['read'] = True
+    else:
+        return False
 
-            elif per.get("action") == 'create':
-                dic_assignment['create'] = True
 
-            elif per.get("action") == 'update':
-                dic_assignment['update'] = True
+def w_app_env(session):
+    if not 'system' in session:
+        return None
 
-            elif per.get("action") == 'destroy':
-                dic_assignment['destroy'] = True
+    if not 'application' in session:
+        return None
 
-            session['assignment'] = dic_assignment
+    if not 'application_history' in session:
+        return None
 
-        elif per.get("model") == 'role':
+    if not 'environment' in session:
+        return None
 
-            dic_role['m_role'] = True
+    if not 'cloud' in session:
+        return None
 
-            if per.get("action") == 'manage':
-                dic_role['manage'] = True
+    system = session.get('system')
+    blueprint = session.get('blueprint')
+    bp_his = session.get('blueprint_history')
+    environment = session.get('environment')
+    cloud = session.get('cloud')
 
-            elif per.get("action") == 'read':
-                dic_role['read'] = True
+    if system.get('manage') or system.get('create') and\
+            blueprint.get('manage') or blueprint.get('create') and\
+            bp_his.get('manage') or bp_his.get('create') and\
+            environment.get('manage') or environment.get('create') and\
+            cloud.get('manage') or cloud.get('create'):
 
-            elif per.get("action") == 'create':
-                dic_role['create'] = True
+        return True
 
-            elif per.get("action") == 'update':
-                dic_role['update'] = True
+    else:
+        return False
 
-            elif per.get("action") == 'destroy':
-                dic_role['destroy'] = True
 
-            session['role'] = dic_role
+def w_deploying_app(session):
 
-        elif per.get("model") == 'cloud':
+    if not 'application' in session:
+        return None
 
-            dic_cloud['m_cloud'] = per.get("model")
+    if not 'application_history' in session:
+        return None
 
-            if per.get("action") == 'manage':
-                dic_cloud['manage'] = True
+    if not 'environment' in session:
+        return None
 
-            elif per.get("action") == 'read':
-                dic_cloud['read'] = True
+    if not 'deployment' in session:
+        return None
 
-            elif per.get("action") == 'create':
-                dic_cloud['create'] = True
+    application = session.get('application')
+    app_his = session.get('application_history')
+    environment = session.get('environment')
+    deployment = session.get('deployment')
 
-            elif per.get("action") == 'update':
-                dic_cloud['update'] = True
+    if  application.get('manage') or application.get('create') and\
+            app_his.get('manage') or app_his.get('create') and\
+            environment.get('manage') or environment.get('create') and\
+            deployment.get('manage'):
 
-            elif per.get("action") == 'destroy':
-                dic_cloud['destroy'] = True
+        return True
 
-            session['cloud'] = dic_cloud
-
-        elif per.get("model") == 'base_image':
-
-            dic_base_image['m_baseimage'] = per.get("model")
-
-            if per.get("action") == 'manage':
-                dic_base_image['manage'] = True
-
-            elif per.get("action") == 'read':
-                dic_base_image['read'] = True
-
-            elif per.get("action") == 'create':
-                dic_base_image['create'] = True
-
-            elif per.get("action") == 'update':
-                dic_base_image['update'] = True
-
-            elif per.get("action") == 'destroy':
-                dic_base_image['destroy'] = True
-
-            session['baseimage'] = dic_base_image
-
-        elif per.get("model") == 'pattern':
-
-            dic_pattern['m_pattern'] = True
-
-            if per.get("action") == 'manage':
-                dic_pattern['manage'] = True
-
-            elif per.get("action") == 'read':
-                dic_pattern['read'] = True
-
-            elif per.get("action") == 'create':
-                dic_pattern['create'] = True
-
-            elif per.get("action") == 'update':
-                dic_pattern['update'] = True
-
-            elif per.get("action") == 'destroy':
-                dic_pattern['destroy'] = True
-
-            session['pattern'] = dic_pattern
-
-        elif per.get("model") == 'blueprint':
-
-            dic_blueprint['m_blueprint'] = True
-
-            if per.get("action") == 'manage':
-                dic_blueprint['manage'] = True
-
-            elif per.get("action") == 'read':
-                dic_blueprint['read'] = True
-
-            elif per.get("action") == 'create':
-                dic_blueprint['create'] = True
-
-            elif per.get("action") == 'update':
-                dic_blueprint['update'] = True
-
-            elif per.get("action") == 'destroy':
-                dic_blueprint['destroy'] = True
-
-            session['blueprint'] = dic_blueprint
-
-        elif per.get("model") == 'blueprint_history':
-
-            dic_blueprint['m_blueprint'] = True
-
-            if per.get("action") == 'manage':
-                dic_blueprint['manage'] = True
-
-            elif per.get("action") == 'read':
-                dic_blueprint['read'] = True
-
-            elif per.get("action") == 'create':
-                dic_blueprint['create'] = True
-
-            elif per.get("action") == 'update':
-                dic_blueprint['update'] = True
-
-            elif per.get("action") == 'destroy':
-                dic_blueprint['destroy'] = True
-
-            session['blueprint_history'] = dic_blueprint
-
-        elif per.get("model") == 'system':
-
-            dic_system['m_system'] = per.get("model")
-
-            if per.get("action") == 'manage':
-                dic_system['manage'] = True
-
-            elif per.get("action") == 'read':
-                dic_system['read'] = True
-
-            elif per.get("action") == 'create':
-                dic_system['create'] = True
-
-            elif per.get("action") == 'update':
-                dic_system['update'] = True
-
-            elif per.get("action") == 'destroy':
-                dic_system['destroy'] = True
-
-            session['system'] = dic_system
-
-        elif per.get("model") == 'environment':
-
-            dic_environment['m_environment'] = per.get("model")
-
-            if per.get("action") == 'manage':
-                dic_environment['manage'] = True
-
-            elif per.get("action") == 'read':
-                dic_environment['read'] = True
-
-            elif per.get("action") == 'create':
-                dic_environment['create'] = True
-
-            elif per.get("action") == 'update':
-                dic_environment['update'] = True
-
-            elif per.get("action") == 'destroy':
-                dic_environment['destroy'] = True
-
-            session['environment'] = dic_environment
-
-        elif per.get("model") == 'application':
-
-            dic_application['m_application'] = per.get("model")
-
-            if per.get("action") == 'manage':
-                dic_application['manage'] = True
-
-            elif per.get("action") == 'read':
-                dic_application['read'] = True
-
-            elif per.get("action") == 'create':
-                dic_application['create'] = True
-
-            elif per.get("action") == 'update':
-                dic_application['update'] = True
-
-            elif per.get("action") == 'destroy':
-                dic_application['destroy'] = True
-
-            session['application'] = dic_application
-
-        elif per.get("model") == 'application_history':
-
-            dic_application_history['m_application_history'] = per.get("model")
-
-            if per.get("action") == 'manage':
-                dic_application_history['manage'] = True
-
-            elif per.get("action") == 'read':
-                dic_application_history['read'] = True
-
-            elif per.get("action") == 'create':
-                dic_application_history['create'] = True
-
-            elif per.get("action") == 'update':
-                dic_application_history['update'] = True
-
-            elif per.get("action") == 'destroy':
-                dic_application_history['destroy'] = True
-
-            session['application_history'] = dic_application_history
-
-        elif per.get("model") == 'deployment':
-
-            dic_deployment['m_deployment'] = per.get("model")
-
-            if per.get("action") == 'manage':
-                dic_deployment['manage'] = True
-
-            elif per.get("action") == 'read':
-                dic_deployment['read'] = True
-
-            elif per.get("action") == 'create':
-                dic_deployment['create'] = True
-
-            elif per.get("action") == 'update':
-                dic_deployment['update'] = True
-
-            elif per.get("action") == 'destroy':
-                dic_deployment['destroy'] = True
-
-            session['deployment'] = dic_deployment
-
-        # -- wizard
-#         if w_cloud_registrarion:
-#
-#         elif w_make_new_app:
-#
-#         elif w_app_env:
-#
-#         elif w_deploying_app:
+    else:
+        return False
 
 
 def delete_session_role(session):
@@ -585,8 +370,8 @@ def delete_session_role(session):
     if 'cloud' in session:
         del session['cloud']
 
-    if 'baseimage' in session:
-        del session['baseimage']
+    if 'base_image' in session:
+        del session['base_image']
 
     if 'pattern' in session:
         del session['pattern']

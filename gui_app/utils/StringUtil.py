@@ -53,9 +53,6 @@ def putKeyVlue(param):
     if param is not None:
         param = ast.literal_eval(param)
 
-        for k, v in param.items():
-            print('key:', k)
-
     return param
 
 

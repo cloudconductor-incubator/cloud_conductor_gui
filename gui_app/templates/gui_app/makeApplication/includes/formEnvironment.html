@@ -42,9 +42,8 @@ jQuery(document).ajaxSend(function(event, xhr, settings) {
 var myApp;
 myApp = myApp || (function () {
 	var html = '<div class="modal fade in" id="pleaseWaitDialog" data-backdrop="static" data-keyboard="false">' +
-      '<div class="modal-dialog"><div class="modal-content">' +
-    '<div class="modal-header"><h1>Processing...</h1></div>' +
-    '<div class="modal-body"><div class="progress progress-striped active"><div class="bar" style="width: 100%;"></div></div></div>'+
+      '<div class="modal-dialog" style="margin-top:200px;width:100px;height:100px;"><div class="modal-content">' +
+    '<div class="modal-body" style="width:100px;height:100px;background-size: 96px;padding-top:40px;background-image: url(/static/gui_app/images/loading-icon.gif);background-repeat:no-repeat;text-align:center;vertical-align: middle;">Wait</div>'+
     '</div></div>' +
     '</div>';
 

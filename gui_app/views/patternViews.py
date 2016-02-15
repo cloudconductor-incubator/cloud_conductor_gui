@@ -23,7 +23,6 @@ def patternList(request):
         patterns = None
         # -- Get a pattern list, API call
         url = Url.patternList
-        print(url)
 
         data = {
             'auth_token': request.session['auth_token'],
@@ -84,7 +83,6 @@ def patternCreate(request):
             # -- Get a value from a form
             msg = ''
             p = request.POST
-            print(p)
             # -- Validate check
             form = patternForm(p)
             form.full_clean()
@@ -130,8 +128,6 @@ def patternEdit(request, id):
             }
             p = ApiUtil.requestGet(url, FuncCode.patternEdit.value, data)
             p.update(data)
-
-            print(p)
 
             return render(request, Html.patternEdit,
                           {'pattern': p, 'form': '', 'message': ''})

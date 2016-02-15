@@ -32,7 +32,6 @@ def applicationList(request):
         applications = None
         # -- Get a application list, API call
         url = Url.applicationList
-        print(url)
 
         data = {
             'auth_token': request.session['auth_token'],
@@ -43,8 +42,8 @@ def applicationList(request):
         list = []
         for app in apps:
             system = SystemUtil.get_system_detail(
-                        FuncCode.applicationList.value,
-                        request.session['auth_token'], app.get("system_id"))
+                FuncCode.applicationList.value,
+                request.session['auth_token'], app.get("system_id"))
             app["system_name"] = system.get("name")
 
         return render(request, Html.applicationList,
@@ -70,8 +69,8 @@ def applicationDetail(request, id):
         token = request.session['auth_token']
         app = ApplicationUtil.get_application_detail(code, token, id)
         system = SystemUtil.get_system_detail(
-                    FuncCode.applicationList.value,
-                    request.session['auth_token'], app.get("system_id"))
+            FuncCode.applicationList.value,
+            request.session['auth_token'], app.get("system_id"))
         app["system_name"] = system.get("name")
 
         history_list = ApplicationHistoryUtil.get_history_list(code, token, id)

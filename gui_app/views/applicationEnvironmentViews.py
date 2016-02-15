@@ -15,7 +15,6 @@ from ..utils import EnvironmentUtil
 from ..utils import BlueprintUtil
 from ..utils import BlueprintHistoryUtil
 from ..utils import BlueprintPatternUtil
-from ..utils.BlueprintUtil import get_blueprint_version
 from ..utils import StringUtil
 from ..utils.PathUtil import Path
 from ..utils.PathUtil import Html
@@ -25,6 +24,7 @@ from ..utils import PatternUtil
 from ..enum.OSVersion import OSVersion
 from ..enum.FunctionCode import FuncCode
 from ..enum.MessageCode import Info
+from ..enum.StatusCode import Blueprint
 from ..logs import log
 
 
@@ -86,9 +86,9 @@ def systemCreate(request):
 
             system = SystemUtil.create_system(code,
                                               request.session.get(
-                                                'auth_token'),
+                                                  'auth_token'),
                                               request.session.get(
-                                                'project_id'),
+                                                  'project_id'),
                                               form.data)
 
             request.session['w_sys_select'] = {
@@ -103,20 +103,19 @@ def systemCreate(request):
 
 
 def blueprintSelect(request):
+    list = None
+    blueprint = None
     try:
         code = FuncCode.appenv_blueprint.value
         session = request.session
         token = session['auth_token']
         project_id = session['project_id']
-        # list = BlueprintUtil.get_blueprint_list(code, token, project_id)
 
         data = {
             'auth_token': token,
             'project_id': project_id
         }
-        list = get_blueprint_version(code, data)
-
-        print(list)
+        list = BlueprintUtil.get_blueprint_version(code, data)
 
         if request.method == "GET":
             blueprint = session.get('w_bp_select')
@@ -144,7 +143,8 @@ def blueprintSelect(request):
         log.error(FuncCode.appenv_blueprint.value, None, ex)
 
         return render(request, Html.envapp_bluprintSelect,
-                      {'list': '', 'blueprint': '', 'message': str(ex),
+                      {'list': list, 'blueprint': blueprint,
+                       'message': str(ex),
                        'wizard_code': Info.WizardSystem.value})
 
 
@@ -180,9 +180,9 @@ def blueprintCreate(request):
                     FuncCode.newapp_environment.value,
                     request.session.get('auth_token'), p.get("blueprint_id"))
                 ret = 0
-                if bp["status"] == 'ERROR':
+                if bp["status"] == Blueprint.ERROR.value:
                     ret = 1
-                elif bp["status"] == 'CREATE_COMPLETE':
+                elif bp["status"] == Blueprint.CREATE_COMPLETE.value:
                     ret = 2
 
                 return HttpResponse(json.dumps({'ret': ret}),
@@ -233,8 +233,9 @@ def blueprintCreate(request):
 
 
 def environmentCreate(request):
+    clouds = None
+    code = FuncCode.newapp_environment.value
     try:
-        code = FuncCode.newapp_environment.value
         session = request.session
         data = {
             'auth_token': session.get('auth_token'),
@@ -242,8 +243,6 @@ def environmentCreate(request):
         }
 
         clouds = ApiUtil.requestGet(Url.cloudList, code, data)
-        systems = ApiUtil.requestGet(Url.systemList, code, data)
-        # blueprints = get_blueprint_version(code, data)
 
         blueprints = BlueprintHistoryUtil.get_blueprint_parameters(
             code, session.get('auth_token'),
@@ -270,7 +269,8 @@ def environmentCreate(request):
                                'form': form, 'create': True})
 
             # -- Session add
-            environment = environmentPut(param)
+            environment = EnvironmentUtil.put_environment(
+                form.data, request.session)
             request.session['w_env_create'] = environment
 
             return redirect(Path.envapp_confirm)
@@ -278,7 +278,7 @@ def environmentCreate(request):
         log.error(FuncCode.appenv_environment.value, None, ex)
 
         return render(request, Html.envapp_environmentCreate,
-                      {'clouds': clouds, 'systems': systems,
+                      {'clouds': clouds, 'systems': None,
                        'blueprints': blueprints, 'env': request.POST,
                        'create': True, 'message': str(ex)})
 
@@ -299,12 +299,8 @@ def confirm(request):
             session = request.session
             code = FuncCode.appenv_confirm.value
 
-            env_session['system_id'] = sys_session.get('id')
-            env_session['blueprint_id'] = bp_session.get('id')
-            env_session['version'] = bp_session.get('version')
-
-            EnvironmentUtil.create_environment(code, env_session,
-                                               request.session)
+            EnvironmentUtil.create_wizard_environment(code, env_session,
+                                                      sys_session, bp_session)
 
             # -- session delete
             sessionDelete(session)

@@ -81,9 +81,9 @@ def systemCreate(request):
                               {"system": param, 'form': form, 'message': ''})
 
             system = SystemUtil.create_system(
-                                code, request.session.get('auth_token'),
-                                request.session.get('project_id'),
-                                form.data)
+                code, request.session.get('auth_token'),
+                request.session.get('project_id'),
+                form.data)
 
             # -- Session add
 
@@ -142,7 +142,8 @@ def environmentSelect(request):
         session = request.session
         token = session['auth_token']
         project_id = session['project_id']
-        list = EnvironmentUtil.get_environment_list(code, token, project_id)
+        list = EnvironmentUtil.get_environment_list_system_id(
+            code, token, project_id, session['w_sys_select']['id'])
 
         if request.method == "GET":
             environment = session.get('w_env_select')

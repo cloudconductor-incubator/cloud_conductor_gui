@@ -4,7 +4,6 @@ import requests
 from ..logs import log
 from django.conf import settings
 from ..utils import StringUtil
-from ..utils import FileUtil
 from ..enum.ResponseType import Response
 from ..enum.LogType import Message
 from ..utils.ErrorUtil import ApiError
@@ -240,10 +239,8 @@ def requestGet(url, scid, payload):
 
 
 def requestPost(url, scid, payload):  # -- change post
-    print(payload)
     if payload is not None:
         data = json.dumps(payload)
-        print(data)
         r = requests.post(url, data=json.dumps(payload))
 #         r = requests.post(url, data=payload)
     else:
@@ -254,17 +251,14 @@ def requestPost(url, scid, payload):  # -- change post
        r.status_code == Response.Accepted.value:
         log.info(scid, None, r.text, Message.api_response.value)
         param = json.loads(r.text)
-        print(param)
         return param
     else:
         raise ApiError(log.errorMessage(r, None))
 
 
 def requestPut(url, scid, payload):  # -- change post
-    print(payload)
     if payload is not None:
         data = json.dumps(payload)
-        print(data)
         r = requests.put(url, data=json.dumps(payload))
     else:
         r = requests.put(url)

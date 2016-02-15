@@ -3,6 +3,9 @@ from ..utils import RoleUtil
 from ..utils import ApiUtil
 from ..utils import StringUtil
 from ..utils import ProjectUtil
+from ..utils import PermissionUtil
+from django.template.base import Token
+from django.template.context_processors import request
 
 
 def edit_project_session(code, token, session, id=None, name=None):
@@ -25,11 +28,37 @@ def edit_project_session(code, token, session, id=None, name=None):
         else:
             session['project_id'] = id
             session['project_name'] = name
-#         if id in project_list:
-#             for project in project_list:
-#                 project_id = project.get('id')
-#                 project_name = project.get('name')
-#                 break
+
+
+def edit_role_session(code, session, id):
+    token = session.get('auth_token')
+    account_id = session.get('account_id')
+    project_id = session.get('project_id')
+
+    if StringUtil.isEmpty(token):
+        return None
+
+    if StringUtil.isEmpty(account_id):
+        return None
+
+    if StringUtil.isEmpty(project_id):
+        return None
+
+    role = RoleUtil.get_account_role(code, token, project_id, account_id)
+
+    if StringUtil.isEmpty(role):
+        return None
+
+    if id == str(role.get('id')):
+        # -- PermissionListAPI call, get a response
+        permissions = PermissionUtil.get_permission_list(
+            code, token, role.get('id'))
+
+        if not permissions:
+            return None
+
+        RoleUtil.delete_session_role(session)
+        RoleUtil.add_session_role(session, role, permissions)
 
 
 def check_login(request):

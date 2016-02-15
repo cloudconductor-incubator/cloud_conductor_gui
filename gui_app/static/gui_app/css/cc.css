@@ -235,7 +235,7 @@ button.cc-menu-change{
     vertical-align: middle;
 }
 
-/* ƒ{ƒ^ƒ“‚Ìİ’è */
+/* ï¿½{ï¿½^ï¿½ï¿½ï¿½Ìİ’ï¿½ */
 .btn-wizard {
     background-color: #595959;
     border-color: #595959;
@@ -244,13 +244,13 @@ button.cc-menu-change{
 /*    margin-right: 50px; */
 }
 
-/* ƒwƒbƒ_[‚ÌŒÅ’è */
+/* ï¿½wï¿½bï¿½_ï¿½[ï¿½ÌŒÅ’ï¿½ */
 #header-fixed{
-    position: fixed;            /* ƒwƒbƒ_[‚ÌŒÅ’è */
-    top: 0px;                   /* ˆÊ’u(ã0px) */
-    left: 0px;                  /* ˆÊ’u(‰E0px) */
-    width: 100%;                /* ‰¡•100%@*/
-    height: 46px;              /* c•140px */
+    position: fixed;            /* ï¿½wï¿½bï¿½_ï¿½[ï¿½ÌŒÅ’ï¿½ */
+    top: 0px;                   /* ï¿½Ê’u(ï¿½ï¿½0px) */
+    left: 0px;                  /* ï¿½Ê’u(ï¿½E0px) */
+    width: 100%;                /* ï¿½ï¿½ï¿½ï¿½100%ï¿½@*/
+    height: 46px;              /* ï¿½cï¿½ï¿½140px */
 	background:#059ee8;
     vertical-align: middle;
 }
@@ -265,7 +265,7 @@ button.cc-menu-change{
     bottom: 0;
     height: 100%;
     left: 0;
-    margin-top: 78px;
+    margin-top: 83px;
     position: absolute;
     top: 0;
     width: 220px;

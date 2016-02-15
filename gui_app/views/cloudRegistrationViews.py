@@ -126,7 +126,7 @@ def confirm(request):
             # -- session delete
             sessionDelete(session)
 
-            return redirect(Path.top)
+            return redirect(Path.cloudList)
     except Exception as ex:
         log.error(FuncCode.patternList.value, None, ex)
         session = request.session

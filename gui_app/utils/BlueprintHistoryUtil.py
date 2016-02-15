@@ -47,13 +47,13 @@ def get_new_blueprint_history(code, token, id):
 
 def get_blueprint_parameters(code, token, blueprint_id, version):
 
-    if StringUtil.isEmpty(code):
-        return None
-
     if StringUtil.isEmpty(token):
         return None
 
     if StringUtil.isEmpty(blueprint_id):
+        return None
+
+    if StringUtil.isEmpty(version):
         return None
 
     data = {

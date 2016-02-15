@@ -18,8 +18,6 @@ from .views import makeApplicationViews
 from .views import applicationEnvironmentViews
 from .views import applicationDeployViews
 
-from .views import testFileViews
-
 
 urlpatterns = [
 
@@ -198,24 +196,4 @@ urlpatterns = [
     url('^appdeploy/confirm/', applicationDeployViews.confirm,
         name="appdeployConfirm"),
 
-
-    # -- delete
-    url('^test/jsonform/', testFileViews.testJsonForm, name="testJsonForm"),
-    url('^test/jsonform2/', testFileViews.testJsonForm2,
-        name="testJsonForm2"),
-    url('^test/file/', testFileViews.testFileInput1, name="testFileInput1"),
-    url('^test/file3/', testFileViews.testFileInput3, name="testFileInput3"),
-    url('^test/file4/', testFileViews.testFileInput4, name="testFileInput4"),
-    url('^test/file5/', testFileViews.testFileInput5, name="testFileInput5"),
-    url('^test/file6/', testFileViews.testFileInput6, name="testFileInput6"),
-    url('^test/file7/', testFileViews.testFileInput7, name="testFileInput7"),
-    url('^test/file8/', testFileViews.testFileInput8, name="testFileInput8"),
-    url('^test/file9/', testFileViews.testFileInput9, name="testFileInput9"),
-    url('^test/file10/', testFileViews.testFileInput10,
-        name="testFileInput10"),
-    url('^test/file11/', testFileViews.testFileInput11,
-        name="testFileInput11"),
-    url('^test/file11/download', testFileViews.download,
-        name="testFileInput11_download"),
-    url('^test/file/upload/', testFileViews.testUpload, name="testUpload"),
 ]

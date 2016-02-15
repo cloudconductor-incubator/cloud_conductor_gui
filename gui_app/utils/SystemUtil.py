@@ -61,10 +61,8 @@ def create_system(code, token, project_id, form):
     form['auth_token'] = token
     form['project_id'] = project_id
 
-    data = form
-
     # -- API call, get a response
-    system = ApiUtil.requestPost(url, code, data)
+    system = ApiUtil.requestPost(url, code, StringUtil.deleteNullDict(form))
 
     return system
 
@@ -72,11 +70,11 @@ def create_system(code, token, project_id, form):
 def put_system(token, project_id, form):
 
     data = {
-            'auth_token': token,
-            'project_id': project_id,
-            'name': form.get('name'),
-            'description': form.get('description'),
-            'domain': form.get('domain'),
+        'auth_token': token,
+        'project_id': project_id,
+        'name': form.get('name'),
+        'description': form.get('description'),
+        'domain': form.get('domain'),
     }
 
 

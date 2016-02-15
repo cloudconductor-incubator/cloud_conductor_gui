@@ -28,7 +28,6 @@ def systemList(request):
         systems = None
         # -- Get a system list, API call
         url = Url.systemList
-        print(url)
 
         data = {
             'auth_token': request.session['auth_token'],
@@ -141,10 +140,6 @@ def systemEdit(request, id):
             # -- Edit a system, api call
             SystemUtil.edit_system(code, request.session.get('auth_token'),
                                    id, form.data)
-
-#             SystemUtil.edit_system(
-#                 code, token, id, p.get('name'), p.get('description'),
-#                 p.get('domain'))
 
             return redirect(Path.systemList)
     except Exception as ex:

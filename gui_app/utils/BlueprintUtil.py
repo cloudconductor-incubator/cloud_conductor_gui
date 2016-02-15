@@ -4,7 +4,7 @@ from ..utils import RoleUtil
 from ..utils import ApiUtil
 from ..utils import StringUtil
 from ..utils.ApiUtil import Url
-from ..enum.StatusCode import Environment
+from ..enum.StatusCode import Blueprint
 from ..logs import log
 
 
@@ -32,7 +32,6 @@ def get_blueprint_list(code, token, project_id=None):
 def get_blueprint_list2(code, token, project_id=None):
 
     blueprints = get_blueprint_list(code, token, project_id)
-    print(blueprints)
 
     if StringUtil.isEmpty(blueprints):
         return None
@@ -132,12 +131,11 @@ def get_blueprint_version(code, data):
         if histories is not None:
 
             for history in histories:
-                # if history.get('status') ==
-                # Environment.CREATE_COMPLETE.value:
-                dic['id'] = bpid
-                dic['name'] = bp.get('name')
-                dic['version'] = history.get('version')
-                list.append(dic.copy())
+                if history.get('status') == Blueprint.CREATE_COMPLETE.value:
+                    dic['id'] = bpid
+                    dic['name'] = bp.get('name')
+                    dic['version'] = history.get('version')
+                    list.append(dic.copy())
 
     return list
 

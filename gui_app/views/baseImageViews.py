@@ -28,7 +28,7 @@ def baseImageDetail(request, id):
     try:
         if not SessionUtil.check_login(request):
             return redirect(Path.logout)
-        if not SessionUtil.check_permission(request, 'baseimage', 'read'):
+        if not SessionUtil.check_permission(request, 'base_image', 'read'):
             return render_to_response(Html.error_403)
         token = request.session.get('auth_token')
         # -- baseImage DetailAPI call, get a response
@@ -49,7 +49,7 @@ def baseImageCreate(request, cid):
     try:
         if not SessionUtil.check_login(request):
             return redirect(Path.logout)
-        if not SessionUtil.check_permission(request, 'baseimage', 'create'):
+        if not SessionUtil.check_permission(request, 'base_image', 'create'):
             return render_to_response(Html.error_403)
 
         token = request.session.get('auth_token')
@@ -93,7 +93,7 @@ def baseImageEdit(request, id):
     try:
         if not SessionUtil.check_login(request):
             return redirect(Path.logout)
-        if not SessionUtil.check_permission(request, 'baseimage', 'update'):
+        if not SessionUtil.check_permission(request, 'base_image', 'update'):
             return render_to_response(Html.error_403)
 
         code = FuncCode.baseImageEdit.value
@@ -148,7 +148,7 @@ def baseImageDelete(request, id):
     try:
         if not SessionUtil.check_login(request):
             return redirect(Path.logout)
-        if not SessionUtil.check_permission(request, 'baseimage', 'destroy'):
+        if not SessionUtil.check_permission(request, 'base_image', 'destroy'):
             return render_to_response(Html.error_403)
 
         token = request.session.get('auth_token')

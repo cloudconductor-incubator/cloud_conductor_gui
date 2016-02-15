@@ -9,6 +9,7 @@ class Error(Enum):
     CheckboxNotSelected = 'Not selected'
     NoAssginment = 'This account is not assigned to the project.'
     NoRole = 'This account does not have Role is assigned.'
+    NoPermission = 'Permission does not exist.'
     Required = 'This field is required.'
     PatternRequired = 'Please select one or more Patterns.'
 

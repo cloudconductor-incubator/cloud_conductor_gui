@@ -20,6 +20,7 @@ from ..logs import log
 
 
 def login(request):
+    count = None
     try:
         if request.method == "GET":
             return render(request, Html.login, {'message': ''})
@@ -32,6 +33,7 @@ def login(request):
             # -- Validate check
             form = loginForm(p)
             form.full_clean()
+
             if not form.is_valid():
                 msg = ValiUtil.valiCheck(form)
                 return render(request, Html.login, {'message': msg})
@@ -75,7 +77,7 @@ def login(request):
                 code, token, role.get('id'))
 
             if not permissions:
-                raise Exception(Error.Authentication.value)
+                raise Exception(Error.NoPermission.value)
 
             # -- Add to session
             addLoginSession(token, account, project_list, project,

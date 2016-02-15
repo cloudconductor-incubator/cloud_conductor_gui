@@ -30,7 +30,6 @@ def applicationSelect(request):
 
         list = ApplicationUtil.get_application_version(
             code, token, project_id)
-        print(list)
 
         if request.method == "GET":
             application = request.session.get('w_app_select')
@@ -131,8 +130,9 @@ def environmentSelect(request):
         token = session['auth_token']
         project_id = session['project_id']
 
-        list = EnvironmentUtil.get_environment_list(
-            code, token, project_id)
+        list = EnvironmentUtil.get_environment_list_system_id(
+            code, token, project_id,
+            session.get('w_app_select').get("system_id"))
 
         if request.method == "GET":
 
@@ -219,8 +219,6 @@ def environmentPut(req):
 def putBlueprint(param):
 
     blueprint = param.get('blueprint', None)
-#    if blueprint != None and blueprint != '':
-#        blueprint = ast.literal_eval(blueprint)
     if not (blueprint is None) and not (blueprint == ''):
         blueprint = ast.literal_eval(blueprint)
 

@@ -29,7 +29,6 @@ def environmentList(request):
         envs = None
         # -- Get a environment list, API call
         url = Url.environmentList
-        print(url)
 
         data = {
             'auth_token': request.session['auth_token'],
@@ -72,8 +71,8 @@ def environmentDetail(request, id):
         system = SystemUtil.get_system_detail(
             code, request.session['auth_token'], env.get("system_id"))
         bp = BlueprintHistoryUtil.get_blueprint_history_list_id(
-                FuncCode.environmentList.value, request.session['auth_token'],
-                request.session['project_id'], env.get("blueprint_history_id"))
+            FuncCode.environmentList.value, request.session['auth_token'],
+            request.session['project_id'], env.get("blueprint_history_id"))
         env["system_name"] = system.get("name")
         env["bp_name"] = bp.get("name")
 
@@ -185,10 +184,6 @@ def environmentEdit(request, id):
                               {'env': cpPost, 'blueprints': blueprints,
                                'form': form, 'message': '', 'save': True})
 
-            # -- Create a environment, api call
-#             environment = EnvironmentUtil.edit_environment(
-#                 code, token, id, form.data, temp_param=None)
-
             environment = EnvironmentUtil.edit_environment(code, id, cpPost,
                                                            request.session)
 
@@ -254,9 +249,7 @@ def environmentAjaxBlueprint(request):
         param = BlueprintHistoryUtil.get_blueprint_parameters(
             code, token, bp['blueprint_id'], bp['version'])
 
-        ff = createForm(param, 'json')
         key = param.keys()
-        value = param.values()
 
         return render(request, Html.environmentAjaxBlueprint,
                       {'name': key, 'blueprints': param})
@@ -265,69 +258,6 @@ def environmentAjaxBlueprint(request):
         log.error(code, None, ex)
 
         return render(request, Html.environmentAjaxBlueprint, {})
-
-
-# def environmentAjaxBlueprint(request):
-#     try:
-#         p = request.GET
-#         bp = putBlueprint(p.copy())
-#
-#         code = FuncCode.environmentCreate.value
-#         token = request.session['auth_token']
-#         param = BlueprintHistoryUtil.get_blueprint_history_list(
-#             code, token, bp['blueprint_id'], bp['version'])
-#
-#         ff = createForm(param, 'json')
-#         key = param.keys()
-#         value = param.values()
-#
-#         return render(request, Html.environmentAjaxBlueprint,
-#                       {'name': key, 'blueprints': value})
-#
-#     except Exception as ex:
-#         log.error(code, None, ex)
-#
-#         return render(request, Html.environmentAjaxBlueprint, {})
-
-
-# def environmentAjaxBlueprint2(request):
-#     try:
-#         p = request.GET
-#         bp = putBlueprint(p.copy())
-#
-#         code = FuncCode.environmentCreate.value
-#         token = request.session['auth_token']
-#         param = BlueprintHistoryUtil.get_blueprint_history_list(
-#             code, token, bp['blueprint_id'], bp['version'])
-#
-#         ff = createForm2(param, 'json')
-#
-#         return render(request, Html.environmentAjaxBlueprint,
-#                       {'blueprint': param, 'inputs': ff})
-#
-#     except Exception as ex:
-#         log.error(code, None, ex)
-#
-#         return render(request, Html.environmentAjaxBlueprint2, {})
-#
-#
-# def createForm2(js, keyParent):
-#     ''' json to HTML input field '''
-#
-#     PATRITION = '/'
-#     inpt = []
-#
-#     if isinstance(js, dict):
-#         for k in js.keys():
-#             v = js[k]
-#             kk = keyParent + PATRITION + k
-#             if keyParent == '':
-#                 kk = k
-#             inpt.extend(createForm(v, kk))
-#     else:
-#         inpt.append((keyParent, js))
-#
-#     return inpt
 
 
 def putBlueprint(param):
@@ -340,68 +270,3 @@ def putBlueprint(param):
         param['version'] = blueprint.get('version')
 
     return param
-
-
-def putMap(jmap, key, val):
-    ''' KEY VALUE parameter to DICT '''
-    if key.find(PATRITION) != -1:
-        kf = key.find(PATRITION)
-        k1 = key[0:kf]
-        k2 = key[kf + 1:]
-        if k1 not in jmap:
-            jmap[k1] = {}
-        putMap(jmap[k1], k2, val)
-    else:
-        jmap[key] = val
-
-
-def createJson(prm):
-    ''' HTTP parameter to DICT  '''
-    pmap = {}
-    for k in prm.keys():
-        if k.find('json/') == 0:
-            kp = k[5:]
-            putMap(pmap, kp, prm[k])
-
-    return pmap
-
-
-def addEnvironmentParam(param, temp_param, session):
-    # candidates_attributes
-    print(param)
-    candidates_attributes = []
-    dic = {
-        "cloud_id": param.get("candidates_attributes_1"), "priority": "1"}
-    candidates_attributes.append(dic)
-
-    if param.get("candidates_attributes_2"):
-        dic = {
-            "cloud_id": param.get("candidates_attributes_2"), "priority": "2"}
-        candidates_attributes.append(dic)
-
-    if param.get("candidates_attributes_3"):
-        dic = {
-            "cloud_id": param.get("candidates_attributes_3"), "priority": "3"}
-        candidates_attributes.append(dic)
-
-    print(candidates_attributes)
-    data = {
-        "auth_token": session.get("auth_token"),
-        "project_id": session.get("project_id"),
-        "system_id": param.get("system_id"),
-        "blueprint_id": str(param.get("blueprint_id")),
-        "version": str(param.get("version")),
-        "name": param.get("name"),
-        "description": param.get("description", ""),
-        "candidates_attributes": candidates_attributes
-    }
-
-    if param.get("user_attributes"):
-        data["user_attributes"] = param.get("user_attributes")
-
-    print(str(temp_param).replace('\'', '\"'))
-    if temp_param:
-        tp = str(temp_param).replace('\'', '\"')
-        data["template_parameters"] = tp.replace(' ', '')
-
-    return data

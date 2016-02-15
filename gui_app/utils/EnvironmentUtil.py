@@ -41,6 +41,30 @@ def get_environment_list2(code, token, project_id=None):
     return list
 
 
+def get_environment_list_system_id(code, token, project_id, system_id):
+    if StringUtil.isEmpty(token):
+        return None
+
+    if StringUtil.isEmpty(project_id):
+        return None
+
+    if StringUtil.isEmpty(system_id):
+        return None
+
+    environments = get_environment_list(code, token, project_id)
+
+    dic = {}
+    list = []
+    for env in environments:
+        if env.get('status') == Environment.CREATE_COMPLETE.value and\
+                env.get('system_id') == system_id:
+            dic['id'] = str(env.get('id'))
+            dic['name'] = env.get('name')
+            list.append(dic.copy())
+
+    return list
+
+
 def get_environment_detail(code, token, id):
 
     if StringUtil.isEmpty(code):
@@ -60,28 +84,6 @@ def get_environment_detail(code, token, id):
     environment = ApiUtil.requestGet(url, code, data)
 
     return StringUtil.deleteNullDict(environment)
-
-
-# def edit_environment(code, token, id, form, temp_param):
-#     # -- Create a project, api call
-#     url = Url.environmentEdit(id, Url.url)
-#     data = {
-#         'auth_token': token,
-#         'name': form.get('name'),
-#         'description': form.get('description')
-#     }
-#
-#     if form.get("user_attributes"):
-#         data["user_attributes"] = form.get("user_attributes")
-#
-#     if temp_param:
-#         print(str(temp_param).replace('\'', '\"'))
-#         data["template_parameters"] = str(temp_param).replace('\'', '\"')
-#
-#     # -- API call, get a response
-#     project = ApiUtil.requestPut(url, code, StringUtil.deleteNullDict(data))
-#
-#     return project
 
 
 def edit_environment(code, id, form, session):
@@ -106,6 +108,20 @@ def edit_environment(code, id, form, session):
     return environment
 
 
+def put_environment(form, session):
+    if StringUtil.isEmpty(form):
+        return None
+
+    if StringUtil.isEmpty(session):
+        return None
+
+    param = putBlueprint(form)
+    inputs = createJson(param)
+    env = addEnvironmentParam(form, inputs, session)
+
+    return StringUtil.deleteNullDict(env)
+
+
 def create_environment(code, form, session):
     if StringUtil.isEmpty(code):
         return None
@@ -124,6 +140,32 @@ def create_environment(code, form, session):
     # -- API call, get a response
     environment = ApiUtil.requestPost(url, code,
                                       StringUtil.deleteNullDict(env))
+
+    return environment
+
+
+def create_wizard_environment(code, env_session, sys_session, bp_session):
+    if StringUtil.isEmpty(env_session):
+        return None
+
+    if StringUtil.isEmpty(sys_session.get('id')):
+        return None
+
+    if StringUtil.isEmpty(bp_session.get('id')):
+        return None
+
+    if StringUtil.isEmpty(bp_session.get('version')):
+        return None
+
+    env_session['system_id'] = sys_session.get('id')
+    env_session['blueprint_id'] = bp_session.get('id')
+    env_session['version'] = bp_session.get('version')
+
+    # -- Create a environment, api call
+    url = Url.environmentCreate
+    # -- API call, get a response
+    environment = ApiUtil.requestPost(url, code,
+                                      StringUtil.deleteNullDict(env_session))
 
     return environment
 
@@ -179,7 +221,6 @@ def createJson(prm):
 
 def addEnvironmentParam(param, temp_param, session):
     # candidates_attributes
-    print(param)
     candidates_attributes = []
     dic = {
         "cloud_id": param.get("candidates_attributes_1"), "priority": "1"}
@@ -195,7 +236,6 @@ def addEnvironmentParam(param, temp_param, session):
             "cloud_id": param.get("candidates_attributes_3"), "priority": "3"}
         candidates_attributes.append(dic)
 
-    print(candidates_attributes)
     data = {
         "auth_token": session.get("auth_token"),
         "project_id": session.get("project_id"),
@@ -210,9 +250,8 @@ def addEnvironmentParam(param, temp_param, session):
     if param.get("user_attributes"):
         data["user_attributes"] = param.get("user_attributes")
 
-    print(str(temp_param).replace('\'', '\"'))
     if temp_param:
         tp = str(temp_param).replace('\'', '\"')
         data["template_parameters"] = tp.replace(' ', '')
 
-    return data
+    return StringUtil.deleteNullDict(data)

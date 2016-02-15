@@ -140,6 +140,9 @@ def projectDetail(request, id):
         if not SessionUtil.check_permission(request, 'project', 'read'):
             return render_to_response(Html.error_403)
 
+        if request.session.get('select_account'):
+            del request.session['select_account']
+
         code = FuncCode.projectDetail.value
         token = request.session['auth_token']
 
