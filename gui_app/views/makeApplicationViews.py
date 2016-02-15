@@ -146,12 +146,8 @@ def environmentSelect(request):
         if request.method == "GET":
             environment = session.get('w_env_select')
 
-            env = None
-#             if environment is not None:
-            env = environment.get("id")
-
             return render(request, Html.newapp_environmentSelect,
-                          {"list": list, 'environment': env,
+                          {"list": list, 'environment': environment,
                            'message': '',
                            'wizard_code': Info.WizardSystem.value})
 
@@ -265,7 +261,7 @@ def confirm(request):
 
             return render(request, Html.newapp_confirm,
                           {'system': sys_session, 'application': app_session,
-                           'environment': ast.literal_eval(env_session["id"]),
+                           'environment': env_session,
                            'message': ''})
         elif request.method == "POST":
             session = request.session
@@ -283,13 +279,13 @@ def confirm(request):
                 code, token, application.get('id'), app_session)
 
             # -- application deploy
-            env = ast.literal_eval(env_session["id"])
-            ApplicationUtil.deploy_application(code, token, env.get('id'),
-                                               app_id, history.get('id'))
+            ApplicationUtil.deploy_application(code, token,
+                                               env_session.get('id'), app_id,
+                                               history.get('id'))
 
             # -- application deploy
             ApplicationUtil.deploy_application(
-                code, token, env.get('id'), app_id)
+                code, token, env_session.get('id'), app_id)
 
             # -- session delete
             sessionDelete(session)

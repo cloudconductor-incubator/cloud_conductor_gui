@@ -46,6 +46,7 @@ def create_role(code, token, project_id, name, description, params):
                     'action': param.split('-')[1],
                     'model': param.split('-')[0],
                 }
+                ApiUtil.requestPost(url, code, data)
 
     return role
 
@@ -274,10 +275,10 @@ def w_make_new_app(session):
     app_his = session.get('application_history')
     environment = session.get('environment')
 
-    if (system.get('manage') or system.get('create')) and\
+    if (system.get('manage') or system.get('read')) and\
             (application.get('manage') or application.get('create')) and\
             (app_his.get('manage') or app_his.get('create')) and\
-            (environment.get('manage') or environment.get('create')):
+            (environment.get('manage') or environment.get('read')):
 
         return True
     else:
@@ -306,11 +307,11 @@ def w_app_env(session):
     environment = session.get('environment')
     cloud = session.get('cloud')
 
-    if (system.get('manage') or system.get('create')) and\
-            (blueprint.get('manage') or blueprint.get('create')) and\
-            (bp_his.get('manage') or bp_his.get('create')) and\
+    if (system.get('manage') or system.get('read')) and\
+            (blueprint.get('manage') or blueprint.get('read')) and\
+            (bp_his.get('manage') or bp_his.get('read')) and\
             (environment.get('manage') or environment.get('create')) and\
-            (cloud.get('manage') or cloud.get('create')):
+            (cloud.get('manage') or cloud.get('read')):
 
         return True
     else:
@@ -336,10 +337,10 @@ def w_deploying_app(session):
     environment = session.get('environment')
     deployment = session.get('deployment')
 
-    if (application.get('manage') or application.get('create')) and\
-            (app_his.get('manage') or app_his.get('create')) and\
-            (environment.get('manage') or environment.get('create')) and\
-            deployment.get('manage'):
+    if (application.get('manage') or application.get('read')) and\
+            (app_his.get('manage') or app_his.get('read')) and\
+            (environment.get('manage') or environment.get('read')) and\
+            (deployment.get('manage') or deployment.get('read')):
 
         return True
     else:

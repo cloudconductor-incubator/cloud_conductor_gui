@@ -166,16 +166,15 @@ def roleEdit(request, id):
 
         token = request.session.get('auth_token')
         code = FuncCode.roleEdit.value
-        role = RoleUtil.get_role_detail(code, token, id)
 
         if request.method == "GET":
-            RoleUtil.get_role_detail(code, token, id)
+            role = RoleUtil.get_role_detail(code, token, id)
+
             return render(request, Html.roleEdit,
                           {'message': '', 'role': role["role"],
                            'items': role["check_items"], 'save': True},)
         else:
             p = request.POST
-
             checkbox = False
             for param in request.POST:
                 if '-' in param:
