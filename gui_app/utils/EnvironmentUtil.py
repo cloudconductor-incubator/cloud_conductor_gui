@@ -53,7 +53,7 @@ def get_environment_list_system_id(code, token, project_id, system_id):
     list = []
     for env in environments:
         if env.get('status') == Environment.CREATE_COMPLETE.value and\
-                env.get('system_id') == system_id:
+                env.get('system_id') == int(system_id):
             dic = env
             system = SystemUtil.get_system_detail(code, token, system_id)
             blueprint = BlueprintHistoryUtil.get_blueprint_history_list_id(

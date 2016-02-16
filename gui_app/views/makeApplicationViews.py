@@ -141,7 +141,7 @@ def environmentSelect(request):
         token = session['auth_token']
         project_id = session['project_id']
         list = EnvironmentUtil.get_environment_list_system_id(
-            code, token, project_id, session['w_sys_select']['id'])
+            code, token, project_id, session.get('w_sys_select').get('id'))
 
         if request.method == "GET":
             environment = session.get('w_env_select')
@@ -170,7 +170,7 @@ def environmentSelect(request):
         log.error(FuncCode.newapp_environment.value, None, ex)
 
         return render(request, Html.newapp_environmentSelect,
-                      {"list": '', 'environment': '', 'message': '',
+                      {"list": '', 'environment': '', 'message': str(ex),
                        'wizard_code': Info.WizardSystem.value})
 
 
