@@ -38,16 +38,6 @@ class cloudForm(forms.Form):
         return tenant_name
 
 
-class cloudForm2(forms.Form):
-    name = forms.CharField(required=False, max_length=500)
-    type = forms.CharField(required=False, max_length=500)
-    key = forms.CharField(required=False, max_length=500)
-    secret = forms.CharField(required=False, max_length=500)
-    entry_point = forms.CharField(required=False, max_length=500)
-    description = forms.CharField(required=False, max_length=500)
-    tenant_name = forms.CharField(required=False, max_length=500)
-
-
 class baseImageForm(forms.Form):
     project_id = forms.CharField(required=False)
     id = forms.IntegerField(required=False)
@@ -61,7 +51,6 @@ class systemForm(forms.Form):
     name = forms.CharField(max_length=500)
     description = forms.CharField(required=False, max_length=500)
     domain = forms.CharField(required=False, max_length=500)
-    environment = forms.CharField(required=False, max_length=500)
 
 
 class systemSelectForm(forms.Form):

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render, redirect, render_to_response
 from ..forms import cloudForm
-from ..forms import cloudForm2
 from ..enum.CloudType import CloudType
 from ..enum.FunctionCode import FuncCode
 from ..utils import CloudUtil
@@ -131,7 +130,7 @@ def cloudEdit(request, id):
             # -- Get a value from a form
             p = request.POST
             # -- Validate check
-            form = cloudForm2(request.POST)
+            form = cloudForm(request.POST)
             form.full_clean()
             if not form.is_valid():
 
